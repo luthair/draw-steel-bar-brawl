@@ -1,0 +1,5 @@
+{
+  "dataPath": "${env:AppData}/FoundryVTT/",
+  "repository": "",
+  "rawURL": ""
+}
