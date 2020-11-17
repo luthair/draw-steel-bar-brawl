@@ -1,0 +1,7 @@
+.resource-input input[type="text"] {
+    width: 40%;
+    height: 30px;
+    font-size: 20px;
+    margin: 2px;
+    min-width: 40px;
+}

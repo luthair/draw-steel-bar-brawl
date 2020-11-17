@@ -13,49 +13,79 @@ export const extendBarRenderer = function() {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function(html, data) {
+    let barArray = Object.values(getProperty(data.object, "flags.barbrawl.resourceBars") ?? {});
+    setProperty(data.object, "flags.barbrawl.resourceBars", barArray);
+    
+	let newBarId = getNewBarId(barArray);
+	barArray.push({
+		id: newBarId,
+		attribute: "custom",
+		value: 5,
+		max: 5,
+		mincolor: "000000",
+		maxcolor: "ffffff",
+		position: "bottom-inner",
+		visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+	});
+
 	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
 	html.find("div[data-tab='resources']").html(barConfiguration);
 }
 
 /**
- * Updates the existing resource bars without creating new ones. The bars are
- *  searched by their id (set during creation).
- * @param {Token} token The token to update the bars for.
- * @param {Object[]} newBars The bar data to be merged into the token data.
+ * Creates an ID for a new bar, which is either 'bar1' for the first, 'bar2'
+ *  for the second or a random ID for any subsequent bar.
+ * @param {Object[]} existingBars The array of existing bar data.
  */
-export const redrawBars = function(token, newBars) {
-    let barIds = Object.keys(newBars);
-    if (Object.keys(getProperty(token.data, "flags.barbrawl.resourceBars")).length === barIds.length) {
-        token.drawBars();
-        return;
+function getNewBarId(existingBars) {
+    switch (existingBars.length) {
+        case 0: return "bar1";
+        case 1: return "bar2";
+        default: return randomID();
+    }
+}
+
+/**
+ * Modifies the given HTML to render additional resource input fields.
+ * @param {TokenHUD} tokenHud The HUD object.
+ * @param {jQuery} html The jQuery element of the token HUD.
+ * @param {Object} data The data of the token HUD.
+ */
+export const extendTokenHud = async function(tokenHud, html, data) {
+    let visibleBars = getVisibleBars(tokenHud.object);
+    data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
+    data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom"));
+
+    let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.html", data);
+    let middleColumn = html.find(".col.middle");
+    middleColumn.html(resourceInputs);
+    middleColumn.find(".attribute input").click(tokenHud._onAttributeClick).change(onResourceChanged.bind(tokenHud));
+}
+
+/**
+ * Handles a resource input change event by updating the associated attribute.
+ * @param {jQuery.Event} event The event of the input change.
+ */
+function onResourceChanged(event) {
+    let dataset = event.currentTarget.dataset;
+    let bar = this.object.data.flags.barbrawl.resourceBars[dataset.bar];
+    if (bar.attribute === "custom") {
+        delete dataset.bar; // TODO this will fail on the update because of bad Foundry design
     }
 
-    for (let barId of barIds) {
-        if (barId.startsWith("-=")) {
-            token.bars.removeChildAt(token.bars.children.findIndex(bar => barId.endsWith(bar.name)));
-        } else {
-            // TODO recreate bar
-        }
-    }
+    this._onAttributeUpdate(event);
 }
 
 /**
  * Creates rendering objects for each of the token's resource bars.
  */
 function drawBrawlBars() {
-    if (!this.actor) return;
-
-    let bars = getProperty(this.data, "flags.barbrawl.resourceBars");
-    if (!bars) return;
-    
     this.bars.removeChildren();
-
+    let visibleBars = getVisibleBars(this);
+    if (visibleBars.length === 0) return;
+    
     let positionCounts = [0, 0, 0, 0];
-    let visibleBarIds = Object.keys(bars).filter(barId => this._canViewMode(bars[barId].visibility));
-    for (let barId of visibleBarIds) {
-        if (!bars.hasOwnProperty(barId)) return;
-
-        let barData = bars[barId];
+    for (let barData of visibleBars) {
         let barIndex = 0;
         switch (barData.position) {
             case "top-inner":
@@ -75,25 +105,37 @@ function drawBrawlBars() {
 }
 
 /**
+ * Retreives all resource bars of the given token that are currently visible.
+ * @param {Token} token The token to fetch the bars for.
+ */
+function getVisibleBars(token) {
+    let barArray = Object.values(getProperty(token.data, "flags.barbrawl.resourceBars") ?? {});
+
+    // Update resource values
+    for (let bar of barArray) {
+        if (bar.attribute === "custom") continue; // Skip custom bars (can only be set on token)
+
+        let resource = token.getBarAttribute(null, { alternative: bar.attribute });
+        if (!resource) continue;
+
+        bar.value = resource.value;
+        bar.max = resource.max;
+    }
+
+    return barArray.filter(bar => token._canViewMode(bar.visibility));
+}
+
+/**
  * Creates a rendering object for a single resource bar.
  * @param {Token} token The token on which to create the bar.
  * @param {Object} data The object containing the bar's data.
  * @param {Number} index The amount of bars previously rendered at the same position.
  */
 function createResourceBar(token, data, index) {
-    // Fetch the resource
-    let resource = data.attribute === "custom" ? {
-        type: "bar",
-        attribute: "custom",
-        value: parseInt(data.value || 0),
-        max: parseInt(data.max || 0)
-      }
-      : token.getBarAttribute(null, { alternative: data.attribute });
-
     // Create the rendering object
     let bar = new PIXI.Graphics();
     bar.name = data.id;
-    if (!resource || resource.type !== "bar") return bar.visible = false;
+    if (!data.max) return bar.visible = false;
 
     // Calculate dimensions
     let percentage = Math.clamped(data.value, 0, data.max) / data.max;

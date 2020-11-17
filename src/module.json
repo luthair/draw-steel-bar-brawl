@@ -8,8 +8,7 @@
     "barbrawl.js"
   ],
   "styles": [
-    "styles/combatTracker.css",
-    "styles/contextMenu.css"
+    "styles/attributeHud.css"
   ],
   "languages": [
     {

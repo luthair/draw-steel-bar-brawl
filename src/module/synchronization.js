@@ -52,10 +52,11 @@ function synchronizeLegacyBar(barId, foundryData) {
         var bottomBar = barId === "bar1";
         brawlBars[barId] = {
             id: barId,
-            mincolor: PIXI.utils.rgb2hex(bottomBar ? [1, 0, 0] : [0, 0, 0.5]),
-            maxcolor: PIXI.utils.rbg2hex(bottomBar ? [0.5, 1, 0] : [0.5, 0.7, 1]),
+            mincolor: bottomBar ? "FF0000" : "000080",
+            maxcolor: bottomBar ? "80FF00" : "80B3FF",
             position: bottomBar ? "bottom-inner" : "top-inner",
-            attribute: foundryBarData.attribute
+            attribute: foundryBarData.attribute,
+            visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
         };
     }
 }

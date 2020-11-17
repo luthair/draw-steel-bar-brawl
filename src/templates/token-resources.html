@@ -1,6 +1,7 @@
 <p class="notes">{{localize "TOKEN.ResourceInstructions"}}</p>
 {{#each object.flags.barbrawl.resourceBars}}
 <div id="bar.id">
+    <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.id" value="{{this.id}}"/>
     <div class="form-group">
         <label>{{localize "TOKEN.ResourceBar1A"}}:</label>
         <div class="form-fields">
