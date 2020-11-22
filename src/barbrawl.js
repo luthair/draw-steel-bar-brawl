@@ -59,7 +59,7 @@ Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
 		}
 	}
 
-	// synchronizeBars(tokenData, newData, changeBars);
+	synchronizeBars(tokenData, newData);
 });
 
 /** Hook to update bars. */
