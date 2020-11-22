@@ -1,65 +1,68 @@
 <p class="notes">{{localize "TOKEN.ResourceInstructions"}}</p>
 {{#each object.flags.barbrawl.resourceBars}}
-<div id="bar.id">
-    <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.id" value="{{this.id}}"/>
-    <div class="form-group">
-        <label>{{localize "TOKEN.ResourceBar1A"}}:</label>
-        <div class="form-fields">
-            <select class="bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
-                {{#select this.attribute}}
-                <option value="">None</option>
-                <option value="custom">Custom</option>
-                {{#each ../barAttributes as |attrs label|}}
-                <optgroup label="{{ localize label }}">
-                    {{#each attrs}}
-                    <option value="{{this}}">{{this}}</option>
+<details {{#if @last}}open{{/if}}>
+    <summary>{{this.attribute}}</summary>
+    <div id="bar.id">
+        <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.id" value="{{this.id}}"/>
+        <div class="form-group">
+            <label>{{localize "TOKEN.ResourceBar1A"}}:</label>
+            <div class="form-fields">
+                <select class="bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
+                    {{#select this.attribute}}
+                    <option value="">None</option>
+                    <option value="custom">Custom</option>
+                    {{#each ../barAttributes as |attrs label|}}
+                    <optgroup label="{{ localize label }}">
+                        {{#each attrs}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </optgroup>
                     {{/each}}
-                </optgroup>
-                {{/each}}
-                {{/select}}
-            </select>
+                    {{/select}}
+                </select>
+            </div>
         </div>
-    </div>
-
-    <div class="form-group">
-        <label>{{localize "TOKEN.ResourceDisplay"}}:</label>
-        <div class="form-fields">
-            <select name="flags.barbrawl.resourceBars.{{this.id}}.visibility" data-dtype="Number">
-                {{selectOptions ../displayModes selected=this.visibility }}
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
-        <div class="form-fields">
-            <input type="number" class="bar1-value" name="flags.barbrawl.resourceBars.{{this.id}}.value" value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
-            <span class="sep">/</span>
-            <input type="number" class="bar1-max" name="flags.barbrawl.resourceBars.{{this.id}}.max" value="{{this.max}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
-        <div class="form-fields">
-            <input type="text" class="bar1-value" name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"/>
-            <span class="sep">-</span>
-            <input type="text" class="bar1-max" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
-        </div>
-    </div>
     
-    <div class="form-group">
-        <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
-        <div class="form-fields">
-            <select class="bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.position">
-                {{#select this.position}}
-                <option value="top-inner">Top (inside)</option>
-                <option value="top-outer">Top (outside)</option>
-                <option value="bottom-inner">Bottom (inside)</option>
-                <option value="bottom-outer">Bottom (outside)</option>
-                {{/select}}
-            </select>
+        <div class="form-group">
+            <label>{{localize "TOKEN.ResourceDisplay"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.visibility" data-dtype="Number">
+                    {{selectOptions ../displayModes selected=this.visibility }}
+                </select>
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
+            <div class="form-fields">
+                <input type="number" class="bar1-value" name="flags.barbrawl.resourceBars.{{this.id}}.value" value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
+                <span class="sep">/</span>
+                <input type="number" class="bar1-max" name="flags.barbrawl.resourceBars.{{this.id}}.max" value="{{this.max}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
+            <div class="form-fields">
+                <input type="text" class="bar1-value" name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"/>
+                <span class="sep">-</span>
+                <input type="text" class="bar1-max" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
+            <div class="form-fields">
+                <select class="bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.position">
+                    {{#select this.position}}
+                    <option value="top-inner">Top (inside)</option>
+                    <option value="top-outer">Top (outside)</option>
+                    <option value="bottom-inner">Bottom (inside)</option>
+                    <option value="bottom-outer">Bottom (outside)</option>
+                    {{/select}}
+                </select>
+            </div>
         </div>
     </div>
-</div>
+</details>
 {{/each}}

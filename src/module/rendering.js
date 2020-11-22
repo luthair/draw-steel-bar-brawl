@@ -54,7 +54,7 @@ function getNewBarId(existingBars) {
 export const extendTokenHud = async function(tokenHud, html, data) {
     let visibleBars = getVisibleBars(tokenHud.object);
     data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
-    data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom"));
+    data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
 
     let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.html", data);
     let middleColumn = html.find(".col.middle");
@@ -137,13 +137,36 @@ function createResourceBar(token, data, index) {
     bar.name = data.id;
     if (!data.max) return bar.visible = false;
 
-    // Calculate dimensions
-    let percentage = Math.clamped(data.value, 0, data.max) / data.max;
+    let height = drawResourceBar(token, bar, data);
+    bar.position.set(0, calculatePosition(data.position, height, token.h, index));
+    return bar;
+}
+
+/**
+ * Redraws a single resource bar without changing its position.
+ * @param {Token} token The token to redraw the bar on.
+ * @param {Object} barData The data of the bar to refresh.
+ */
+export const redrawBar = function(token, barData) {
+    let bar = token.bars.getChildByName(barData.id);
+    drawResourceBar(token, bar, barData);
+}
+
+/**
+ * Draws the geometry and colors calculated from the given data onto the given
+ *  PIXI object.
+ * @param {Token} token The token to draw the bar on.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Object} data The data of the bar to draw.
+ * @returns {Number} The final height of the bar.
+ */
+function drawResourceBar(token, bar, data) {
     let height = Math.max((canvas.dimensions.size / 12), 8);
     if ( token.data.height >= 2 ) height *= 1.6;  // Enlarge the bar for large tokens
 
-    // Draw the bar
+    let percentage = Math.clamped(data.value, 0, data.max) / data.max;
     let color = interpolateColor(data.mincolor, data.maxcolor, percentage);
+
     bar.clear()
        .beginFill(0x000000, 0.5)
        .lineStyle(2, 0x000000, 0.9)
@@ -151,8 +174,8 @@ function createResourceBar(token, data, index) {
        .beginFill(color, 0.8)
        .lineStyle(1, 0x000000, 0.8)
        .drawRoundedRect(1, 1, percentage * (token.w - 2), height - 2, 2);
-    bar.position.set(0, calculatePosition(data.position, height, token.h, index));
-    return bar;
+    
+    return height;
 }
 
 /**

@@ -3,7 +3,7 @@
  * @author Adrian Haberecht
  */
 
-import { extendBarRenderer, extendTokenConfig, extendTokenHud } from "./module/rendering.js";
+import { extendBarRenderer, extendTokenConfig, extendTokenHud, redrawBar } from "./module/rendering.js";
 import { synchronizeBars } from "./module/synchronization.js";
 
 /** Hook to register settings. */
@@ -31,7 +31,7 @@ Hooks.once("setup", function() {
 	extendBarRenderer();
 });
 
-/** Hook to apply custom keybinds to the token HUD. */
+/** Hook to replace the resource value inputs. */
 Hooks.on("renderTokenHUD", function(tokenHud, html, data) {
 	extendTokenHud(tokenHud, html, data);
 });
@@ -41,18 +41,45 @@ Hooks.on("renderTokenConfig", function(_tokenConfig, html, data) {
 	extendTokenConfig(html, data);
 });
 
-/** Hook to synchronize status counters and effects. */
-Hooks.on("preUpdateToken", function(_scene, _tokenData, newData) {
-	if (_tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+/** Hook to remove bars and synchronize legacy bars. */
+Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
+	if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
 		newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
 	}
+	
+	// Remove bars that were explicitly set to "None" attribute
+	let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
+	if (changedBars) {
+		for (let barId of Object.keys(changedBars)) {
+			let bar = changedBars[barId];
+			if (bar.attribute === "") {
+				delete changedBars[barId];
+				changedBars["-=" + barId] = null;
+			}
+		}
+	}
 
-	synchronizeBars(newData);
+	// synchronizeBars(tokenData, newData, changeBars);
 });
 
-/** Hook to update status counters without redrawing all effects. */
+/** Hook to update bars. */
 Hooks.on("updateToken", function(_scene, tokenData, diffData) {
 	if ("bar1" in diffData || "bar2" in diffData || !hasProperty(diffData, "flags.barbrawl.resourceBars")) return;
 
-	canvas.tokens.get(tokenData._id)?.drawBars();
+	let token = canvas.tokens.get(tokenData._id);
+	if (!token) return;
+
+	// Check if only one bar value was changed (not added or removed)
+	let changedBars = diffData.flags.barbrawl.resourceBars;
+	let changedBarIds = Object.keys(changedBars);
+	if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
+		let changedData = changedBars[changedBarIds[0]];
+		if (!changedData.position && !changedData.id) {
+			redrawBar(token, tokenData.flags.barbrawl.resourceBars[changedBarIds[0]]);
+			return;
+		}
+	}
+
+	// Otherwise, completely redraw all bars
+	token.drawBars();
 });
