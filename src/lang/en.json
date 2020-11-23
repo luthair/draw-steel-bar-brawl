@@ -1,0 +1,18 @@
+{
+    "barbrawl": {
+        "config": {
+            "attribute": "Attribute",
+            "visibility": "Visibility",
+            "value": "Value (current/max)",
+            "color": "Color (min/max)",
+            "position": "Position"
+        },
+        "position": {
+            "top-inner": "Top (inside)",
+            "top-outer": "Top (outside)",
+            "bottom-inner": "Bottom (inside)",
+            "bottom-outer": "Bottom (outside)"
+        },
+        "add": "Add resource"
+    }
+}

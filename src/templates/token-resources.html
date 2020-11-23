@@ -1,13 +1,13 @@
 <p class="notes">{{localize "TOKEN.ResourceInstructions"}}</p>
-{{#each object.flags.barbrawl.resourceBars}}
+{{#each brawlBars}}
 <details {{#if @last}}open{{/if}}>
     <summary>{{this.attribute}}</summary>
     <div id="bar.id">
         <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.id" value="{{this.id}}"/>
         <div class="form-group">
-            <label>{{localize "TOKEN.ResourceBar1A"}}:</label>
+            <label>{{localize "barbrawl.config.attribute"}}:</label>
             <div class="form-fields">
-                <select class="bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
+                <select class="brawlbar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
                     {{#select this.attribute}}
                     <option value="">None</option>
                     <option value="custom">Custom</option>
@@ -24,7 +24,7 @@
         </div>
     
         <div class="form-group">
-            <label>{{localize "TOKEN.ResourceDisplay"}}:</label>
+            <label>{{localize "barbrawl.config.visibility"}}:</label>
             <div class="form-fields">
                 <select name="flags.barbrawl.resourceBars.{{this.id}}.visibility" data-dtype="Number">
                     {{selectOptions ../displayModes selected=this.visibility }}
@@ -33,32 +33,32 @@
         </div>
     
         <div class="form-group">
-            <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
+            <label>{{localize "barbrawl.config.value"}}:</label>
             <div class="form-fields">
-                <input type="number" class="bar1-value" name="flags.barbrawl.resourceBars.{{this.id}}.value" value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
+                <input type="number" class="{{this.id}}-value" name="flags.barbrawl.resourceBars.{{this.id}}.value" value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
                 <span class="sep">/</span>
-                <input type="number" class="bar1-max" name="flags.barbrawl.resourceBars.{{this.id}}.max" value="{{this.max}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
+                <input type="number" class="{{this.id}}-max" name="flags.barbrawl.resourceBars.{{this.id}}.max" value="{{this.max}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
             </div>
         </div>
     
         <div class="form-group">
-            <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
+            <label>{{localize "barbrawl.config.color"}}:</label>
             <div class="form-fields">
-                <input type="text" class="bar1-value" name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"/>
+                <input type="text" name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"/>
                 <span class="sep">-</span>
-                <input type="text" class="bar1-max" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
+                <input type="text" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
             </div>
         </div>
         
         <div class="form-group">
-            <label>{{localize "TOKEN.ResourceBar1D"}}:</label>
+            <label>{{localize "barbrawl.config.position"}}:</label>
             <div class="form-fields">
-                <select class="bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.position">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.position">
                     {{#select this.position}}
-                    <option value="top-inner">Top (inside)</option>
-                    <option value="top-outer">Top (outside)</option>
-                    <option value="bottom-inner">Bottom (inside)</option>
-                    <option value="bottom-outer">Bottom (outside)</option>
+                    <option value="top-inner">{{localize "barbrawl.position.top-inner"}}</option>
+                    <option value="top-outer">{{localize "barbrawl.position.top-outer"}}</option>
+                    <option value="bottom-inner">{{localize "barbrawl.position.bottom-inner"}}</option>
+                    <option value="bottom-outer">{{localize "barbrawl.position.bottom-outer"}}</option>
                     {{/select}}
                 </select>
             </div>
@@ -66,3 +66,4 @@
     </div>
 </details>
 {{/each}}
+<button type="button" class="brawlbar-add">{{localize "barbrawl.add"}}</button>

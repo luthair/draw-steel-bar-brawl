@@ -37,8 +37,8 @@ Hooks.on("renderTokenHUD", function(tokenHud, html, data) {
 });
 
 /** Hook to replace the resource bar configuration menu. */
-Hooks.on("renderTokenConfig", function(_tokenConfig, html, data) {
-	extendTokenConfig(html, data);
+Hooks.on("renderTokenConfig", function(tokenConfig, html, data) {
+	extendTokenConfig(tokenConfig, html, data);
 });
 
 /** Hook to remove bars and synchronize legacy bars. */

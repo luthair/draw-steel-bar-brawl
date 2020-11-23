@@ -9,16 +9,55 @@ export const extendBarRenderer = function() {
 /**
  * Modifies the given HTML to replace the resource bar configuration with our
  *  own template.
+ * @param {TokenConfig} tokenConfig The token configuration object.
  * @param {jQuery} html The jQuery element of the token configuration.
  * @param {Object} data The data of the token configuration.
  */
-export const extendTokenConfig = async function(html, data) {
+export const extendTokenConfig = async function(tokenConfig, html, data) {
     let barArray = Object.values(getProperty(data.object, "flags.barbrawl.resourceBars") ?? {});
-    setProperty(data.object, "flags.barbrawl.resourceBars", barArray);
-    
-	let newBarId = getNewBarId(barArray);
-	barArray.push({
-		id: newBarId,
+    data["brawlBars"] = barArray;
+
+	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
+    html.find("div[data-tab='resources']").html(barConfiguration);
+    html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
+    html.find(".brawlbar-attribute").change(onAttributeChanged.bind(tokenConfig));
+}
+
+/**
+ * Handles an attribute selection change event by updating the resource value.
+ * @param {jQuery.Event} event The event of the selection change.
+ */
+function onAttributeChanged(event) {
+    let form = event.target.form;
+    let barId = event.target.name.split(".")[3];
+    let valueInput = form.querySelector(`input.${barId}-value`);
+    let maxInput = form.querySelector(`input.${barId}-max`);
+
+    if (event.target.value === "custom") {
+        valueInput.removeAttribute("disabled");
+        maxInput.removeAttribute("disabled");
+        if (maxInput.value === "") maxInput.value = valueInput.value;
+    } else {
+        valueInput.setAttribute("disabled", "");
+        maxInput.setAttribute("disabled", "");
+
+        let resource = this.object.getBarAttribute(null, {alternative: event.target.value});
+        valueInput.value = resource !== null ? resource.value : "";
+        maxInput.value = ((resource !== null) && (resource.type === "bar")) ? resource.max : "";
+    }
+}
+
+/**
+ * Handles an add button click event by adding another resource.
+ * @param {jQuery.Event} event The event of the button click.
+ * @param {TokenConfig} tokenConfig The token configuration object.
+ * @param {Object} data The data of the token configuration.
+ */
+async function onAddResource(event, tokenConfig, data) {
+    let addButton = $(event.target);
+    let htmlBars = addButton.siblings("details");
+    data["brawlBars"] = [{
+		id: getNewBarId(htmlBars),
 		attribute: "custom",
 		value: 5,
 		max: 5,
@@ -26,10 +65,12 @@ export const extendTokenConfig = async function(html, data) {
 		maxcolor: "ffffff",
 		position: "bottom-inner",
 		visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
-	});
+    }];
 
-	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
-	html.find("div[data-tab='resources']").html(barConfiguration);
+    let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.html", data));
+    barConfiguration.find(".brawlbar-attribute").change(onAttributeChanged.bind(tokenConfig));
+    if (htmlBars.length > 0) htmlBars[htmlBars.length - 1].removeAttribute("open");
+    addButton.before(barConfiguration[2]);
 }
 
 /**
