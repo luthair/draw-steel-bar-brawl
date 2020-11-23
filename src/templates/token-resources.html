@@ -44,9 +44,11 @@
         <div class="form-group">
             <label>{{localize "barbrawl.config.color"}}:</label>
             <div class="form-fields">
-                <input type="text" name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"/>
+                <input class="color" style="min-width: 64px;" type="text" name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"/>
+                <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}">
                 <span class="sep">-</span>
-                <input type="text" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
+                <input class="color" style="min-width: 64px;" type="text" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
+                <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}">
             </div>
         </div>
         
@@ -66,4 +68,4 @@
     </div>
 </details>
 {{/each}}
-<button type="button" class="brawlbar-add">{{localize "barbrawl.add"}}</button>
+<button type="button" class="brawlbar-add"><i class="far fa-plus-square"></i> {{localize "barbrawl.add"}}</button>

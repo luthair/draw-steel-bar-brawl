@@ -61,8 +61,8 @@ async function onAddResource(event, tokenConfig, data) {
 		attribute: "custom",
 		value: 5,
 		max: 5,
-		mincolor: "000000",
-		maxcolor: "ffffff",
+		mincolor: "#000000",
+		maxcolor: "#ffffff",
 		position: "bottom-inner",
 		visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
     }];
