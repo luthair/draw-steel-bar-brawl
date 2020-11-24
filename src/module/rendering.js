@@ -1,9 +1,12 @@
+import { onChangeBarValue, onUpdateAttributes } from "./synchronization.js";
+
 /**
  * Extends the original Token.drawBars() with custom bar rendering. 
  *  The original function is not called.
  */
 export const extendBarRenderer = function() {  
     Token.prototype.drawBars = drawBrawlBars;
+    Token.prototype._onUpdateBarAttributes = onUpdateAttributes;
 }
 
 /**
@@ -20,14 +23,15 @@ export const extendTokenConfig = async function(tokenConfig, html, data) {
 	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
     html.find("div[data-tab='resources']").html(barConfiguration);
     html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
-    html.find(".brawlbar-attribute").change(onAttributeChanged.bind(tokenConfig));
+    html.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
 }
 
 /**
  * Handles an attribute selection change event by updating the resource value.
+ * @constant {TokenConfig} this The token configuration that this function is bound to.
  * @param {jQuery.Event} event The event of the selection change.
  */
-function onAttributeChanged(event) {
+function onChangeBarAttribute(event) {
     let form = event.target.form;
     let barId = event.target.name.split(".")[3];
     let valueInput = form.querySelector(`input.${barId}-value`);
@@ -68,7 +72,7 @@ async function onAddResource(event, tokenConfig, data) {
     }];
 
     let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.html", data));
-    barConfiguration.find(".brawlbar-attribute").change(onAttributeChanged.bind(tokenConfig));
+    barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
     if (htmlBars.length > 0) htmlBars[htmlBars.length - 1].removeAttribute("open");
     addButton.before(barConfiguration[2]);
 }
@@ -100,25 +104,12 @@ export const extendTokenHud = async function(tokenHud, html, data) {
     let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.html", data);
     let middleColumn = html.find(".col.middle");
     middleColumn.html(resourceInputs);
-    middleColumn.find(".attribute input").click(tokenHud._onAttributeClick).change(onResourceChanged.bind(tokenHud));
-}
-
-/**
- * Handles a resource input change event by updating the associated attribute.
- * @param {jQuery.Event} event The event of the input change.
- */
-function onResourceChanged(event) {
-    let dataset = event.currentTarget.dataset;
-    let bar = this.object.data.flags.barbrawl.resourceBars[dataset.bar];
-    if (bar.attribute === "custom") {
-        delete dataset.bar; // TODO this will fail on the update because of bad Foundry design
-    }
-
-    this._onAttributeUpdate(event);
+    middleColumn.find(".attribute input").click(tokenHud._onAttributeClick).change(onChangeBarValue.bind(tokenHud));
 }
 
 /**
  * Creates rendering objects for each of the token's resource bars.
+ * @constant {Token} this The token that this function is called on.
  */
 function drawBrawlBars() {
     this.bars.removeChildren();
