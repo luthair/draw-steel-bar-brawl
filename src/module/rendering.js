@@ -86,7 +86,7 @@ function getNewBarId(existingBars) {
     switch (existingBars.length) {
         case 0: return "bar1";
         case 1: return "bar2";
-        default: return randomID();
+        default: return "b" + randomID();
     }
 }
 
@@ -167,7 +167,10 @@ function createResourceBar(token, data, index) {
     // Create the rendering object
     let bar = new PIXI.Graphics();
     bar.name = data.id;
-    if (!data.max) return bar.visible = false;
+    if (!data.max) {
+        bar.visible = false;
+        return bar;
+    }
 
     let height = drawResourceBar(token, bar, data);
     bar.position.set(0, calculatePosition(data.position, height, token.h, index));

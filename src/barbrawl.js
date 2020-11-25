@@ -51,6 +51,8 @@ Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
 	let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
 	if (changedBars) {
 		for (let barId of Object.keys(changedBars)) {
+			if (barId.startsWith("-=")) continue; // Already queued for removal
+
 			let bar = changedBars[barId];
 			if (bar.attribute === "") {
 				delete changedBars[barId];
