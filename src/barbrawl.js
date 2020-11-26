@@ -43,10 +43,6 @@ Hooks.on("renderTokenConfig", function(tokenConfig, html, data) {
 
 /** Hook to remove bars and synchronize legacy bars. */
 Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
-	if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
-		newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
-	}
-	
 	// Remove bars that were explicitly set to "None" attribute
 	let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
 	if (changedBars) {

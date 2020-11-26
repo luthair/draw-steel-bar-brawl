@@ -134,6 +134,9 @@ function drawBrawlBars() {
         }
         this.bars.addChild(createResourceBar(this, barData, barIndex));
     }
+
+    this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
+    this.bars.visible = this.bars.children.length > 0;
 }
 
 /**
@@ -148,6 +151,7 @@ function getVisibleBars(token) {
         if (bar.attribute === "custom") continue; // Skip custom bars (can only be set on token)
 
         let resource = token.getBarAttribute(null, { alternative: bar.attribute });
+        if (!resource || resource.type !== "bar") bar.visibility = CONST.TOKEN_DISPLAY_MODES.NONE;
         if (!resource) continue;
 
         bar.value = resource.value;
