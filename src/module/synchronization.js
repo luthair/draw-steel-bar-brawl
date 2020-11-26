@@ -1,3 +1,5 @@
+import { getDefaultBar } from "./rendering.js";
+
 /**
  * Synchronizes resource bars to and from FoundryVTT's format with Bar Brawl.
  * @param {Object} tokenData The data to merge the new data into.
@@ -56,15 +58,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
         }
     } else {
         // Create a new bar with default values
-        var bottomBar = barId === "bar1";
-        brawlBarChanges[barId] = {
-            id: barId,
-            mincolor: bottomBar ? "FF0000" : "000080",
-            maxcolor: bottomBar ? "80FF00" : "80B3FF",
-            position: bottomBar ? "bottom-inner" : "top-inner",
-            attribute: foundryBarData.attribute,
-            visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
-        };
+        brawlBarChanges[barId] = getDefaultBar(barId, foundryBarData.attribute);
     }
 }
 

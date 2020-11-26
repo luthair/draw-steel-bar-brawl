@@ -60,16 +60,7 @@ function onChangeBarAttribute(event) {
 async function onAddResource(event, tokenConfig, data) {
     let addButton = $(event.target);
     let htmlBars = addButton.siblings("details");
-    data["brawlBars"] = [{
-		id: getNewBarId(htmlBars),
-		attribute: "custom",
-		value: 5,
-		max: 5,
-		mincolor: "#000000",
-		maxcolor: "#ffffff",
-		position: "bottom-inner",
-		visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
-    }];
+    data["brawlBars"] = [getDefaultBar(getNewBarId(htmlBars), "custom")];
 
     let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.html", data));
     barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
@@ -88,6 +79,38 @@ function getNewBarId(existingBars) {
         case 1: return "bar2";
         default: return "b" + randomID();
     }
+}
+
+/**
+ * Creates a new bar data object with default settings depending on the given ID.
+ * @param {String} id The ID of the bar.
+ * @param {String} attribute The attribute of the bar.
+ */
+export const getDefaultBar = function(id, attribute) {
+    let defaultBar = {
+        id: id,
+        attribute: attribute,
+        mincolor: "#000000",
+        maxcolor: "#FFFFFF",
+        position: "bottom-inner",
+        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+    }
+
+    if (attribute === "custom") {
+        defaultBar.value = 10;
+        defaultBar.max = 10;
+    }
+
+    if (id === "bar1") {
+        defaultBar.mincolor = "#FF0000";
+        defaultBar.maxcolor = "#80FF00";
+    } else if (id === "bar2") {
+        defaultBar.mincolor = "#000080";
+        defaultBar.maxcolor = "#80B3FF";
+        defaultBar.position = "top-inner";
+    }
+
+    return defaultBar;
 }
 
 /**
