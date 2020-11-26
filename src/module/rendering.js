@@ -58,7 +58,7 @@ function onChangeBarAttribute(event) {
  * @param {Object} data The data of the token configuration.
  */
 async function onAddResource(event, tokenConfig, data) {
-    let addButton = $(event.target);
+    let addButton = $(event.currentTarget);
     let htmlBars = addButton.siblings("details");
     data["brawlBars"] = [getDefaultBar(getNewBarId(htmlBars), "custom")];
 
@@ -178,7 +178,7 @@ function getVisibleBars(token) {
         }
 
         // Update resource values
-        let resource = token.getBarAttribute(null, { alternative: bar.attribute });
+        let resource = token.getBarAttribute(null, { alternative: bar.attribute?.toString() });
         if (!resource || resource.type !== "bar") continue;
 
         bar.value = resource.value;
