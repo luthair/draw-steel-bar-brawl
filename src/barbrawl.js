@@ -51,10 +51,15 @@ Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
 
 /** Hook to update bars. */
 Hooks.on("updateToken", function(_scene, tokenData, diffData) {
-	if ("bar1" in diffData || "bar2" in diffData || !hasProperty(diffData, "flags.barbrawl.resourceBars")) return;
-
 	let token = canvas.tokens.get(tokenData._id);
 	if (!token) return;
+
+	if ("bar1" in diffData || "bar2" in diffData) {
+		if (token.hasActiveHUD) canvas.tokens.hud.render();
+		return;
+	}
+
+	if (!hasProperty(diffData, "flags.barbrawl.resourceBars")) return;
 
 	// Check if only one bar value was changed (not added or removed)
 	let changedBars = diffData.flags.barbrawl.resourceBars;
@@ -63,10 +68,17 @@ Hooks.on("updateToken", function(_scene, tokenData, diffData) {
 		let changedData = changedBars[changedBarIds[0]];
 		if (!changedData.position && !changedData.id) {
 			redrawBar(token, tokenData.flags.barbrawl.resourceBars[changedBarIds[0]]);
+
+			// Update HUD
+			if (token.hasActiveHUD && changedData.value) {
+				let valueInput = canvas.tokens.hud._element.find(`input[data-bar='${changedBarIds[0]}']`);
+				if (valueInput) valueInput.val(changedData.value);
+			}
 			return;
 		}
 	}
 
 	// Otherwise, completely redraw all bars
 	token.drawBars();
+	if (token.hasActiveHUD) canvas.tokens.hud.render();
 });
