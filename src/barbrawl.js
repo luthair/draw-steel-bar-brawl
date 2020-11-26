@@ -10,19 +10,8 @@ import { synchronizeBars } from "./module/synchronization.js";
 Hooks.once('init', async function() {
 	console.log('barbrawl | Initializing barbrawl');
 
-	// Global class registrations
-	// window.CounterTypes = CounterTypes;
-
-	// Register custom module settings
-	// registerSettings();
-
 	Handlebars.registerHelper("isLinkedBar", function(bar) {
 		return bar.attribute !== "custom";
-	});
-
-	Handlebars.registerHelper("debug", function(bar) {
-		console.warn(bar);
-		return;
 	});
 });
 

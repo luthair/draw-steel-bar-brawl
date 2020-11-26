@@ -21,17 +21,17 @@ For each bar, there are several options:
 
 Bar Brawl is purely data based, meaning that you can adjust everything by updating via Foundry and expect the changes to be applied automatically. The resource bar object is stored for each token in `Token.data.flags.barbrawl.resourceBars` and has the following format:
 
-```json
+```javascript
 {
     "aBarId": {
-        "id": "aBarId",
-        "value": 5,
-        "max": 5,
-        "mincolor": "#FFFFFF",
-        "maxcolor": "#FFFFFF",
-        "position": "bottom-inner",
-        "attribute": "custom",
-        "visibility": CONST.TOKEN_DISPLAY_MODES.OWNER
+        id: "aBarId",
+        attribute: "custom",
+        value: 5,
+        max: 5,
+        mincolor: "#000000",
+        maxcolor: "#FFFFFF",
+        position: "bottom-inner",
+        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
     }
 }
 ```
@@ -50,31 +50,34 @@ The most basic access is through the `barbrawl.resourceBars` flag of the token:
 let token = new Token() // Pretend that this isn't empty
 let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars");
 if (!resourceBars) return [];
-return Object.values(resourceBars).map(bar => bar.value);
+return Object.values(resourceBars).map(bar => {
+    if (bar.attribute === "custom") return bar.value;
+    return token.getBarAttribute(null, { alternative: bar.attribute }).value
+});
 ```
 
-The values are kept current with actor updates, which means that you shouldn't use them in the actor's update itself. Instead, wait for the token to update before accessing current values.
+Note that the values are only kept current for custom bars, which means that for any other attribute you have to resolve the value and its maximum yourself.
 
 ### Spawn tokens with a custom bar
 
 To create bars on tokens by default, add them during the `preCreateToken` hook:
 
 ```javascript
-Hooks.on("preCreateToken", function(data)) {
+Hooks.on("preCreateToken", function(_scene, data) {
     setProperty(data, "flags.barbrawl.resourceBars", {
         "bar1": {
             id: "bar1",
-            mincolor: "FF0000",
-            maxcolor: "80FF00",
+            mincolor: "#FF0000",
+            maxcolor: "#80FF00",
             position: "bottom-inner",
             attribute: "attributes.hp",
             visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
         }
     });
-}
+});
 ```
 
-**Important**: When creating your own bar ID, make sure that it starts with a letter to ensure HTML4 compatibility. For example, `randomID()` can create IDs that end up causing problems, so you should use something like `"b" + randomID()` instead.
+**Important**: When creating your own bar ID, make sure that it starts with a letter to ensure HTML4 compatibility. For example, `randomID()` can create IDs that end up causing problems, so you should use something like `'b' + randomID()` instead.
 
 ### Remove a bar
 
@@ -82,8 +85,17 @@ In order to get rid of a bar, either use Foundry's `-=key` syntax or set the att
 
 ```javascript
 let barId = "b" + randomID(); // ID of the bar you intend to remove
-token.update({ `flags.barbrawl.resourceBars.${barId}.attribute`: "" });
+token.update({ [`flags.barbrawl.resourceBars.${barId}.attribute`]: "" });
 
 // Alternative:
-token.update({ `flags.barbrawl.resourceBars.-=${barId}`: null });
+token.update({ [`flags.barbrawl.resourceBars.-=${barId}`]: null });
+```
+
+### Modify the value of a custom bar
+
+Simply fetch the bar from the data and update its value property:
+
+```javascript
+let barId = "b" + randomID(); // ID of the bar you intend to modify
+token.update({ [`flags.barbrawl.resourceBars.${barId}.value`]: 5 });
 ```
