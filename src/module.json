@@ -23,12 +23,12 @@
     }
   ],
   "minimumCoreVersion": "0.7.5",
-  "compatibleCoreVersion": "0.7.6",
-  "url": "https://gitlab.com/woodentavern/status-icon-counters",
-  "manifest": "https://gitlab.com/woodentavern/status-icon-counters/-/raw/master/src/module.json",
-  "download": "https://gitlab.com/woodentavern/status-icon-counters/uploads/de1224681a06e19753d754ddcca38c4b/statuscounter-v2.0.1.zip",
-  "license": "https://gitlab.com/woodentavern/status-icon-counters/-/blob/master/LICENSE",
-  "readme": "https://gitlab.com/woodentavern/status-icon-counters/-/blob/master/README.md",
-  "bugs": "https://gitlab.com/woodentavern/status-icon-counters/-/issues",
-  "changelog": "https://gitlab.com/woodentavern/status-icon-counters/-/blob/master/CHANGELOG.md"
+  "compatibleCoreVersion": "0.7.7",
+  "url": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl",
+  "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/master/src/module.json",
+  "download": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/uploads/8f8b42b0f365421b23e907668d9f01e2/barbrawl-v1.0.0.zip",
+  "license": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/LICENSE",
+  "readme": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/README.md",
+  "bugs": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/issues",
+  "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md"
 }
