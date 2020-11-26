@@ -6,7 +6,7 @@ import { getDefaultBar } from "./rendering.js";
  * @param {Object} newData The data to be merged into the token data.
  */
 export const synchronizeBars = function(tokenData, newData) {
-    let hasLegacyBars = hasProperty(newData, "bar1") || hasProperty(newData, "bar2");
+    let hasLegacyBars = newData.hasOwnProperty("bar1") || newData.hasOwnProperty("bar2");
     let hasBrawlBars = hasProperty(newData, "flags.barbrawl.resourceBars");
 
     if (hasBrawlBars) {
@@ -29,9 +29,11 @@ export const synchronizeBars = function(tokenData, newData) {
  */
 function synchronizeBrawlBar(barId, newData) {
     let brawlBarData = newData.flags.barbrawl.resourceBars[barId];
-    if (!brawlBarData || !brawlBarData.attribute) return;
-
-    newData[barId] = { attribute: brawlBarData.attribute };
+    if (brawlBarData) {
+        newData[barId] = { attribute: brawlBarData.attribute };
+    } else if (newData.flags.barbrawl.resourceBars["-=" + barId] === null) {
+        newData[barId] = { attribute: "" };
+    }
 }
 
 /**
@@ -47,16 +49,17 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
     let brawlBars = getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {};
     let brawlBarChanges = newData.flags.barbrawl.resourceBars;
     let brawlBarData = brawlBars[barId];
+    let remove = Object.keys(foundryBarData).length === 0 || foundryBarData.attribute === "";
 
     if (brawlBarData) {
-        if (Object.keys(foundryBarData).length === 0) {
+        if (remove) {
             // Remove the bar
             brawlBarChanges["-=" + barId] = null;
         } else {
             // Change the attribute
-            brawlBarChanges[barId].attribute = foundryBarData.attribute;
+            setProperty(brawlBarChanges, barId + ".attribute", foundryBarData.attribute);
         }
-    } else {
+    } else if (!remove) {
         // Create a new bar with default values
         brawlBarChanges[barId] = getDefaultBar(barId, foundryBarData.attribute);
     }

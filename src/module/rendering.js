@@ -168,20 +168,27 @@ function drawBrawlBars() {
  */
 function getVisibleBars(token) {
     let barArray = Object.values(getProperty(token.data, "flags.barbrawl.resourceBars") ?? {});
+    let visibleBars = [];
 
-    // Update resource values
     for (let bar of barArray) {
-        if (bar.attribute === "custom") continue; // Skip custom bars (can only be set on token)
+         // Skip custom bars (can only be set on token)
+        if (bar.attribute === "custom") {
+            visibleBars.push(bar);
+            continue;
+        }
 
+        // Update resource values
         let resource = token.getBarAttribute(null, { alternative: bar.attribute });
-        if (!resource || resource.type !== "bar") bar.visibility = CONST.TOKEN_DISPLAY_MODES.NONE;
-        if (!resource) continue;
+        if (!resource || resource.type !== "bar") continue;
 
         bar.value = resource.value;
         bar.max = resource.max;
+
+        // Check visibility
+        if (token._canViewMode(bar.visibility)) visibleBars.push(bar);
     }
 
-    return barArray.filter(bar => token._canViewMode(bar.visibility));
+    return visibleBars;
 }
 
 /**
