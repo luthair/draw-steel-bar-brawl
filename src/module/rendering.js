@@ -120,7 +120,7 @@ export const getDefaultBar = function(id, attribute) {
  * @param {Object} data The data of the token HUD.
  */
 export const extendTokenHud = async function(tokenHud, html, data) {
-    let visibleBars = getVisibleBars(tokenHud.object);
+    let visibleBars = getVisibleBars(tokenHud.object, false);
     data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
     data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
 
@@ -165,9 +165,11 @@ function drawBrawlBars() {
 /**
  * Retreives all resource bars of the given token that are currently visible.
  * @param {Token} token The token to fetch the bars for.
+ * @param {Boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
  */
-function getVisibleBars(token) {
-    let barArray = Object.values(getProperty(token.data, "flags.barbrawl.resourceBars") ?? {});
+function getVisibleBars(token, barsOnly = true) {
+    let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
+    let barArray = Object.values(resourceBars);
     let visibleBars = [];
 
     for (let bar of barArray) {
@@ -179,7 +181,7 @@ function getVisibleBars(token) {
 
         // Update resource values
         let resource = token.getBarAttribute(null, { alternative: bar.attribute?.toString() });
-        if (!resource || resource.type !== "bar") continue;
+        if (!resource || (barsOnly && resource.type !== "bar")) continue;
 
         bar.value = resource.value;
         bar.max = resource.max;
