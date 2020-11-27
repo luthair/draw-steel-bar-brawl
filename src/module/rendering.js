@@ -17,8 +17,7 @@ export const extendBarRenderer = function() {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function(tokenConfig, html, data) {
-    let barArray = Object.values(getProperty(data.object, "flags.barbrawl.resourceBars") ?? {});
-    data["brawlBars"] = barArray;
+    data["brawlBars"] = getBars(tokenConfig.object);
 
 	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
     html.find("div[data-tab='resources']").html(barConfiguration);
@@ -163,16 +162,31 @@ function drawBrawlBars() {
 }
 
 /**
+ * Retreives all resource bars of the given token.
+ * @param {Token} token The token to fetch the bars for.
+ * @returns {Object[]} An array of bar data.
+ */
+function getBars(token) {
+    let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
+    let barArray = Object.values(resourceBars);
+
+    if (token.data.bar1?.attribute && !resourceBars.bar1)
+        barArray.push(getDefaultBar("bar1", token.data.bar1.attribute));
+    if (token.data.bar2?.attribute && !resourceBars.bar2)
+        barArray.push(getDefaultBar("bar2", token.data.bar2.attribute));
+    return barArray;
+}
+
+/**
  * Retreives all resource bars of the given token that are currently visible.
  * @param {Token} token The token to fetch the bars for.
  * @param {Boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
+ * @returns {Object[]} An array of visible bar data.
  */
 function getVisibleBars(token, barsOnly = true) {
-    let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
-    let barArray = Object.values(resourceBars);
     let visibleBars = [];
-
-    for (let bar of barArray) {
+    
+    for (let bar of getBars(token)) {
          // Skip custom bars (can only be set on token)
         if (bar.attribute === "custom") {
             visibleBars.push(bar);
