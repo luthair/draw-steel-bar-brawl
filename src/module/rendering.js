@@ -166,7 +166,7 @@ function drawBrawlBars() {
  * @param {Token} token The token to fetch the bars for.
  * @returns {Object[]} An array of bar data.
  */
-function getBars(token) {
+export const getBars = function(token) {
     let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
     let barArray = Object.values(resourceBars);
 
@@ -185,7 +185,7 @@ function getBars(token) {
  */
 function getVisibleBars(token, barsOnly = true) {
     let visibleBars = [];
-    
+
     for (let bar of getBars(token)) {
          // Skip custom bars (can only be set on token)
         if (bar.attribute === "custom") {

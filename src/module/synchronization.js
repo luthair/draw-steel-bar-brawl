@@ -1,4 +1,4 @@
-import { getDefaultBar } from "./rendering.js";
+import { getBars, getDefaultBar } from "./rendering.js";
 
 /**
  * Synchronizes resource bars to and from FoundryVTT's format with Bar Brawl.
@@ -72,10 +72,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
  * @param {Object} newData The data to be merged into the token data.
  */
 export const onUpdateAttributes = function(newData) {
-    let resourceBars = getProperty(this.data, "flags.barbrawl.resourceBars");
-    if (!resourceBars) return;
-
-    let update = Object.values(resourceBars).some(bar => hasProperty(newData, "data." + bar.attribute));
+    let update = getBars(this).some(bar => hasProperty(newData, "data." + bar.attribute));
     if (update) this.drawBars();
 }
 
@@ -91,7 +88,7 @@ export const onChangeBarValue = function(event) {
     if (!this.object) return;
 
     let dataset = event.currentTarget.dataset;
-    let bar = this.object.data.flags.barbrawl.resourceBars[dataset.bar];
+    let bar = getBars(this.object).find(bar => bar.id === dataset.bar);
     if (!bar) return;
 
     // Parse input
