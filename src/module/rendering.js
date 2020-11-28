@@ -187,8 +187,20 @@ function getVisibleBars(token, barsOnly = true) {
     let visibleBars = [];
 
     for (let bar of getBars(token)) {
-         // Skip custom bars (can only be set on token)
-        if (bar.attribute === "custom") {
+        // Don't filter with visibility if we need all resources
+        if (barsOnly) {
+            // Skip never displayed bars
+            if (bar.visibility === CONST.TOKEN_DISPLAY_MODES.NONE) continue;
+    
+            // Skip bars displayed only for the owner if we don't own it
+            if ((bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER
+                || bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER)
+                && !token.owner)
+                continue;
+        }
+        
+         // Add custom bars (can only be set on token)
+         if (bar.attribute === "custom") {
             visibleBars.push(bar);
             continue;
         }
@@ -201,7 +213,7 @@ function getVisibleBars(token, barsOnly = true) {
         bar.max = resource.max;
 
         // Check visibility
-        if (token._canViewMode(bar.visibility)) visibleBars.push(bar);
+        visibleBars.push(bar);
     }
 
     return visibleBars;
@@ -224,6 +236,7 @@ function createResourceBar(token, data, index) {
 
     let height = drawResourceBar(token, bar, data);
     bar.position.set(0, calculatePosition(data.position, height, token.h, index));
+    bar.visible = token._canViewMode(data.visibility);
     return bar;
 }
 

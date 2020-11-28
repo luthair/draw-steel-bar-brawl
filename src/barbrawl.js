@@ -32,6 +32,11 @@ Hooks.on("renderTokenConfig", function(tokenConfig, html, data) {
 
 /** Hook to remove bars and synchronize legacy bars. */
 Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
+	// Always make the bar container visible
+	if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+		newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
+	}
+	
 	// Remove bars that were explicitly set to "None" attribute
 	let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
 	if (changedBars) {
@@ -81,4 +86,16 @@ Hooks.on("updateToken", function(_scene, tokenData, diffData) {
 	// Otherwise, completely redraw all bars
 	token.drawBars();
 	if (token.hasActiveHUD) canvas.tokens.hud.render();
+});
+
+/** Hook to update bar visibility on hover */
+Hooks.on("hoverToken", function(token) {
+	let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars");
+	if (!resourceBars) return;
+
+	let barContainer = token.bars.children;
+	for (let pixiBar of barContainer) {
+		let bar = resourceBars[pixiBar.name];
+		if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
+	}
 });
