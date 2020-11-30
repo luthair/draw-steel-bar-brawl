@@ -17,6 +17,10 @@ For each bar, there are several options:
 - Minimum and maximum **Color** values are interpolated between the two (depending on how full the bar is). The maximum color is also used for the border of the token's HUD inputs.
 - The **Position** can be used to align bars at the top or bottom of the token (facing inwards or outwards).
 
+Each user can globally set how bars are displayed. These options can be found within Foundry's *Configure Settings* menu in the *Modules* category.
+- The **Bar style** determines how the bar itself looks.
+- In order to display a fraction (5 / 10) or a percentage (50%) on the bar, use the **Bar label** setting.
+
 ## Development
 
 Bar Brawl is purely data based, meaning that you can adjust everything by updating via Foundry and expect the changes to be applied automatically. The resource bar object is stored for each token in `Token.data.flags.barbrawl.resourceBars` and has the following format:
