@@ -4,11 +4,14 @@
  */
 
 import { extendBarRenderer, extendTokenConfig, extendTokenHud, redrawBar } from "./module/rendering.js";
+import { registerSettings } from "./module/settings.js";
 import { synchronizeBars } from "./module/synchronization.js";
 
 /** Hook to register settings. */
 Hooks.once('init', async function() {
 	console.log('barbrawl | Initializing barbrawl');
+
+	registerSettings();
 
 	Handlebars.registerHelper("isLinkedBar", function(bar) {
 		return bar.attribute !== "custom";

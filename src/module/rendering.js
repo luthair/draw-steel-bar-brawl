@@ -157,21 +157,118 @@ export const redrawBar = function(token, barData) {
  * @returns {Number} The final height of the bar.
  */
 function drawResourceBar(token, bar, data) {
+    let width = token.w;
     let height = Math.max((canvas.dimensions.size / 12), 8);
     if ( token.data.height >= 2 ) height *= 1.6;  // Enlarge the bar for large tokens
 
     let percentage = Math.clamped(data.value, 0, data.max) / data.max;
     let color = interpolateColor(data.mincolor, data.maxcolor, percentage);
 
+    // Draw the bar itself
+    switch (game.settings.get("barbrawl", "barStyle")) {
+        case "minimal":
+            height -= 2; 
+            drawMinimalBar(bar, width, height, percentage, color);
+            break;
+        case "default":
+            drawDefaultBar(bar, width, height, percentage, color);
+            break;
+        case "large":
+            height += 2;
+            drawLargeBar(bar, width, height, percentage, color);
+            break;
+        default:
+            console.error(`barbrawl | Unknown bar style ${game.settings.get("barbrawl", "barStyle")}.`);
+    }
+
+    // Draw the label (if any)
+    switch (game.settings.get("barbrawl", "textStyle")) {
+        case "none": break;
+        case "fraction":
+            drawBarLabel(bar, width, height, `${data.value} / ${data.max}`);
+            break;
+        case "percent":
+            drawBarLabel(bar, width, height, `${Math.round(percentage * 100)}%`);
+            break;
+        default:
+            console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
+    }
+
+    return height;
+}
+
+/**
+ * Draws a bar using the default style with thick, rounded borders.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Number} width The target width of the bar.
+ * @param {Height} height The target height of the bar.
+ * @param {Number} percentage How far the bar should be filled.
+ * @param {String} color The color to fill the bar with.
+ */
+function drawDefaultBar(bar, width, height, percentage, color) {
     bar.clear()
        .beginFill(0x000000, 0.5)
        .lineStyle(2, 0x000000, 0.9)
-       .drawRoundedRect(0, 0, token.w, height, 3)
+       .drawRoundedRect(0, 0, width, height, 3)
        .beginFill(color, 0.8)
        .lineStyle(1, 0x000000, 0.8)
-       .drawRoundedRect(1, 1, percentage * (token.w - 2), height - 2, 2);
-    
-    return height;
+       .drawRoundedRect(1, 1, percentage * (width - 2), height - 2, 2);
+}
+
+/**
+ * Draws a bar without borders.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Number} width The target width of the bar.
+ * @param {Height} height The target height of the bar.
+ * @param {Number} percentage How far the bar should be filled.
+ * @param {String} color The color to fill the bar with.
+ */
+function drawMinimalBar(bar, width, height, percentage, color) {
+    bar.clear()
+       .beginFill(0x000000, 0.2)
+       .drawRect(0, 0, width, height)
+       .beginFill(color, 0.8)
+       .drawRect(0, 0, percentage * width, height);
+}
+
+/**
+ * Draws a bar with a thin border.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Number} width The target width of the bar.
+ * @param {Height} height The target height of the bar.
+ * @param {Number} percentage How far the bar should be filled.
+ * @param {String} color The color to fill the bar with.
+ * @param {Number} value The current value of the resource.
+ * @param {Number} max The maximum value of the resource.
+ */
+function drawLargeBar(bar, width, height, percentage, color) {
+    bar.clear()
+       .beginFill(0x000000, 0.5)
+       .lineStyle(1, 0x000000, 0.9)
+       .drawRoundedRect(0, 0, width, height, 2)
+       .beginFill(color, 0.8)
+       .lineStyle(0)
+       .drawRoundedRect(0.5, 0.5, percentage * (width - 1), height - 1, 1);
+}
+
+/**
+ * Adds a PIXI.Text object on top of the given graphics object.
+ * @param {PIXI.Graphics} bar The PIXI object to add the text to.
+ * @param {Number} width The width of the bar.
+ * @param {Number} height The height of the bar.
+ * @param {String} text The text to display.
+ */
+function drawBarLabel(bar, width, height, text) {
+    let font = CONFIG.canvasTextStyle.clone();
+    font.fontSize = height;
+
+    let barText = new PIXI.Text(text, font);
+    barText.name = bar.name + "-text";
+    barText.x = width / 2;
+    barText.y = height / 2;
+    barText.anchor.set(0.5);
+    barText.resolution = 1.5;
+    bar.addChild(barText);
 }
 
 /**

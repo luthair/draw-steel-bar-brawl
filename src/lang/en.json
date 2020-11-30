@@ -1,5 +1,19 @@
 {
     "barbrawl": {
+        "barStyle": {
+            "name": "Bar style",
+            "hint": "Changes how bars are displayed.",
+            "minimal": "Minimalistic (slim, no border)",
+            "default": "Foundry default (thick border)",
+            "large": "Large (wide, thin border)"
+        },
+        "textStyle": {
+            "name": "Bar label",
+            "hint": "Changes the number displayed on the bar.",
+            "none": "None",
+            "fraction": "Fraction (value / max)",
+            "percent": "Percentage (%)"
+        },
         "config": {
             "attribute": "Attribute",
             "visibility": "Visibility",

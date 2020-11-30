@@ -1,5 +1,19 @@
 {
     "barbrawl": {
+        "barStyle": {
+            "name": "Bar Stil",
+            "hint": "Verändert, wie die Balken angezeigt werden.",
+            "minimal": "Minimalistisch (dünn, kein Rand)",
+            "default": "Foundry-Standard (dicker Rand)",
+            "numbers": "Groß (breit, dünner Rand)"
+        },
+        "textStyle": {
+            "name": "Bar Beschriftung",
+            "hint": "Ändert die Zahl, die auf dem Balken angezeigt wird.",
+            "none": "Keine",
+            "fraction": "Bruch (Wert / Max.)",
+            "percent": "Prozent (%)"
+        },
         "config": {
             "attribute": "Attribut",
             "visibility": "Sichtbarkeit",
