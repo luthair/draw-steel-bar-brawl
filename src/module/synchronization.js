@@ -1,4 +1,4 @@
-import { getBars, getDefaultBar } from "./rendering.js";
+import { getBars, getDefaultBar } from "./api.js";
 
 /**
  * Synchronizes resource bars to and from FoundryVTT's format with Bar Brawl.
