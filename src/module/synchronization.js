@@ -66,7 +66,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
 }
 
 /**
- * Checks the given data for any attributes that have a resource barand redraws
+ * Checks the given data for any attributes that have a resource bar and redraws
  *  the bars if any are found.
  * @constant {Token} this The token that this function is called on.
  * @param {Object} newData The data to be merged into the token data.

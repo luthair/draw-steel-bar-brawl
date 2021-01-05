@@ -3,11 +3,19 @@ import { getBars, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
 
 /**
  * Extends the original Token.drawBars() with custom bar rendering. 
- *  The original function is not called.
+ *  The original function is not called. If available, the libWrapper module is
+ *  used for better compatibility.
  */
-export const extendBarRenderer = function() {  
-    Token.prototype.drawBars = drawBrawlBars;
-    Token.prototype._onUpdateBarAttributes = onUpdateAttributes;
+export const extendBarRenderer = function() {
+    if(game.modules.get("lib-wrapper")?.active) {
+        // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
+        libWrapper.register("barbrawl", "Token.prototype.drawBars", drawBrawlBars, "OVERRIDE");
+        libWrapper.register("barbrawl", "Token.prototype._onUpdateBarAttributes", onUpdateAttributes, "OVERRIDE");
+    } else {
+        // Manual override
+        Token.prototype.drawBars = drawBrawlBars;
+        Token.prototype._onUpdateBarAttributes = onUpdateAttributes;
+    }
 }
 
 /**
