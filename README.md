@@ -16,10 +16,12 @@ For each bar, there are several options:
 - The current and maximum **Value** fields show the used numbers and can be changed for custom bars.
 - Minimum and maximum **Color** values are interpolated between the two (depending on how full the bar is). The maximum color is also used for the border of the token's HUD inputs.
 - The **Position** can be used to align bars at the top or bottom of the token (facing inwards or outwards).
+- The upper and lower **Limits** may be disabled to allow setting values below 0 or above the maximum.
+- You can also **Invert values** so that higher values will be displayed as a lower percentage.
 
 Each user can globally set how bars are displayed. These options can be found within Foundry's *Configure Settings* menu in the *Modules* category.
 - The **Bar style** determines how the bar itself looks.
-- In order to display a fraction (5 / 10) or a percentage (50%) on the bar, use the **Bar label** setting.
+- In order to display a fraction (5 / 10) or a percentage (50%) on the bar, use the **Bar label** setting. This can be overriden for each bar by the GM.
 
 ## Development
 
@@ -30,17 +32,21 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
     "aBarId": {
         id: "aBarId",
         attribute: "custom",
+        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
         value: 5,
         max: 5,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
         position: "bottom-inner",
-        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+        style: "user",
+        ignoreMin: false,
+        ignoreMax: false,
+        invert: false
     }
 }
 ```
 
-Valid positions are "bottom-inner", "bottom-outer", "top-inner" and "top-outer". The visibility can be any of the standard Foundry display modes (`CONST.TOKEN_DISPLAY_MODES`). Both colors are HTML color strings. The attribute is a string representing the data path of the target attribute, relative to the actor's data (for examples, open the attribute menu through the UI configuration). Unlinked bars have the attribute "custom" and additionally contain number fields for the current and maximum value.
+Valid positions are "bottom-inner", "bottom-outer", "top-inner" and "top-outer". Valid styles are "user", "none", "fraction" and "percent" - this overrides the user setting, so you should generally prefer the "user" mode. The visibility can be any of the standard Foundry display modes (`CONST.TOKEN_DISPLAY_MODES`). Both colors are HTML color strings. The fields "ignoreMin" and "ignoreMax" are boolean flags that disable clamping of the bar's value. The attribute is a string representing the data path of the target attribute, relative to the actor's data (for examples, open the attribute menu through the UI configuration). Unlinked bars have the attribute "custom" and additionally contain number fields for the current and maximum value.
 
 Bar Brawl also attempts to synchronize Foundry's default "bar1" and "bar2" properties. This means that these two strings are special IDs and should not be used unless you intend to maintain compatibility with a module using Foundry bars.
 
@@ -56,11 +62,11 @@ let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars");
 if (!resourceBars) return [];
 return Object.values(resourceBars).map(bar => {
     if (bar.attribute === "custom") return bar.value;
-    return token.getBarAttribute(null, { alternative: bar.attribute }).value
+    return token.getBarAttribute(null, { alternative: bar.attribute }).value;
 });
 ```
 
-Note that the values are only kept current for custom bars, which means that for any other attribute you have to resolve the value and its maximum yourself.
+Note that the values are only kept current for custom bars, which means that for any other attribute you have to resolve the value and its maximum yourself. When getting the maximum value, consider that the bar configuration may set a value that is not reflected on the resource (to display it as a bar even though it isn't).
 
 ### Spawn tokens with a custom bar
 
@@ -83,6 +89,8 @@ Hooks.on("preCreateToken", function(_scene, data) {
 
 **Important**: When creating your own bar ID, make sure that it starts with a letter to ensure HTML4 compatibility. For example, `randomID()` can create IDs that end up causing problems, so you should use something like `'b' + randomID()` instead.
 
+Each user (with the appropriate permissions) may store his/her own default resource configuration that will override the previous hooks.
+
 ### Remove a bar
 
 In order to get rid of a bar, either use Foundry's `-=key` syntax or set the attribute to an empty string.
@@ -103,3 +111,5 @@ Simply fetch the bar from the data and update its value property:
 let barId = "b" + randomID(); // ID of the bar you intend to modify
 token.update({ [`flags.barbrawl.resourceBars.${barId}.value`]: 5 });
 ```
+
+This will not apply clamping, so whatever you set here is final.
