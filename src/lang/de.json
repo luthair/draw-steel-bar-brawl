@@ -15,6 +15,11 @@
             "fraction": "Bruch (Wert / Max.)",
             "percent": "Prozent (%)"
         },
+        "reset": {
+            "name": "Standards zurücksetzen",
+            "hint": "Setzt die Standardeinstellungen für Token-Ressourcen zurück.",
+            "button": "Zurücksetzen"
+        },
         "config": {
             "attribute": "Attribut",
             "visibility": "Sichtbarkeit",
@@ -37,6 +42,9 @@
             "bottom-inner": "Unten (innen)",
             "bottom-outer": "Unten (außen)"
         },
-        "add": "Ressource hinzufügen"
+        "add": "Ressource hinzufügen",
+        "save": "Als Standard speichern",
+        "saveConfirmation": "Standard-Ressourcen gespeichert.",
+        "resetConfirmation": "Standard-Ressourcen zurückgesetzt."
     }
 }

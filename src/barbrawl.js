@@ -102,3 +102,15 @@ Hooks.on("hoverToken", function(token) {
 		if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
 	}
 });
+
+/** Hook to initialize tokens with default bars. */
+Hooks.on("preCreateToken", function(_scene, data) {
+    const barConfig = game.settings.get("barbrawl", "defaultResources");
+    if (!barConfig || Object.keys(barConfig).length === 0) return;
+
+    if (hasProperty(data, "flags.barbrawl.resourceBars")) {
+        console.warn("barbrawl | Overriding existing resource bar configuration with user defaults.");
+    }
+
+    setProperty(data, "flags.barbrawl.resourceBars", barConfig);
+});

@@ -15,6 +15,11 @@
             "fraction": "Fraction (value / max)",
             "percent": "Percentage (%)"
         },
+        "reset": {
+            "name": "Reset defaults",
+            "hint": "Clears the default token resource configuration.",
+            "button": "Reset"
+        },
         "config": {
             "attribute": "Attribute",
             "visibility": "Visibility",
@@ -37,6 +42,9 @@
             "bottom-inner": "Bottom (inside)",
             "bottom-outer": "Bottom (outside)"
         },
-        "add": "Add resource"
+        "add": "Add resource",
+        "save": "Save as default",
+        "saveConfirmation": "Saved default token resources.",
+        "resetConfirmation": "Default token resources reset."
     }
 }

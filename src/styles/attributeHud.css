@@ -7,5 +7,19 @@
 }
 
 .token-sheet .tab[data-tab="resources"] {
-    min-height: 331px;
+    min-height: 360px;
+}
+
+button.brawlbar {
+    line-height: 24px;
+    width: 90%;
+    margin-left: 5%;
+}
+
+button.brawlbar.save {
+    margin-bottom: 5px;
+}
+
+form .form-group .form-fields button.barbrawl-reset {
+    flex: 1;
 }

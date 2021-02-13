@@ -35,7 +35,8 @@ export const extendTokenConfig = async function(tokenConfig, html, data) {
     resourceTab.append(barConfiguration);
     adjustConfigHeight(html, data.brawlBars.length - 1);
 
-    html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
+    html.find(".brawlbar.add").click(event => onAddResource(event, tokenConfig, data));
+    html.find(".brawlbar.save").click(event => onSaveDefaults(tokenConfig));
     html.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
 }
 
@@ -90,7 +91,26 @@ async function onAddResource(event, tokenConfig, data) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
         adjustConfigHeight(tokenConfig.element, 1);
     }
-    addButton.before(barConfiguration[2]);
+    addButton.before(barConfiguration[0]);
+}
+
+/**
+ * Handles a save button click by storing the current resource configuration in
+ *  the user configuration.
+ * @param {TokenConfig} tokenConfig The token configuration object.
+ */
+async function onSaveDefaults(tokenConfig) {
+    const html = tokenConfig.element;
+    if (!html?.length) return;
+
+    const formData = tokenConfig._getSubmitData();
+    let data = {};
+    for (let [key, value] of Object.entries(formData)) {
+        if (key.startsWith("flags.barbrawl")) data[key] = value;
+    }
+    
+    await game.settings.set("barbrawl", "defaultResources", expandObject(data).flags.barbrawl.resourceBars);
+    ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
 }
 
 /**
