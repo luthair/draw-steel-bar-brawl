@@ -44,10 +44,10 @@ export const getVisibleBars = function(token, barsOnly = true) {
 
         // Update resource values
         let resource = token.getBarAttribute(null, { alternative: bar.attribute?.toString() });
-        if (!resource || (barsOnly && resource.type !== "bar")) continue;
+        if (!resource || (barsOnly && resource.type !== "bar" && !bar.max)) continue;
 
         bar.value = resource.value;
-        bar.max = resource.max;
+        bar.max = resource.max ?? bar.max;
 
         // Check visibility
         visibleBars.push(bar);

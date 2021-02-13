@@ -10,8 +10,8 @@ export const synchronizeBars = function(tokenData, newData) {
     let hasBrawlBars = hasProperty(newData, "flags.barbrawl.resourceBars");
 
     if (hasBrawlBars) {
-        synchronizeBrawlBar("bar1", newData);
-        synchronizeBrawlBar("bar2", newData);
+        synchronizeBrawlBar("bar1", tokenData, newData);
+        synchronizeBrawlBar("bar2", tokenData, newData);
     }
 
     if (hasLegacyBars) {
@@ -25,11 +25,12 @@ export const synchronizeBars = function(tokenData, newData) {
 /**
  * Merges the state of a changed Bar Brawl resource bar into FoundryVTT.
  * @param {String} barId The name of the bar to synchronize.
+ * @param {Object} tokenData The data to merge the new data into.
  * @param {Object} newData The data to be merged into the token data.
  */
-function synchronizeBrawlBar(barId, newData) {
+function synchronizeBrawlBar(barId, tokenData, newData) {
     let brawlBarData = newData.flags.barbrawl.resourceBars[barId];
-    if (brawlBarData) {
+    if (brawlBarData && !tokenData[barId]?.attribute) {
         newData[barId] = { attribute: brawlBarData.attribute };
     } else if (newData.flags.barbrawl.resourceBars["-=" + barId] === null) {
         newData[barId] = { attribute: "" };

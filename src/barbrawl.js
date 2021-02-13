@@ -74,7 +74,7 @@ Hooks.on("updateToken", function(_scene, tokenData, diffData) {
 	let changedBarIds = Object.keys(changedBars);
 	if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
 		let changedData = changedBars[changedBarIds[0]];
-		if (!changedData.position && !changedData.id) {
+		if (!changedData.position && !changedData.id && !("max" in changedData)) {
 			redrawBar(token, tokenData.flags.barbrawl.resourceBars[changedBarIds[0]]);
 
 			// Update HUD

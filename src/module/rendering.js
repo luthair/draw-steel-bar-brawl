@@ -53,11 +53,20 @@ function onChangeBarAttribute(event) {
         if (maxInput.value === "") maxInput.value = valueInput.value;
     } else {
         valueInput.setAttribute("disabled", "");
-        maxInput.setAttribute("disabled", "");
 
         let resource = this.object.getBarAttribute(null, {alternative: event.target.value});
-        valueInput.value = resource !== null ? resource.value : "";
-        maxInput.value = ((resource !== null) && (resource.type === "bar")) ? resource.max : "";
+        if (resource === null) {
+            valueInput.value = maxInput.value = "";
+            maxInput.setAttribute("disabled", "");
+        } else if (resource.type === "bar") {
+            valueInput.value = resource.value;
+            maxInput.value = resource.max;
+            maxInput.setAttribute("disabled", "");
+        } else {
+            valueInput.value = resource.value;
+            maxInput.value = "";
+            maxInput.removeAttribute("disabled");
+        }
     }
 }
 
@@ -74,9 +83,11 @@ async function onAddResource(event, tokenConfig, data) {
 
     let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.html", data));
     barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
-    if (htmlBars.length > 0) htmlBars[htmlBars.length - 1].removeAttribute("open");
+    if (htmlBars.length > 0) {
+        htmlBars[htmlBars.length - 1].removeAttribute("open");
+        adjustConfigHeight(tokenConfig.element, 1);
+    }
     addButton.before(barConfiguration[2]);
-    adjustConfigHeight(tokenConfig.element, 1);
 }
 
 /**
