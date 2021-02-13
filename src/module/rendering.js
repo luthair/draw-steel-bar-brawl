@@ -28,8 +28,11 @@ export const extendBarRenderer = function() {
 export const extendTokenConfig = async function(tokenConfig, html, data) {
     data.brawlBars = getBars(tokenConfig.object);
 
-	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
-    html.find("div[data-tab='resources']").html(barConfiguration);
+    let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
+
+    const resourceTab = html.find("div[data-tab='resources']");
+    resourceTab.find("div.form-fields").parent().remove();
+    resourceTab.append(barConfiguration);
     adjustConfigHeight(html, data.brawlBars.length - 1);
 
     html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
