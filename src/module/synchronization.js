@@ -1,11 +1,40 @@
 import { getBars, getDefaultBar } from "./api.js";
 
 /**
+ * Prepares the update of a token (or a prototype token) by removing invalid
+ *  resources and synchronizing with FoundryVTT's resource format.
+ * @param {Object} tokenData The data to merge the new data into.
+ * @param {Object} newData The data to be merged into the token data.
+ */
+export const prepareUpdate = function (tokenData, newData) {
+    // Always make the bar container visible
+    if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+        newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
+    }
+
+    // Remove bars that were explicitly set to "None" attribute
+    let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
+    if (changedBars) {
+        for (let barId of Object.keys(changedBars)) {
+            if (barId.startsWith("-=")) continue; // Already queued for removal
+
+            let bar = changedBars[barId];
+            if (bar.attribute === "") {
+                delete changedBars[barId];
+                changedBars["-=" + barId] = null;
+            }
+        }
+    }
+
+    synchronizeBars(tokenData, newData);
+}
+
+/**
  * Synchronizes resource bars to and from FoundryVTT's format with Bar Brawl.
  * @param {Object} tokenData The data to merge the new data into.
  * @param {Object} newData The data to be merged into the token data.
  */
-export const synchronizeBars = function(tokenData, newData) {
+function synchronizeBars(tokenData, newData) {
     let hasLegacyBars = newData.hasOwnProperty("bar1") || newData.hasOwnProperty("bar2");
     let hasBrawlBars = hasProperty(newData, "flags.barbrawl.resourceBars");
 

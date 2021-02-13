@@ -5,7 +5,7 @@
 
 import { extendBarRenderer, extendTokenConfig, extendTokenHud, redrawBar } from "./module/rendering.js";
 import { registerSettings } from "./module/settings.js";
-import { synchronizeBars } from "./module/synchronization.js";
+import { prepareUpdate } from "./module/synchronization.js";
 
 /** Hook to register settings. */
 Hooks.once('init', async function() {
@@ -35,26 +35,13 @@ Hooks.on("renderTokenConfig", function(tokenConfig, html, data) {
 
 /** Hook to remove bars and synchronize legacy bars. */
 Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
-	// Always make the bar container visible
-	if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
-		newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
-	}
-	
-	// Remove bars that were explicitly set to "None" attribute
-	let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
-	if (changedBars) {
-		for (let barId of Object.keys(changedBars)) {
-			if (barId.startsWith("-=")) continue; // Already queued for removal
+    prepareUpdate(tokenData, newData);
+});
 
-			let bar = changedBars[barId];
-			if (bar.attribute === "") {
-				delete changedBars[barId];
-				changedBars["-=" + barId] = null;
-			}
-		}
-	}
-
-	synchronizeBars(tokenData, newData);
+/** Hook to apply changes to the prototype token. */
+Hooks.on("preUpdateActor", function(actor, newData) {
+    if (!hasProperty(newData, "token.flags.barbrawl.resourceBars")) return;
+    prepareUpdate(actor.data.token, newData.token);
 });
 
 /** Hook to update bars. */
