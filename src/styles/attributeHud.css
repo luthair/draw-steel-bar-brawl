@@ -10,6 +10,10 @@
     min-height: 360px;
 }
 
+.token-sheet .tab[data-tab="resources"] label {
+    white-space: nowrap;
+}
+
 button.brawlbar {
     line-height: 24px;
     width: 90%;
