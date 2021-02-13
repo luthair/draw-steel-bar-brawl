@@ -5,3 +5,7 @@
     margin: 2px;
     min-width: 40px;
 }
+
+.token-sheet .tab[data-tab="resources"] {
+    min-height: 301px;
+}

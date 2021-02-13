@@ -26,10 +26,12 @@ export const extendBarRenderer = function() {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function(tokenConfig, html, data) {
-    data["brawlBars"] = getBars(tokenConfig.object);
+    data.brawlBars = getBars(tokenConfig.object);
 
 	let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
     html.find("div[data-tab='resources']").html(barConfiguration);
+    adjustConfigHeight(html, data.brawlBars.length - 1);
+
     html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     html.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
 }
@@ -74,6 +76,19 @@ async function onAddResource(event, tokenConfig, data) {
     barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
     if (htmlBars.length > 0) htmlBars[htmlBars.length - 1].removeAttribute("open");
     addButton.before(barConfiguration[2]);
+    adjustConfigHeight(tokenConfig.element, 1);
+}
+
+/**
+ * Adjusts the height of the given container to account for additional bar
+ *  configuration sections.
+ * @param {jQuery.Element} html The JQuery element of the token configuration.
+ * @param {number} additionalBars The number of additional bars to account for.
+ */
+function adjustConfigHeight(html, additionalBars) {
+    if (additionalBars <= 0) return;
+    const height = parseInt(html.css("height"), 10);
+    html.css("height", (additionalBars * 17) + height + "px");
 }
 
 /**
