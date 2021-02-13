@@ -9,8 +9,8 @@
             <div class="form-fields">
                 <select class="brawlbar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
                     {{#select this.attribute}}
-                    <option value="">None</option>
-                    <option value="custom">Custom</option>
+                    <option value="">{{localize "barbrawl.attribute.none"}}</option>
+                    <option value="custom">{{localize "barbrawl.attribute.custom"}}</option>
                     {{#each ../barAttributes as |attrs label|}}
                     <optgroup label="{{ localize label }}">
                         {{#each attrs}}
@@ -77,6 +77,17 @@
                     <option value="percent">{{localize "barbrawl.textStyle.percent"}}</option>
                     {{/select}}
                 </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.ignoreLimits"}}:</label>
+            <div class="form-fields">
+                <input id="ignoreMin" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if this.ignoreMin}}checked{{/if}}/>
+                <label for="ignoreMin">{{localize "barbrawl.config.ignoreMin"}}</label>
+                <span class="sep" style="margin-right: 7px;">-</span>
+                <input id="ignoreMax" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if this.ignoreMax}}checked{{/if}}/>
+                <label for="ignoreMax">{{localize "barbrawl.config.ignoreMax"}}</label>
             </div>
         </div>
     </div>

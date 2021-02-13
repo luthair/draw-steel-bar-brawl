@@ -83,6 +83,8 @@ export const getDefaultBar = function(id, attribute) {
         maxcolor: "#FFFFFF",
         position: "bottom-inner",
         style: "user",
+        ignoreMin: false,
+        ignoreMax: false,
     }
 
     if (attribute === "custom") {
@@ -94,9 +96,10 @@ export const getDefaultBar = function(id, attribute) {
         defaultBar.mincolor = "#FF0000";
         defaultBar.maxcolor = "#80FF00";
     } else if (id === "bar2") {
+        defaultBar.position = "top-inner";
         defaultBar.mincolor = "#000080";
         defaultBar.maxcolor = "#80B3FF";
-        defaultBar.position = "top-inner";
+        defaultBar.ignoreMax = true;
     }
 
     return defaultBar;

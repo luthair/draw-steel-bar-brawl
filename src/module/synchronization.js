@@ -10,8 +10,8 @@ export const synchronizeBars = function(tokenData, newData) {
     let hasBrawlBars = hasProperty(newData, "flags.barbrawl.resourceBars");
 
     if (hasBrawlBars) {
-        synchronizeBrawlBar("bar1", tokenData, newData);
-        synchronizeBrawlBar("bar2", tokenData, newData);
+        synchronizeBrawlBar("bar1", newData);
+        synchronizeBrawlBar("bar2", newData);
     }
 
     if (hasLegacyBars) {
@@ -25,12 +25,11 @@ export const synchronizeBars = function(tokenData, newData) {
 /**
  * Merges the state of a changed Bar Brawl resource bar into FoundryVTT.
  * @param {String} barId The name of the bar to synchronize.
- * @param {Object} tokenData The data to merge the new data into.
  * @param {Object} newData The data to be merged into the token data.
  */
-function synchronizeBrawlBar(barId, tokenData, newData) {
+function synchronizeBrawlBar(barId, newData) {
     let brawlBarData = newData.flags.barbrawl.resourceBars[barId];
-    if (brawlBarData && !tokenData[barId]?.attribute) {
+    if (brawlBarData?.attribute) {
         newData[barId] = { attribute: brawlBarData.attribute };
     } else if (newData.flags.barbrawl.resourceBars["-=" + barId] === null) {
         newData[barId] = { attribute: "" };
@@ -79,8 +78,6 @@ export const onUpdateAttributes = function(newData) {
 
 /**
  * Handles a resource input change event by updating the associated attribute.
- *  This is essentially a variant of Foundry's _onAttributeUpdate function which
- *  we can not use because of its inflexible design.
  * @constant {TokenHUD} this The token HUD that this function is bound to.
  * @param {jQuery.Event} event The event of the input change.
  */
@@ -88,26 +85,42 @@ export const onChangeBarValue = function(event) {
     event.preventDefault();
     if (!this.object) return;
 
-    let dataset = event.currentTarget.dataset;
-    let bar = getBars(this.object).find(bar => bar.id === dataset.bar);
+    // Fetch the bar data.
+    const dataset = event.currentTarget.dataset;
+    const bar = getBars(this.object).find(bar => bar.id === dataset.bar);
     if (!bar) return;
 
-    // Parse input
+    // Resolve the resource if needed.
+    const actor = this.object.actor;
+    const useToken = bar.attribute === "custom" || !actor;
+    let resource = useToken ? null : this.object.getBarAttribute(null, { alternative: bar.attribute });
+
+    // Parse input value.
     let stringValue = event.currentTarget.value.trim();
     let isDelta = stringValue.startsWith("+") || stringValue.startsWith("-");
     if (stringValue.startsWith("=")) stringValue = stringValue.slice(1);
     let value = Number(stringValue);
 
-    let actor = this.object.actor;
-    if (bar.attribute === "custom" || !actor) {
-        // Update the token for custom values or unlinked tokens
-        value = Math.clamped(0, isDelta ? bar.value + value : value, bar.max ?? Number.MAX_VALUE);
-        this.object.update({ [`flags.barbrawl.resourceBars.${bar.id}.value`]: value });
-    } else {
-        // Otherwise, update the actor
-        let resource = this.object.getBarAttribute(null, { alternative: bar.attribute });
-        actor.modifyTokenAttribute(resource.attribute, value, isDelta, resource.type === "bar");
+    // Resolve and add current value for delta inputs.
+    if (isDelta) {
+        let currentValue;
+        if (actor) {
+            const current = getProperty(actor.data.data, resource.attribute);
+            currentValue = resource.type === "bar" ? current.value : current;
+        } else {
+            currentValue = bar.value ?? 0;
+        }
+
+        value = currentValue + value;
     }
+
+    // Clamp value unless explicitly disabled.
+    if (!bar.ignoreMin) value = Math.max(0, value);
+    if (!bar.ignoreMax && bar.max) value = Math.min(bar.max, value);
+
+    // Update the token for custom values or unlinked tokens.
+    if (useToken) this.object.update({ [`flags.barbrawl.resourceBars.${bar.id}.value`]: value });
+    else actor.modifyTokenAttribute(resource.attribute, value, false, resource.type === "bar");
 
     // Clear the HUD
     this.clear();
