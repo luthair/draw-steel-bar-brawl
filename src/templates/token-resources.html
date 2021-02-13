@@ -65,6 +65,20 @@
                 </select>
             </div>
         </div>
+        
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.style"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.style">
+                    {{#select this.style}}
+                    <option value="user">{{localize "barbrawl.textStyle.user"}}</option>
+                    <option value="none">{{localize "barbrawl.textStyle.none"}}</option>
+                    <option value="fraction">{{localize "barbrawl.textStyle.fraction"}}</option>
+                    <option value="percent">{{localize "barbrawl.textStyle.percent"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
     </div>
 </details>
 {{/each}}

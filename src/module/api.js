@@ -78,10 +78,11 @@ export const getDefaultBar = function(id, attribute) {
     let defaultBar = {
         id: id,
         attribute: attribute,
+        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
         position: "bottom-inner",
-        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+        style: "user",
     }
 
     if (attribute === "custom") {

@@ -10,6 +10,7 @@
         "textStyle": {
             "name": "Bar Beschriftung",
             "hint": "Ändert die Zahl, die auf dem Balken angezeigt wird.",
+            "user": "Benutzereinstellung",
             "none": "Keine",
             "fraction": "Bruch (Wert / Max.)",
             "percent": "Prozent (%)"
@@ -19,7 +20,8 @@
             "visibility": "Sichtbarkeit",
             "value": "Wert (aktuell/max)",
             "color": "Farbe (min/max)",
-            "position": "Position"
+            "position": "Position",
+            "style": "Beschriftung",
         },
         "position": {
             "top-inner": "Oben (innen)",

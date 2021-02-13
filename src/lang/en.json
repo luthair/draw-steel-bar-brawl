@@ -10,6 +10,7 @@
         "textStyle": {
             "name": "Bar label",
             "hint": "Changes the number displayed on the bar.",
+            "user": "User default",
             "none": "None",
             "fraction": "Fraction (value / max)",
             "percent": "Percentage (%)"
@@ -19,7 +20,8 @@
             "visibility": "Visibility",
             "value": "Value (current/max)",
             "color": "Color (min/max)",
-            "position": "Position"
+            "position": "Position",
+            "style": "Label",
         },
         "position": {
             "top-inner": "Top (inside)",
