@@ -8,9 +8,39 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"problemMatcher": [],
 			"label": "npm: build",
 			"detail": "gulp build && gulp link"
+		},
+		{
+			"type": "gulp",
+			"task": "buildLess",
+			"presentation": {
+				"reveal": "never"
+			}
+		},
+		{
+			"label": "watch: enable",
+			"type": "shell",
+			"command": "${command:triggerTaskOnSave.enable}"
+		},
+		{
+			"label": "watch: disable",
+			"type": "shell",
+			"command": "${command:triggerTaskOnSave.disable}"
+		},
+		{
+			"label": "watch: reload",
+			"type": "shell",
+			"command": "${command:launches.fvtt-debug}"
+		},
+		{
+			"label": "watch: less",
+			"type": "shell",
+			"command": "${command:launches.fvtt-debug}",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"gulp: buildLess"
+			]
 		}
 	]
 }

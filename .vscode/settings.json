@@ -1,0 +1,23 @@
+{
+    "debug.javascript.usePreview": false,
+    "triggerTaskOnSave.tasks": {
+        "watch: reload": [
+            "src/**/*.js",
+            "src/**/*.html",
+            "src/**/*.css"
+        ],
+        "watch: less": [
+            "src/styles/*.less"
+        ]
+    },
+    "triggerTaskOnSave.showStatusBarToggle": true,
+    "launches": {
+        "fvtt-debug": "FoundryVTT"
+    },
+    "launch-config.ifDebugSessionRunning": "restart",
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications"
+}
