@@ -25,6 +25,7 @@
             "ignoreLimits": "Limits ignorieren",
             "ignoreMin": "Untergrenze",
             "ignoreMax": "Obergrenze",
+            "invert": "Werte umkehren"
         },
         "attribute": {
             "none": "Keins (entfernen)",

@@ -195,7 +195,8 @@ function drawResourceBar(token, bar, data) {
     let height = Math.max((canvas.dimensions.size / 12), 8);
     if ( token.data.height >= 2 ) height *= 1.6;  // Enlarge the bar for large tokens
 
-    let percentage = Math.clamped(data.value, 0, data.max) / data.max;
+    const baseValue = data.invert ? data.max - data.value : data.value;
+    let percentage = Math.clamped(baseValue, 0, data.max) / data.max;
     let color = interpolateColor(data.mincolor, data.maxcolor, percentage);
 
     // Draw the bar itself

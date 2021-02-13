@@ -25,6 +25,7 @@
             "ignoreLimits": "Ignore limits",
             "ignoreMin": "Lower limit",
             "ignoreMax": "Upper limit",
+            "invert": "Invert values"
         },
         "attribute": {
             "none": "None (remove)",

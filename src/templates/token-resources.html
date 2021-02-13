@@ -90,6 +90,14 @@
                 <label for="ignoreMax">{{localize "barbrawl.config.ignoreMax"}}</label>
             </div>
         </div>
+
+        <div class="form-group">
+            <label for="invert">{{localize "barbrawl.config.invert"}}:</label>
+            <div class="form-fields">
+                <input id="invert" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.invert" {{#if
+                    this.invert}}checked{{/if}} />
+            </div>
+        </div>
     </div>
 </details>
 {{/each}}

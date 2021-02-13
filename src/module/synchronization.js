@@ -104,11 +104,11 @@ export const onChangeBarValue = function(event) {
     // Resolve and add current value for delta inputs.
     if (isDelta) {
         let currentValue;
-        if (actor) {
+        if (useToken) {
+            currentValue = bar.value ?? 0;
+        } else {
             const current = getProperty(actor.data.data, resource.attribute);
             currentValue = resource.type === "bar" ? current.value : current;
-        } else {
-            currentValue = bar.value ?? 0;
         }
 
         value = currentValue + value;
