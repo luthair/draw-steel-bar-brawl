@@ -23,15 +23,6 @@
         </div>
     
         <div class="form-group">
-            <label>{{localize "barbrawl.config.visibility"}}:</label>
-            <div class="form-fields">
-                <select name="flags.barbrawl.resourceBars.{{this.id}}.visibility" data-dtype="Number">
-                    {{selectOptions ../displayModes selected=this.visibility }}
-                </select>
-            </div>
-        </div>
-    
-        <div class="form-group">
             <label>{{localize "barbrawl.config.value"}}:</label>
             <div class="form-fields">
                 <input type="number" class="{{this.id}}-value" name="flags.barbrawl.resourceBars.{{this.id}}.value" value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}}/>
@@ -48,6 +39,15 @@
                 <span class="sep">-</span>
                 <input class="color" style="min-width: 64px;" type="text" name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"/>
                 <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.visibility"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.visibility" data-dtype="Number">
+                    {{selectOptions ../displayModes selected=this.visibility }}
+                </select>
             </div>
         </div>
         
@@ -86,7 +86,7 @@
                     <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if this.ignoreMin}}checked{{/if}} />
                     <span>{{localize "barbrawl.config.ignoreMin"}}</span>
                 </label>
-                <span class="sep" style="margin-right: 7px;">-</span>
+                <span class="sep" style="margin: 0;">-</span>
                 <label>
                     <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if this.ignoreMax}}checked{{/if}} />
                     <span>{{localize "barbrawl.config.ignoreMax"}}</span>
