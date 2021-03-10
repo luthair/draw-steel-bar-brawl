@@ -6,10 +6,6 @@
     min-width: 40px;
 }
 
-.token-sheet .tab[data-tab="resources"] {
-    min-height: 360px;
-}
-
 .token-sheet .tab[data-tab="resources"] label {
     white-space: nowrap;
 }

@@ -89,8 +89,8 @@ async function onAddResource(event, tokenConfig, data) {
     barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
     if (htmlBars.length > 0) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
-        adjustConfigHeight(tokenConfig.element, 1);
     }
+    adjustConfigHeight(tokenConfig.element, 1);
     addButton.before(barConfiguration[0]);
 }
 
@@ -122,7 +122,7 @@ async function onSaveDefaults(tokenConfig) {
 function adjustConfigHeight(html, additionalBars) {
     if (additionalBars <= 0) return;
     const height = parseInt(html.css("height"), 10);
-    html.css("height", (additionalBars * 17) + height + "px");
+    html.css("height", (additionalBars * 17) + Math.max(height, 465) + "px");
 }
 
 /**
