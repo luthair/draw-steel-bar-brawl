@@ -28,7 +28,7 @@ export const extendBarRenderer = function() {
 export const extendTokenConfig = async function(tokenConfig, html, data) {
     data.brawlBars = getBars(tokenConfig.object);
 
-    let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
+    const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
     const resourceTab = html.find("div[data-tab='resources']");
     resourceTab.find("div.form-fields").parent().remove();
@@ -37,7 +37,7 @@ export const extendTokenConfig = async function(tokenConfig, html, data) {
 
     html.find(".brawlbar.add").click(event => onAddResource(event, tokenConfig, data));
     html.find(".brawlbar.save").click(event => onSaveDefaults(tokenConfig));
-    html.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
+    html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig));
 }
 
 /**
@@ -81,17 +81,16 @@ function onChangeBarAttribute(event) {
  * @param {Object} data The data of the token configuration.
  */
 async function onAddResource(event, tokenConfig, data) {
-    let addButton = $(event.currentTarget);
-    let htmlBars = addButton.siblings("details");
+    const addButton = $(event.currentTarget);
+    const htmlBars = addButton.siblings("details");
     data["brawlBars"] = [getDefaultBar(getNewBarId(htmlBars), "custom")];
 
-    let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data));
-    barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
+    const barConfiguration = await renderTemplate("modules/barbrawl/templates/bar-config.hbs", data);
     if (htmlBars.length > 0) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
     }
     adjustConfigHeight(tokenConfig.element, 1);
-    addButton.before(barConfiguration[0]);
+    addButton.before(barConfiguration);
 }
 
 /**

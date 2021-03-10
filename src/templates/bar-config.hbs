@@ -1,0 +1,114 @@
+{{#each brawlBars}}
+<details {{#if @last}}open{{/if}}>
+    <summary>{{this.attribute}}</summary>
+    <div id="bar.id">
+        <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.id" value="{{this.id}}" />
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.attribute"}}:</label>
+            <div class="form-fields">
+                <select class="brawlbar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
+                    {{#select this.attribute}}
+                    <option value="">{{localize "barbrawl.attribute.none"}}</option>
+                    <option value="custom">{{localize "barbrawl.attribute.custom"}}</option>
+                    {{#each ../barAttributes as |attrs label|}}
+                    <optgroup label="{{ localize label }}">
+                        {{#each attrs}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </optgroup>
+                    {{/each}}
+                    {{/select}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.value"}}:</label>
+            <div class="form-fields">
+                <input type="number" class="{{this.id}}-value" name="flags.barbrawl.resourceBars.{{this.id}}.value"
+                    value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}} />
+                <span class="sep">/</span>
+                <input type="number" class="{{this.id}}-max" name="flags.barbrawl.resourceBars.{{this.id}}.max"
+                    value="{{this.max}}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.color"}}:</label>
+            <div class="form-fields">
+                <input class="color" style="min-width: 64px;" type="text"
+                    name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}" />
+                <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.mincolor"
+                    value="{{this.mincolor}}">
+                <span class="sep">-</span>
+                <input class="color" style="min-width: 64px;" type="text"
+                    name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}" />
+                <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.maxcolor"
+                    value="{{this.maxcolor}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.visibility"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.visibility" data-dtype="Number">
+                    {{selectOptions ../displayModes selected=this.visibility }}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.position"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.position">
+                    {{#select this.position}}
+                    <option value="top-inner">{{localize "barbrawl.position.top-inner"}}</option>
+                    <option value="top-outer">{{localize "barbrawl.position.top-outer"}}</option>
+                    <option value="bottom-inner">{{localize "barbrawl.position.bottom-inner"}}</option>
+                    <option value="bottom-outer">{{localize "barbrawl.position.bottom-outer"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.style"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.style">
+                    {{#select this.style}}
+                    <option value="user">{{localize "barbrawl.textStyle.user"}}</option>
+                    <option value="none">{{localize "barbrawl.textStyle.none"}}</option>
+                    <option value="fraction">{{localize "barbrawl.textStyle.fraction"}}</option>
+                    <option value="percent">{{localize "barbrawl.textStyle.percent"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.ignoreLimits"}}:</label>
+            <div class="form-fields">
+                <label>
+                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if
+                        this.ignoreMin}}checked{{/if}} />
+                    <span>{{localize "barbrawl.config.ignoreMin"}}</span>
+                </label>
+                <span class="sep" style="margin: 0;">-</span>
+                <label>
+                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if
+                        this.ignoreMax}}checked{{/if}} />
+                    <span>{{localize "barbrawl.config.ignoreMax"}}</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="invert">{{localize "barbrawl.config.invert"}}:</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.invert" {{#if
+                    this.invert}}checked{{/if}} />
+            </div>
+        </div>
+    </div>
+</details>
+{{/each}}

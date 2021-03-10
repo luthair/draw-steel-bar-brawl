@@ -13,6 +13,7 @@ Hooks.once('init', async function() {
 
 	registerSettings();
 
+    getTemplate("modules/barbrawl/templates/bar-config.hbs");
 	Handlebars.registerHelper("isLinkedBar", function(bar) {
 		return bar.attribute !== "custom";
 	});
