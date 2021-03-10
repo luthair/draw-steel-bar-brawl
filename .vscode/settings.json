@@ -3,7 +3,7 @@
     "triggerTaskOnSave.tasks": {
         "watch: reload": [
             "src/**/*.js",
-            "src/**/*.html",
+            "src/**/*.hbs",
             "src/**/*.css"
         ],
         "watch: less": [

@@ -28,7 +28,7 @@ export const extendBarRenderer = function() {
 export const extendTokenConfig = async function(tokenConfig, html, data) {
     data.brawlBars = getBars(tokenConfig.object);
 
-    let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.html", data);
+    let barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
     const resourceTab = html.find("div[data-tab='resources']");
     resourceTab.find("div.form-fields").parent().remove();
@@ -85,7 +85,7 @@ async function onAddResource(event, tokenConfig, data) {
     let htmlBars = addButton.siblings("details");
     data["brawlBars"] = [getDefaultBar(getNewBarId(htmlBars), "custom")];
 
-    let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.html", data));
+    let barConfiguration = $(await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data));
     barConfiguration.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(tokenConfig));
     if (htmlBars.length > 0) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
@@ -136,7 +136,7 @@ export const extendTokenHud = async function(tokenHud, html, data) {
     data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
     data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
 
-    let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.html", data);
+    let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.hbs", data);
     let middleColumn = html.find(".col.middle");
     middleColumn.html(resourceInputs);
     middleColumn.find(".attribute input").click(tokenHud._onAttributeClick).change(onChangeBarValue.bind(tokenHud));
