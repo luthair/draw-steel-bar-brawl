@@ -95,7 +95,11 @@ Hooks.on("preCreateToken", function(_scene, data) {
     const barConfig = game.settings.get("barbrawl", "defaultResources");
     if (!barConfig || Object.keys(barConfig).length === 0) return;
 
-    if (hasProperty(data, "flags.barbrawl.resourceBars")) {
+    const actor = game.actors.get(data.actorId);
+    if (!actor) return;
+
+    if (hasProperty(actor.data, "token.flags.barbrawl.resourceBars")) return; // Do not override prototype token.
+    if (hasProperty(data, "flags.barbrawl.resourceBars")) { // Warn when overriding system defaults.
         console.warn("barbrawl | Overriding existing resource bar configuration with user defaults.");
     }
 
