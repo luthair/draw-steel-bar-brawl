@@ -82,19 +82,22 @@
         <div class="form-group">
             <label>{{localize "barbrawl.config.ignoreLimits"}}:</label>
             <div class="form-fields">
-                <input id="ignoreMin" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if this.ignoreMin}}checked{{/if}}/>
-                <label for="ignoreMin">{{localize "barbrawl.config.ignoreMin"}}</label>
+                <label>
+                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if this.ignoreMin}}checked{{/if}} />
+                    <span>{{localize "barbrawl.config.ignoreMin"}}</span>
+                </label>
                 <span class="sep" style="margin-right: 7px;">-</span>
-                <input id="ignoreMax" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if this.ignoreMax}}checked{{/if}}/>
-                <label for="ignoreMax">{{localize "barbrawl.config.ignoreMax"}}</label>
+                <label>
+                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if this.ignoreMax}}checked{{/if}} />
+                    <span>{{localize "barbrawl.config.ignoreMax"}}</span>
+                </label>
             </div>
         </div>
 
         <div class="form-group">
             <label for="invert">{{localize "barbrawl.config.invert"}}:</label>
             <div class="form-fields">
-                <input id="invert" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.invert" {{#if
-                    this.invert}}checked{{/if}} />
+                <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.invert" {{#if this.invert}}checked{{/if}} />
             </div>
         </div>
     </div>
