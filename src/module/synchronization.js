@@ -122,11 +122,11 @@ export const onChangeBarValue = function(event) {
     // Resolve the resource if needed.
     const actor = this.object.actor;
     const useToken = bar.attribute === "custom" || !actor;
-    let resource = useToken ? null : this.object.getBarAttribute(null, { alternative: bar.attribute });
+    const resource = useToken ? null : this.object.getBarAttribute(null, { alternative: bar.attribute });
 
     // Parse input value.
     let stringValue = event.currentTarget.value.trim();
-    let isDelta = stringValue.startsWith("+") || stringValue.startsWith("-");
+    const isDelta = stringValue.startsWith("+") || stringValue.startsWith("-");
     if (stringValue.startsWith("=")) stringValue = stringValue.slice(1);
     let value = Number(stringValue);
 
@@ -137,7 +137,7 @@ export const onChangeBarValue = function(event) {
             currentValue = bar.value ?? 0;
         } else {
             const current = getProperty(actor.data.data, resource.attribute);
-            currentValue = resource.type === "bar" ? current.value : current;
+            currentValue = resource.type === "bar" ? current.value + (current.temp ?? 0) : current;
         }
 
         value = currentValue + value;
