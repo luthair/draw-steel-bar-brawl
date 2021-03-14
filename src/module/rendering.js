@@ -46,19 +46,23 @@ export const extendTokenConfig = async function(tokenConfig, html, data) {
  * @param {jQuery.Event} event The event of the selection change.
  */
 function onChangeBarAttribute(event) {
-    let form = event.target.form;
-    let barId = event.target.name.split(".")[3];
-    let valueInput = form.querySelector(`input.${barId}-value`);
-    let maxInput = form.querySelector(`input.${barId}-max`);
+    const barId = event.target.name.split(".")[3];
+    const form = event.target.form.querySelector("#" + barId);
+    if (!form) return;
+    
+    const valueInput = form.querySelector(`input.${barId}-value`);
+    const maxInput = form.querySelector(`input.${barId}-max`);
 
     if (event.target.value === "custom") {
         valueInput.removeAttribute("disabled");
         maxInput.removeAttribute("disabled");
         if (maxInput.value === "") maxInput.value = valueInput.value;
+        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.checked = false);
     } else {
         valueInput.setAttribute("disabled", "");
+        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.checked = true);
 
-        let resource = this.object.getBarAttribute(null, {alternative: event.target.value});
+        const resource = this.object.getBarAttribute(null, {alternative: event.target.value});
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");

@@ -1,7 +1,7 @@
 {{#each brawlBars}}
 <details {{#if @last}}open{{/if}}>
     <summary>{{this.attribute}}</summary>
-    <div id="bar.id">
+    <div id="{{this.id}}">
         <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.id" value="{{this.id}}" />
         <div class="form-group">
             <label>{{localize "barbrawl.config.attribute"}}:</label>
@@ -89,13 +89,13 @@
             <label>{{localize "barbrawl.config.ignoreLimits"}}:</label>
             <div class="form-fields">
                 <label>
-                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if
+                    <input class="ignore-limit" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if
                         this.ignoreMin}}checked{{/if}} />
                     <span>{{localize "barbrawl.config.ignoreMin"}}</span>
                 </label>
                 <span class="sep" style="margin: 0;">-</span>
                 <label>
-                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if
+                    <input class="ignore-limit" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if
                         this.ignoreMax}}checked{{/if}} />
                     <span>{{localize "barbrawl.config.ignoreMax"}}</span>
                 </label>
