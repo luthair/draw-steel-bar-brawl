@@ -33,7 +33,7 @@ export const extendTokenConfig = async function(tokenConfig, html, data) {
     const resourceTab = html.find("div[data-tab='resources']");
     resourceTab.find("div.form-fields").parent().remove();
     resourceTab.append(barConfiguration);
-    adjustConfigHeight(html, data.brawlBars.length - 1);
+    if (resourceTab.hasClass("active")) adjustConfigHeight(html, data.brawlBars.length);
 
     html.find(".brawlbar.add").click(event => onAddResource(event, tokenConfig, data));
     html.find(".brawlbar.save").click(event => onSaveDefaults(tokenConfig));
