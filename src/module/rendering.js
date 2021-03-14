@@ -215,7 +215,15 @@ export const redrawBar = function(token, barData) {
 function drawResourceBar(token, bar, data) {
     let width = token.w;
     let height = Math.max((canvas.dimensions.size / 12), 8);
-    if ( token.data.height >= 2 ) height *= 1.6;  // Enlarge the bar for large tokens
+    if (token.data.height >= 2) height *= 1.6;  // Enlarge the bar for large tokens
+
+    // Defer rendering to HP Bar module for compatibility.
+    if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
+        const posY = bar.position.y; // Store position for bar redraws.
+        token._drawBar(0, bar, data);
+        bar.position.set(0, posY);
+        return height;
+    }
 
     const baseValue = data.invert ? data.max - data.value : data.value;
     let percentage = Math.clamped(baseValue, 0, data.max) / data.max;
