@@ -1,3 +1,10 @@
+1.2.1
+- Added compatibility with Arbron's Improved HP Bar.
+- Changed default value of the "Ignore limits" option for non-custom bars.
+- Fixed temporary values being ignored for delta updates (e.g. HP -5).
+- Fixed default configuration overriding prototype token configuration.
+- Fixed some weirdness with the token configuration window height.
+
 1.2.0
 - Added functionality to turn single values into proper bars by setting a maximum value.
 - Added default token resource configuration. Simply hit the button in the token config to store it. To reset the defaults, go to the module settings.
