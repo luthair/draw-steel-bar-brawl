@@ -95,17 +95,6 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
 }
 
 /**
- * Checks the given data for any attributes that have a resource bar and redraws
- *  the bars if any are found.
- * @constant {Token} this The token that this function is called on.
- * @param {Object} newData The data to be merged into the token data.
- */
-export const onUpdateAttributes = function(newData) {
-    let update = getBars(this).some(bar => hasProperty(newData, "data." + bar.attribute));
-    if (update) this.drawBars();
-}
-
-/**
  * Handles a resource input change event by updating the associated attribute.
  * @constant {TokenHUD} this The token HUD that this function is bound to.
  * @param {jQuery.Event} event The event of the input change.

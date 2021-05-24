@@ -1,4 +1,4 @@
-import { onChangeBarValue, onUpdateAttributes } from "./synchronization.js";
+import { onChangeBarValue } from "./synchronization.js";
 import { getBars, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
 
 /**
@@ -10,11 +10,9 @@ export const extendBarRenderer = function() {
     if(game.modules.get("lib-wrapper")?.active) {
         // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
         libWrapper.register("barbrawl", "Token.prototype.drawBars", drawBrawlBars, "OVERRIDE");
-        libWrapper.register("barbrawl", "Token.prototype._onUpdateBarAttributes", onUpdateAttributes, "OVERRIDE");
     } else {
         // Manual override
         Token.prototype.drawBars = drawBrawlBars;
-        Token.prototype._onUpdateBarAttributes = onUpdateAttributes;
     }
 }
 
