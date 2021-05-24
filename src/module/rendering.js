@@ -202,8 +202,8 @@ function createResourceBar(token, data, index) {
  * @param {Object} barData The data of the bar to refresh.
  */
 export const redrawBar = function(token, barData) {
-    let bar = token.bars.getChildByName(barData.id);
-    drawResourceBar(token, bar, barData);
+    const bar = token.bars.getChildByName(barData.id);
+    if (bar) drawResourceBar(token, bar, barData);
 }
 
 /**
