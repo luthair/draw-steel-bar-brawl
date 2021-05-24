@@ -1,4 +1,3 @@
-import { onChangeBarValue } from "./synchronization.js";
 import { getBars, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
 
 /**
@@ -6,13 +5,26 @@ import { getBars, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
  *  The original function is not called. If available, the libWrapper module is
  *  used for better compatibility.
  */
-export const extendBarRenderer = function() {
-    if(game.modules.get("lib-wrapper")?.active) {
+export const extendBarRenderer = function () {
+    if (game.modules.get("lib-wrapper")?.active) {
         // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
         libWrapper.register("barbrawl", "Token.prototype.drawBars", drawBrawlBars, "OVERRIDE");
+        libWrapper.register("barbrawl", "TokenDocument.prototype.getBarAttribute",
+            function (wrapped, barId, { alternative } = {}) {
+                return wrapped(null, {
+                    alternative: alternative ?? getBars(this._object).find(bar => bar.id === barId)?.attribute
+                });
+            }, "WRAPPER");
     } else {
         // Manual override
         Token.prototype.drawBars = drawBrawlBars;
+
+        const originalGetBarAttribute = TokenDocument.prototype.getBarAttribute;
+        TokenDocument.prototype.getBarAttribute = function (barId, { alternative } = {}) {
+            return originalGetBarAttribute.call(this, null, {
+                alternative: alternative ?? getBars(this._object).find(bar => bar.id === barId)?.attribute
+            });
+        };
     }
 }
 
@@ -23,7 +35,7 @@ export const extendBarRenderer = function() {
  * @param {jQuery} html The jQuery element of the token configuration.
  * @param {Object} data The data of the token configuration.
  */
-export const extendTokenConfig = async function(tokenConfig, html, data) {
+export const extendTokenConfig = async function (tokenConfig, html, data) {
     data.brawlBars = getBars(tokenConfig.object);
 
     const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
@@ -47,7 +59,7 @@ function onChangeBarAttribute(event) {
     const barId = event.target.name.split(".")[3];
     const form = event.target.form.querySelector("#" + barId);
     if (!form) return;
-    
+
     const valueInput = form.querySelector(`input.${barId}-value`);
     const maxInput = form.querySelector(`input.${barId}-max`);
 
@@ -55,12 +67,12 @@ function onChangeBarAttribute(event) {
         valueInput.removeAttribute("disabled");
         maxInput.removeAttribute("disabled");
         if (maxInput.value === "") maxInput.value = valueInput.value;
-        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.checked = false);
+        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.removeAttribute("disabled"));
     } else {
         valueInput.setAttribute("disabled", "");
-        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.checked = true);
+        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.setAttribute("disabled", ""));
 
-        const resource = this.object.getBarAttribute(null, {alternative: event.target.value});
+        const resource = this.object.getBarAttribute(null, { alternative: event.target.value });
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");
@@ -109,7 +121,7 @@ async function onSaveDefaults(tokenConfig) {
     for (let [key, value] of Object.entries(formData)) {
         if (key.startsWith("flags.barbrawl")) data[key] = value;
     }
-    
+
     await game.settings.set("barbrawl", "defaultResources", expandObject(data).flags.barbrawl.resourceBars);
     ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
 }
@@ -132,7 +144,7 @@ function adjustConfigHeight(html, additionalBars) {
  * @param {jQuery} html The jQuery element of the token HUD.
  * @param {Object} data The data of the token HUD.
  */
-export const extendTokenHud = async function(tokenHud, html, data) {
+export const extendTokenHud = async function (tokenHud, html, data) {
     let visibleBars = getVisibleBars(tokenHud.object, false);
     data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
     data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
@@ -140,7 +152,10 @@ export const extendTokenHud = async function(tokenHud, html, data) {
     let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.hbs", data);
     let middleColumn = html.find(".col.middle");
     middleColumn.html(resourceInputs);
-    middleColumn.find(".attribute input").click(tokenHud._onAttributeClick).change(onChangeBarValue.bind(tokenHud));
+    middleColumn.find(".attribute input")
+        .click(tokenHud._onAttributeClick)
+        .keydown(tokenHud._onAttributeKeydown.bind(tokenHud))
+        .change(tokenHud._onAttributeUpdate.bind(tokenHud));
 }
 
 /**
@@ -151,7 +166,7 @@ function drawBrawlBars() {
     this.bars.removeChildren();
     let visibleBars = getVisibleBars(this);
     if (visibleBars.length === 0) return;
-    
+
     let positionCounts = [0, 0, 0, 0];
     for (let barData of visibleBars) {
         let barIndex = 0;
@@ -201,7 +216,7 @@ function createResourceBar(token, data, index) {
  * @param {Token} token The token to redraw the bar on.
  * @param {Object} barData The data of the bar to refresh.
  */
-export const redrawBar = function(token, barData) {
+export const redrawBar = function (token, barData) {
     const bar = token.bars.getChildByName(barData.id);
     if (bar) drawResourceBar(token, bar, barData);
 }
@@ -279,12 +294,12 @@ function drawResourceBar(token, bar, data) {
  */
 function drawDefaultBar(bar, width, height, percentage, color) {
     bar.clear()
-       .beginFill(0x000000, 0.5)
-       .lineStyle(2, 0x000000, 0.9)
-       .drawRoundedRect(0, 0, width, height, 3)
-       .beginFill(color, 0.8)
-       .lineStyle(1, 0x000000, 0.8)
-       .drawRoundedRect(1, 1, percentage * (width - 2), height - 2, 2);
+        .beginFill(0x000000, 0.5)
+        .lineStyle(2, 0x000000, 0.9)
+        .drawRoundedRect(0, 0, width, height, 3)
+        .beginFill(color, 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(1, 1, percentage * (width - 2), height - 2, 2);
 }
 
 /**
@@ -297,10 +312,10 @@ function drawDefaultBar(bar, width, height, percentage, color) {
  */
 function drawMinimalBar(bar, width, height, percentage, color) {
     bar.clear()
-       .beginFill(0x000000, 0.2)
-       .drawRect(0, 0, width, height)
-       .beginFill(color, 0.8)
-       .drawRect(0, 0, percentage * width, height);
+        .beginFill(0x000000, 0.2)
+        .drawRect(0, 0, width, height)
+        .beginFill(color, 0.8)
+        .drawRect(0, 0, percentage * width, height);
 }
 
 /**
@@ -315,12 +330,12 @@ function drawMinimalBar(bar, width, height, percentage, color) {
  */
 function drawLargeBar(bar, width, height, percentage, color) {
     bar.clear()
-       .beginFill(0x000000, 0.5)
-       .lineStyle(1, 0x000000, 0.9)
-       .drawRoundedRect(0, 0, width, height, 2)
-       .beginFill(color, 0.8)
-       .lineStyle(0)
-       .drawRoundedRect(0.5, 0.5, percentage * (width - 1), height - 1, 1);
+        .beginFill(0x000000, 0.5)
+        .lineStyle(1, 0x000000, 0.9)
+        .drawRoundedRect(0, 0, width, height, 2)
+        .beginFill(color, 0.8)
+        .lineStyle(0)
+        .drawRoundedRect(0.5, 0.5, percentage * (width - 1), height - 1, 1);
 }
 
 /**
@@ -377,10 +392,10 @@ function interpolateColor(minColor, maxColor, percentage) {
  * @param {Number} b The blue value of the color as float (0 to 1).
  * @returns {Number[]} The HSV color with hue in degrese (0 to 360), saturation and value as float (0 to 1).
  */
-function rgb2hsv(r,g,b) {
-    let v=Math.max(r,g,b), c=v-Math.min(r,g,b);
-    let h= c && ((v==r) ? (g-b)/c : ((v==g) ? 2+(b-r)/c : 4+(r-g)/c));
-    return [60*(h<0?h+6:h), v&&c/v, v];
+function rgb2hsv(r, g, b) {
+    let v = Math.max(r, g, b), c = v - Math.min(r, g, b);
+    let h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
+    return [60 * (h < 0 ? h + 6 : h), v && c / v, v];
 }
 
 /**
@@ -391,10 +406,9 @@ function rgb2hsv(r,g,b) {
  * @param {Number} v The value of the color as float (0 to 1).
  * @returns {Number[]} The RGB color with each component as float (0 to 1).
  */
-function hsv2rgb(h,s,v) 
-{                              
-  let f= (n,k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);     
-  return [f(5),f(3),f(1)];       
+function hsv2rgb(h, s, v) {
+    let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+    return [f(5), f(3), f(1)];
 }
 
 /**

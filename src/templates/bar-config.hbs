@@ -26,7 +26,7 @@
             <label>{{localize "barbrawl.config.value"}}:</label>
             <div class="form-fields">
                 <input type="number" class="{{this.id}}-value" name="flags.barbrawl.resourceBars.{{this.id}}.value"
-                    value="{{this.value}}" {{#if (isLinkedBar this)}}disabled{{/if}} />
+                    value="{{this.value}}" {{#if (ne this.attribute "custom")}}disabled{{/if}} />
                 <span class="sep">/</span>
                 <input type="number" class="{{this.id}}-max" name="flags.barbrawl.resourceBars.{{this.id}}.max"
                     value="{{this.max}}" />
@@ -90,13 +90,13 @@
             <div class="form-fields">
                 <label>
                     <input class="ignore-limit" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin" {{#if
-                        this.ignoreMin}}checked{{/if}} />
+                        this.ignoreMin}}checked{{/if}} {{#if (ne this.attribute "custom")}}disabled{{/if}} />
                     <span>{{localize "barbrawl.config.ignoreMin"}}</span>
                 </label>
                 <span class="sep" style="margin: 0;">-</span>
                 <label>
                     <input class="ignore-limit" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax" {{#if
-                        this.ignoreMax}}checked{{/if}} />
+                        this.ignoreMax}}checked{{/if}} {{#if (ne this.attribute "custom")}}disabled{{/if}} />
                     <span>{{localize "barbrawl.config.ignoreMax"}}</span>
                 </label>
             </div>

@@ -14,9 +14,6 @@ Hooks.once('init', async function() {
 	registerSettings();
 
     getTemplate("modules/barbrawl/templates/bar-config.hbs");
-	Handlebars.registerHelper("isLinkedBar", function(bar) {
-		return bar.attribute !== "custom";
-	});
 });
 
 /** Hook to replace the token bar rendering. */
@@ -63,7 +60,9 @@ Hooks.on("updateToken", function(doc, changes) {
 	if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
 		let changedData = changedBars[changedBarIds[0]];
 		if (!changedData.position && !changedData.id && !("max" in changedData)) {
-			redrawBar(token, doc.data.flags.barbrawl.resourceBars[changedBarIds[0]]);
+            const barData = doc.data.flags.barbrawl.resourceBars[changedBarIds[0]];
+            if (!Number.isFinite(barData.value) || !Number.isFinite(barData.max)) return;
+			redrawBar(token, barData);
 
 			// Update HUD
 			if (token.hasActiveHUD && changedData.value) {

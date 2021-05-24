@@ -3,7 +3,7 @@
  * @param {Token} token The token to fetch the bars for.
  * @returns {Object[]} An array of bar data.
  */
-export const getBars = function(token) {
+export const getBars = function (token) {
     let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
     let barArray = Object.values(resourceBars);
 
@@ -20,7 +20,7 @@ export const getBars = function(token) {
  * @param {Boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
  * @returns {Object[]} An array of visible bar data.
  */
-export const getVisibleBars = function(token, barsOnly = true) {
+export const getVisibleBars = function (token, barsOnly = true) {
     let visibleBars = [];
 
     for (let bar of getBars(token)) {
@@ -28,22 +28,23 @@ export const getVisibleBars = function(token, barsOnly = true) {
         if (barsOnly) {
             // Skip never displayed bars
             if (bar.visibility === CONST.TOKEN_DISPLAY_MODES.NONE) continue;
-    
+
             // Skip bars displayed only for the owner if we don't own it
             if ((bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER
                 || bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER)
                 && !token.isOwner)
                 continue;
         }
-        
-         // Add custom bars (can only be set on token)
-         if (bar.attribute === "custom") {
+
+        // Add custom bars (can only be set on token)
+        if (bar.attribute === "custom") {
+            bar.editable = true;
             visibleBars.push(bar);
             continue;
         }
 
         // Update resource values
-        let resource = token.document.getBarAttribute(null, { alternative: bar.attribute?.toString() });
+        let resource = token.document.getBarAttribute(null, { alternative: bar.attribute });
         if (!resource || (barsOnly && resource.type !== "bar" && !bar.max)) continue;
 
         bar.value = resource.value;
@@ -62,7 +63,7 @@ export const getVisibleBars = function(token, barsOnly = true) {
  *  for the second or a random ID for any subsequent bar.
  * @param {Object[]} existingBars The array of existing bar data.
  */
-export const getNewBarId = function(existingBars) {
+export const getNewBarId = function (existingBars) {
     switch (existingBars.length) {
         case 0: return "bar1";
         case 1: return "bar2";
@@ -75,7 +76,7 @@ export const getNewBarId = function(existingBars) {
  * @param {String} id The ID of the bar.
  * @param {String} attribute The attribute of the bar.
  */
-export const getDefaultBar = function(id, attribute) {
+export const getDefaultBar = function (id, attribute) {
     let defaultBar = {
         id: id,
         attribute: attribute,
