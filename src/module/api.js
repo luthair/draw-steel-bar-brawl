@@ -32,7 +32,7 @@ export const getVisibleBars = function(token, barsOnly = true) {
             // Skip bars displayed only for the owner if we don't own it
             if ((bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER
                 || bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER)
-                && !token.owner)
+                && !token.isOwner)
                 continue;
         }
         
@@ -43,7 +43,7 @@ export const getVisibleBars = function(token, barsOnly = true) {
         }
 
         // Update resource values
-        let resource = token.getBarAttribute(null, { alternative: bar.attribute?.toString() });
+        let resource = token.document.getBarAttribute(null, { alternative: bar.attribute?.toString() });
         if (!resource || (barsOnly && resource.type !== "bar" && !bar.max)) continue;
 
         bar.value = resource.value;

@@ -62,7 +62,7 @@ function onChangeBarAttribute(event) {
         valueInput.setAttribute("disabled", "");
         form.querySelectorAll(`input.ignore-limit`).forEach(el => el.checked = true);
 
-        const resource = this.object.getBarAttribute(null, {alternative: event.target.value});
+        const resource = this.object.document.getBarAttribute(null, {alternative: event.target.value});
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");

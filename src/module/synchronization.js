@@ -122,7 +122,7 @@ export const onChangeBarValue = function(event) {
     // Resolve the resource if needed.
     const actor = this.object.actor;
     const useToken = bar.attribute === "custom" || !actor;
-    const resource = useToken ? null : this.object.getBarAttribute(null, { alternative: bar.attribute });
+    const resource = useToken ? null : this.object.document.getBarAttribute(null, { alternative: bar.attribute });
 
     // Parse input value.
     let stringValue = event.currentTarget.value.trim();
