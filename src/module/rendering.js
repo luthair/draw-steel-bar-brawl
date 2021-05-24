@@ -34,7 +34,7 @@ export const extendTokenConfig = async function(tokenConfig, html, data) {
     if (resourceTab.hasClass("active")) adjustConfigHeight(html, data.brawlBars.length);
 
     html.find(".brawlbar.add").click(event => onAddResource(event, tokenConfig, data));
-    html.find(".brawlbar.save").click(event => onSaveDefaults(tokenConfig));
+    html.find(".brawlbar.save").click(() => onSaveDefaults(tokenConfig));
     html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig));
 }
 
@@ -60,7 +60,7 @@ function onChangeBarAttribute(event) {
         valueInput.setAttribute("disabled", "");
         form.querySelectorAll(`input.ignore-limit`).forEach(el => el.checked = true);
 
-        const resource = this.object.document.getBarAttribute(null, {alternative: event.target.value});
+        const resource = this.object.getBarAttribute(null, {alternative: event.target.value});
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");

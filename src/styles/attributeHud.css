@@ -6,6 +6,10 @@
     min-width: 40px;
 }
 
+.resource-input input:disabled {
+    color: #aaa;
+}
+
 .token-sheet .tab[data-tab="resources"] label {
     white-space: nowrap;
 }

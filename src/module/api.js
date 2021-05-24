@@ -48,6 +48,7 @@ export const getVisibleBars = function(token, barsOnly = true) {
 
         bar.value = resource.value;
         bar.max = resource.max ?? bar.max;
+        bar.editable = resource.editable;
 
         // Check visibility
         visibleBars.push(bar);

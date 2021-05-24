@@ -11,7 +11,7 @@
                     <option value="">{{localize "barbrawl.attribute.none"}}</option>
                     <option value="custom">{{localize "barbrawl.attribute.custom"}}</option>
                     {{#each ../barAttributes as |attrs label|}}
-                    <optgroup label="{{ localize label }}">
+                    <optgroup label="{{ label }}">
                         {{#each attrs}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}
