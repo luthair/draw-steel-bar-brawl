@@ -92,7 +92,7 @@ Hooks.on("hoverToken", function(token) {
 });
 
 /** Hook to initialize tokens with default bars. */
-Hooks.on("preCreateToken", function(_doc, data) {
+Hooks.on("preCreateToken", function(doc, data) {
     const barConfig = game.settings.get("barbrawl", "defaultResources");
     if (!barConfig || Object.keys(barConfig).length === 0) return;
 
@@ -104,5 +104,5 @@ Hooks.on("preCreateToken", function(_doc, data) {
         console.warn("barbrawl | Overriding existing resource bar configuration with user defaults.");
     }
 
-    data.update({ "flags.barbrawl.resourceBars": barConfig });
+    doc.data.update({ "flags.barbrawl.resourceBars": barConfig });
 });
