@@ -35,8 +35,8 @@ Hooks.on("renderTokenConfig", function(tokenConfig, html, data) {
 });
 
 /** Hook to remove bars and synchronize legacy bars. */
-Hooks.on("preUpdateToken", function(_scene, tokenData, newData) {
-    prepareUpdate(tokenData, newData);
+Hooks.on("preUpdateToken", function(doc, changes) {
+    prepareUpdate(doc.data, changes);
 });
 
 /** Hook to apply changes to the prototype token. */
@@ -46,24 +46,24 @@ Hooks.on("preUpdateActor", function(actor, newData) {
 });
 
 /** Hook to update bars. */
-Hooks.on("updateToken", function(_scene, tokenData, diffData) {
-	let token = canvas.tokens.get(tokenData._id);
+Hooks.on("updateToken", function(doc, changes) {
+	const token = doc._object;
 	if (!token) return;
 
-	if ("bar1" in diffData || "bar2" in diffData) {
+	if ("bar1" in changes || "bar2" in changes) {
 		if (token.hasActiveHUD) canvas.tokens.hud.render();
 		return;
 	}
 
-	if (!hasProperty(diffData, "flags.barbrawl.resourceBars")) return;
+	if (!hasProperty(changes, "flags.barbrawl.resourceBars")) return;
 
 	// Check if only one bar value was changed (not added or removed)
-	let changedBars = diffData.flags.barbrawl.resourceBars;
+	let changedBars = changes.flags.barbrawl.resourceBars;
 	let changedBarIds = Object.keys(changedBars);
 	if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
 		let changedData = changedBars[changedBarIds[0]];
 		if (!changedData.position && !changedData.id && !("max" in changedData)) {
-			redrawBar(token, tokenData.flags.barbrawl.resourceBars[changedBarIds[0]]);
+			redrawBar(token, doc.data.flags.barbrawl.resourceBars[changedBarIds[0]]);
 
 			// Update HUD
 			if (token.hasActiveHUD && changedData.value) {
@@ -92,7 +92,7 @@ Hooks.on("hoverToken", function(token) {
 });
 
 /** Hook to initialize tokens with default bars. */
-Hooks.on("preCreateToken", function(_scene, data) {
+Hooks.on("preCreateToken", function(_doc, data) {
     const barConfig = game.settings.get("barbrawl", "defaultResources");
     if (!barConfig || Object.keys(barConfig).length === 0) return;
 
@@ -104,5 +104,5 @@ Hooks.on("preCreateToken", function(_scene, data) {
         console.warn("barbrawl | Overriding existing resource bar configuration with user defaults.");
     }
 
-    setProperty(data, "flags.barbrawl.resourceBars", barConfig);
+    data.update({ "flags.barbrawl.resourceBars": barConfig });
 });
