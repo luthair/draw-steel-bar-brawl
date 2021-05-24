@@ -57,12 +57,12 @@ Here are some common examples of things you might want to do with the bars:
 The most basic access is through the `barbrawl.resourceBars` flag of the token:
 
 ```javascript
-let token = new Token() // Pretend that this isn't empty
-let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars");
+const token = new Token() // Pretend that this isn't empty
+const resourceBars = foundry.utils.getProperty(token.document.data, "flags.barbrawl.resourceBars");
 if (!resourceBars) return [];
 return Object.values(resourceBars).map(bar => {
     if (bar.attribute === "custom") return bar.value;
-    return token.getBarAttribute(null, { alternative: bar.attribute }).value;
+    return token.document.getBarAttribute(null, { alternative: bar.attribute }).value;
 });
 ```
 
@@ -74,7 +74,7 @@ To create bars on tokens by default, add them during the `preCreateToken` hook:
 
 ```javascript
 Hooks.on("preCreateToken", function(_scene, data) {
-    setProperty(data, "flags.barbrawl.resourceBars", {
+    foundry.utils.setProperty(data, "flags.barbrawl.resourceBars", {
         "bar1": {
             id: "bar1",
             mincolor: "#FF0000",
@@ -97,10 +97,10 @@ In order to get rid of a bar, either use Foundry's `-=key` syntax or set the att
 
 ```javascript
 let barId = "b" + randomID(); // ID of the bar you intend to remove
-token.update({ [`flags.barbrawl.resourceBars.${barId}.attribute`]: "" });
+token.document.update({ [`flags.barbrawl.resourceBars.${barId}.attribute`]: "" });
 
 // Alternative:
-token.update({ [`flags.barbrawl.resourceBars.-=${barId}`]: null });
+token.document.update({ [`flags.barbrawl.resourceBars.-=${barId}`]: null });
 ```
 
 ### Modify the value of a custom bar
@@ -109,7 +109,7 @@ Simply fetch the bar from the data and update its value property:
 
 ```javascript
 let barId = "b" + randomID(); // ID of the bar you intend to modify
-token.update({ [`flags.barbrawl.resourceBars.${barId}.value`]: 5 });
+token.document.update({ [`flags.barbrawl.resourceBars.${barId}.value`]: 5 });
 ```
 
 This will not apply clamping, so whatever you set here is final.

@@ -12,7 +12,7 @@ export const prepareUpdate = function (tokenData, newData) {
         newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     }
 
-    let changedBars = getProperty(newData, "flags.barbrawl.resourceBars");
+    const changedBars = foundry.utils.getProperty(newData, "flags.barbrawl.resourceBars");
     if (changedBars) {
         for (let barId of Object.keys(changedBars)) {
             // Remove bars that were explicitly set to "None" attribute.
@@ -26,7 +26,7 @@ export const prepareUpdate = function (tokenData, newData) {
 
             // Clamp values.
             if (bar.hasOwnProperty("value")) {
-                const barData = (getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
+                const barData = (foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
                 if (barData && !barData.ignoreMin) bar.value = Math.max(0, bar.value);
                 if (barData && !barData.ignoreMax && barData.max) bar.value = Math.min(barData.max, bar.value);
             }
@@ -50,7 +50,7 @@ function synchronizeBars(tokenData, newData) {
     }
 
     if (hasLegacyBars) {
-        if (!hasBrawlBars) setProperty(newData, "flags.barbrawl.resourceBars", {});
+        if (!hasBrawlBars) foundry.utils.setProperty(newData, "flags.barbrawl.resourceBars", {});
 
         synchronizeLegacyBar("bar1", tokenData, newData);
         synchronizeLegacyBar("bar2", tokenData, newData);
@@ -78,13 +78,13 @@ function synchronizeBrawlBar(barId, newData) {
  * @param {Object} newData The data to be merged into the token data.
  */
 function synchronizeLegacyBar(barId, tokenData, newData) {
-    let foundryBarData = newData[barId];
+    const foundryBarData = newData[barId];
     if (!foundryBarData) return;
 
-    let brawlBars = getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {};
-    let brawlBarChanges = newData.flags.barbrawl.resourceBars;
-    let brawlBarData = brawlBars[barId];
-    let remove = Object.keys(foundryBarData).length === 0 || foundryBarData.attribute === "";
+    const brawlBars = foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {};
+    const brawlBarChanges = newData.flags.barbrawl.resourceBars;
+    const brawlBarData = brawlBars[barId];
+    const remove = Object.keys(foundryBarData).length === 0 || foundryBarData.attribute === "";
 
     if (brawlBarData) {
         if (remove) {
@@ -92,7 +92,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
             brawlBarChanges["-=" + barId] = null;
         } else {
             // Change the attribute
-            setProperty(brawlBarChanges, barId + ".attribute", foundryBarData.attribute);
+            foundry.utils.setProperty(brawlBarChanges, barId + ".attribute", foundryBarData.attribute);
         }
     } else if (!remove) {
         // Create a new bar with default values

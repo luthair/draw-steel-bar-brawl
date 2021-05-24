@@ -4,8 +4,8 @@
  * @returns {Object[]} An array of bar data.
  */
 export const getBars = function (token) {
-    let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
-    let barArray = Object.values(resourceBars);
+    const resourceBars = foundry.utils.getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
+    const barArray = Object.values(resourceBars);
 
     if (token.data.bar1?.attribute && !resourceBars.bar1)
         barArray.push(getDefaultBar("bar1", token.data.bar1.attribute));

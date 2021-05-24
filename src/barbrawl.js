@@ -80,10 +80,10 @@ Hooks.on("updateToken", function(doc, changes) {
 
 /** Hook to update bar visibility on hover */
 Hooks.on("hoverToken", function(token) {
-	let resourceBars = getProperty(token.data, "flags.barbrawl.resourceBars");
+	const resourceBars = foundry.utils.getProperty(token.data, "flags.barbrawl.resourceBars");
 	if (!resourceBars) return;
 
-	let barContainer = token.bars.children;
+	const barContainer = token.bars.children;
 	for (let pixiBar of barContainer) {
 		let bar = resourceBars[pixiBar.name];
 		if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
