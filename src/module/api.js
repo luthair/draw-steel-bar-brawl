@@ -1,29 +1,42 @@
 /**
- * Retreives all resource bars of the given token.
- * @param {Token} token The token to fetch the bars for.
+ * Retreives all resource bars of the given token document.
+ * @param {TokenDocument} tokenDoc The token document to fetch the bars from.
  * @returns {Object[]} An array of bar data.
  */
-export const getBars = function (token) {
-    const resourceBars = foundry.utils.getProperty(token.data, "flags.barbrawl.resourceBars") ?? {};
+export const getBars = function (tokenDoc) {
+    const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
     const barArray = Object.values(resourceBars);
 
-    if (token.data.bar1?.attribute && !resourceBars.bar1)
-        barArray.push(getDefaultBar("bar1", token.data.bar1.attribute));
-    if (token.data.bar2?.attribute && !resourceBars.bar2)
-        barArray.push(getDefaultBar("bar2", token.data.bar2.attribute));
+    if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1)
+        barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute));
+    if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
+        barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute));
     return barArray;
 }
 
 /**
+ * Retreives the data of a single resource bar of the given token document.
+ * @param {TokenDocument} tokenDoc The token document to fetch the bar from.
+ * @param {string} barId The ID of the bar to fetch.
+ * @returns {Object} A bar data object.
+ */
+export const getBar = function (tokenDoc, barId) {
+    const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
+    if (barId === "bar1" && !resourceBars.bar1) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
+    if (barId === "bar2" && !resourceBars.bar2) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
+    return resourceBars[barId];
+}
+
+/**
  * Retreives all resource bars of the given token that are currently visible.
- * @param {Token} token The token to fetch the bars for.
+ * @param {TokenDocument} tokenDoc The token document to fetch the bars from.
  * @param {Boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
  * @returns {Object[]} An array of visible bar data.
  */
-export const getVisibleBars = function (token, barsOnly = true) {
+export const getVisibleBars = function (tokenDoc, barsOnly = true) {
     let visibleBars = [];
 
-    for (let bar of getBars(token)) {
+    for (let bar of getBars(tokenDoc)) {
         // Don't filter with visibility if we need all resources
         if (barsOnly) {
             // Skip never displayed bars
@@ -32,7 +45,7 @@ export const getVisibleBars = function (token, barsOnly = true) {
             // Skip bars displayed only for the owner if we don't own it
             if ((bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER
                 || bar.visibility === CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER)
-                && !token.isOwner)
+                && !tokenDoc.isOwner)
                 continue;
         }
 
@@ -44,7 +57,7 @@ export const getVisibleBars = function (token, barsOnly = true) {
         }
 
         // Update resource values
-        let resource = token.document.getBarAttribute(null, { alternative: bar.attribute });
+        let resource = tokenDoc.getBarAttribute(null, { alternative: bar.attribute });
         if (!resource || (barsOnly && resource.type !== "bar" && !bar.max)) continue;
 
         bar.value = resource.value;

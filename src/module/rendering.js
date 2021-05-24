@@ -1,4 +1,4 @@
-import { getBars, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
+import { getBars, getBar, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
 
 /**
  * Extends the original Token.drawBars() with custom bar rendering. 
@@ -12,7 +12,7 @@ export const extendBarRenderer = function () {
         libWrapper.register("barbrawl", "TokenDocument.prototype.getBarAttribute",
             function (wrapped, barId, { alternative } = {}) {
                 return wrapped(null, {
-                    alternative: alternative ?? getBars(this._object).find(bar => bar.id === barId)?.attribute
+                    alternative: alternative ?? getBar(this, barId)?.attribute
                 });
             }, "WRAPPER");
     } else {
@@ -22,7 +22,7 @@ export const extendBarRenderer = function () {
         const originalGetBarAttribute = TokenDocument.prototype.getBarAttribute;
         TokenDocument.prototype.getBarAttribute = function (barId, { alternative } = {}) {
             return originalGetBarAttribute.call(this, null, {
-                alternative: alternative ?? getBars(this._object).find(bar => bar.id === barId)?.attribute
+                alternative: alternative ?? getBar(this, barId)?.attribute
             });
         };
     }
@@ -36,7 +36,7 @@ export const extendBarRenderer = function () {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function (tokenConfig, html, data) {
-    data.brawlBars = getBars(tokenConfig.object);
+    data.brawlBars = getBars(tokenConfig.object.document);
 
     const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
@@ -145,7 +145,7 @@ function adjustConfigHeight(html, additionalBars) {
  * @param {Object} data The data of the token HUD.
  */
 export const extendTokenHud = async function (tokenHud, html, data) {
-    let visibleBars = getVisibleBars(tokenHud.object, false);
+    let visibleBars = getVisibleBars(tokenHud.object.document, false);
     data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
     data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
 
@@ -164,7 +164,7 @@ export const extendTokenHud = async function (tokenHud, html, data) {
  */
 function drawBrawlBars() {
     this.bars.removeChildren();
-    let visibleBars = getVisibleBars(this);
+    let visibleBars = getVisibleBars(this.document);
     if (visibleBars.length === 0) return;
 
     let positionCounts = [0, 0, 0, 0];

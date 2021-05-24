@@ -1,4 +1,4 @@
-import { getBars, getDefaultBar } from "./api.js";
+import { getDefaultBar } from "./api.js";
 
 /**
  * Prepares the update of a token (or a prototype token) by removing invalid
