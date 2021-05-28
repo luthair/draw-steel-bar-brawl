@@ -207,7 +207,6 @@ function createResourceBar(token, data, index) {
 
     let height = drawResourceBar(token, bar, data);
     bar.position.set(0, calculatePosition(data.position, height, token.h, index));
-    bar.visible = token._canViewMode(data.visibility);
     return bar;
 }
 
@@ -280,6 +279,9 @@ function drawResourceBar(token, bar, data) {
         default:
             console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
     }
+
+    // Update visibility.
+    bar.visible = token._canViewMode(data.visibility);
 
     return height;
 }
