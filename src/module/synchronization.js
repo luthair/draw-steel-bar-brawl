@@ -8,7 +8,7 @@ import { getDefaultBar } from "./api.js";
  */
 export const prepareUpdate = function (tokenData, newData) {
     // Always make the bar container visible.
-    if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+    if (tokenData._source.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
         newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     }
 

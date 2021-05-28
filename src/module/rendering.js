@@ -36,7 +36,7 @@ export const extendBarRenderer = function () {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function (tokenConfig, html, data) {
-    data.brawlBars = getBars(tokenConfig.object.document);
+    data.brawlBars = getBars(tokenConfig.object);
 
     const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
