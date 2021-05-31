@@ -1,3 +1,8 @@
+1.2.2
+- Updated for FoundryVTT 0.8. This release will not work with older versions.
+- Improved compatibility with system resource handling.
+- Added numeric display on top of Arbron's Improved HP Bar.
+
 1.2.1
 - Added compatibility with Arbron's Improved HP Bar.
 - Changed default value of the "Ignore limits" option for non-custom bars.
