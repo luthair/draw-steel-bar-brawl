@@ -26,7 +26,7 @@
         {
             "name": "Electron launcher",
             "args": [
-                "--world=tde5Test",
+                "--world=tde5test",
                 "--noupnp"
             ],
             "cwd": "${env:ProgramFiles}/FoundryVTT/resources/app",
@@ -40,6 +40,7 @@
             "runtimeArgs": [
                 ".",
                 "--remote-debugging-port=9223",
+                "--preserve-symlinks"
             ],
             "skipFiles": [
                 "<node_internals>/**/*.js",
@@ -75,7 +76,7 @@
             ],
             "timeout": 5000,
             "preLaunchTask": "watch: enable",
-            "postDebugTask": "watch: disable",
+            "postDebugTask": "watch: disable"
         }
     ]
 }
