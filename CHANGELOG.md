@@ -1,3 +1,7 @@
+1.2.3
+- Fixed configuration not being displayed for prototype tokens.
+- Changed default bar style to match FoundryVTT's styling again.
+
 1.2.2
 - Updated for FoundryVTT 0.8. This release will not work with older versions.
 - Improved compatibility with system resource handling.
