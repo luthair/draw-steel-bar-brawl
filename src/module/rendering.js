@@ -36,7 +36,7 @@ export const extendBarRenderer = function () {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function (tokenConfig, html, data) {
-    data.brawlBars = getBars(tokenConfig.object);
+    data.brawlBars = getBars(tokenConfig.token);
 
     const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
@@ -72,7 +72,7 @@ function onChangeBarAttribute(event) {
         valueInput.setAttribute("disabled", "");
         form.querySelectorAll(`input.ignore-limit`).forEach(el => el.setAttribute("disabled", ""));
 
-        const resource = this.object.getBarAttribute(null, { alternative: event.target.value });
+        const resource = this.token.getBarAttribute(null, { alternative: event.target.value });
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");
