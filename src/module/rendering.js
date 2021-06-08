@@ -295,13 +295,15 @@ function drawResourceBar(token, bar, data) {
  * @param {String} color The color to fill the bar with.
  */
 function drawDefaultBar(bar, width, height, percentage, color) {
+    const strokeWidth = Math.clamped(height / 8, 1, 2);
     bar.clear()
         .beginFill(0x000000, 0.5)
-        .lineStyle(2, 0x000000, 0.9)
-        .drawRoundedRect(0, 0, width, height, 3)
-        .beginFill(color, 0.8)
-        .lineStyle(1, 0x000000, 0.8)
-        .drawRoundedRect(1, 1, percentage * (width - 2), height - 2, 2);
+        .lineStyle(strokeWidth, 0x000000, 1.0)
+        .drawRoundedRect(0, 0, width, height, 3);
+    if (percentage <= 0.01) return;
+    bar.beginFill(color, 1.0)
+        .lineStyle(strokeWidth, 0x000000, 1.0)
+        .drawRoundedRect(0, 0, percentage * width, height, 2);
 }
 
 /**
