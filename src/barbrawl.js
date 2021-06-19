@@ -61,7 +61,9 @@ Hooks.on("updateToken", function(doc, changes) {
 		let changedData = changedBars[changedBarIds[0]];
 		if (!changedData.position && !changedData.id && !("max" in changedData)) {
             const barData = doc.data.flags.barbrawl.resourceBars[changedBarIds[0]];
-            if (!Number.isFinite(barData.value) || !Number.isFinite(barData.max)) return;
+            const resource = doc.getBarAttribute(null, { alternative: barData.attribute });
+            if (!resource || (resource.type !== "bar" && !bar.max)) return;
+            else barData.value = resource.value;
 			redrawBar(token, barData);
 
 			// Update HUD
