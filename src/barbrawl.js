@@ -44,7 +44,7 @@ Hooks.on("preUpdateActor", function(actor, newData) {
 
 /** Hook to update bars. */
 Hooks.on("updateToken", function(doc, changes) {
-	const token = doc._object;
+	const token = doc.object;
 	if (!token) return;
 
 	if ("bar1" in changes || "bar2" in changes) {
@@ -91,7 +91,10 @@ Hooks.on("hoverToken", function(token) {
 });
 
 /** Hook to initialize tokens with default bars. */
-Hooks.on("preCreateToken", function(doc, data) {
+Hooks.on("preCreateToken", function (doc, data) {
+    // Always make the bar container visible.
+    doc.data.update({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+
     const barConfig = game.settings.get("barbrawl", "defaultResources");
     if (!barConfig || Object.keys(barConfig).length === 0) return;
 
