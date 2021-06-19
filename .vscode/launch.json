@@ -26,7 +26,6 @@
         {
             "name": "Electron launcher",
             "args": [
-                "--world=tde5test",
                 "--noupnp"
             ],
             "cwd": "${env:ProgramFiles}/FoundryVTT/resources/app",

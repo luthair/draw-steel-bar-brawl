@@ -73,15 +73,17 @@ Note that the values are only kept current for custom bars, which means that for
 To create bars on tokens by default, add them during the `preCreateToken` hook:
 
 ```javascript
-Hooks.on("preCreateToken", function(_scene, data) {
-    foundry.utils.setProperty(data, "flags.barbrawl.resourceBars", {
-        "bar1": {
-            id: "bar1",
-            mincolor: "#FF0000",
-            maxcolor: "#80FF00",
-            position: "bottom-inner",
-            attribute: "attributes.hp",
-            visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+Hooks.on("preCreateToken", function (document, data) {
+    document.data.update({
+        "flags.barbrawl.resourceBars": {
+            "bar1": {
+                id: "bar1",
+                mincolor: "#FF0000",
+                maxcolor: "#80FF00",
+                position: "bottom-inner",
+                attribute: "attributes.hp",
+                visibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+            }
         }
     });
 });
