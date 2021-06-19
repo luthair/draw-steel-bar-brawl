@@ -1,3 +1,7 @@
+1.2.4
+- Fixed bars disappearing on hover until the token is updated.
+- Fixed redraw not working for some bars.
+
 1.2.3
 - Fixed configuration not being displayed for prototype tokens.
 - Changed default bar style to match FoundryVTT's styling again.
