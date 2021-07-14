@@ -1,5 +1,4 @@
 {
-    "debug.javascript.usePreview": false,
     "triggerTaskOnSave.tasks": {
         "watch: reload": [
             "src/**/*.js",
