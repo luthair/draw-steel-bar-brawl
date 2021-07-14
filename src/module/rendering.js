@@ -155,7 +155,22 @@ export const extendTokenHud = async function (tokenHud, html, data) {
     middleColumn.find(".attribute input")
         .click(tokenHud._onAttributeClick)
         .keydown(tokenHud._onAttributeKeydown.bind(tokenHud))
-        .change(tokenHud._onAttributeUpdate.bind(tokenHud));
+        .change(updateBarAttribute.bind(tokenHud));
+}
+
+/**
+ * Handles a token HUD input change event by applying the value to the resource.
+ * @param {jQuery.Event} event The event of the value change.
+ */
+function updateBarAttribute(event) {
+    const input = event.currentTarget;
+    if (input.dataset.bar) return this._onAttributeUpdate(event);
+    
+    // Workaround for https://gitlab.com/foundrynet/foundryvtt/-/issues/5606
+    this.object.data[input.name] = foundry.utils.getProperty(this.object.data, input.name);
+    const rv = this._onAttributeUpdate(event);
+    delete this.object.data[input.name];
+    return rv;
 }
 
 /**
