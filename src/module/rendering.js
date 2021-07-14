@@ -167,9 +167,10 @@ function updateBarAttribute(event) {
     if (input.dataset.bar) return this._onAttributeUpdate(event);
     
     // Workaround for https://gitlab.com/foundrynet/foundryvtt/-/issues/5606
-    this.object.data[input.name] = foundry.utils.getProperty(this.object.data, input.name);
+    const data = this.object.data;
+    data[input.name] = foundry.utils.getProperty(this.object.data, input.name);
     const rv = this._onAttributeUpdate(event);
-    delete this.object.data[input.name];
+    delete data[input.name];
     return rv;
 }
 
@@ -232,7 +233,10 @@ function createResourceBar(token, data, index) {
  */
 export const redrawBar = function (token, barData) {
     const bar = token.bars.getChildByName(barData.id);
-    if (bar) drawResourceBar(token, bar, barData);
+    if (bar) {
+        bar.removeChildren();
+        drawResourceBar(token, bar, barData);
+    }
 }
 
 /**
