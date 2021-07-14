@@ -1,3 +1,8 @@
+1.2.5
+- Fixed some labels being drawn twice.
+- Fixed updates not refreshing custom value bars.
+- Fixed delta changes to custom values (e.g. -10).
+
 1.2.4
 - Fixed bars disappearing on hover until the token is updated.
 - Fixed redraw not working for some bars.
