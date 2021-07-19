@@ -1,0 +1,50 @@
+{
+    "barbrawl": {
+        "barStyle": {
+            "name": "バー･スタイル",
+            "hint": "バーの表示方法を変更します。",
+            "minimal": "最小限 (スリム, 枠線無)",
+            "default": "デフォルト (枠線有)",
+            "large": "最大限 (ワイド, 枠線有)"
+        },
+        "textStyle": {
+            "name": "バー･ラベル",
+            "hint": "バーが表示される数を変更します。",
+            "user": "デフォルト",
+            "none": "なし",
+            "fraction": "分数 (値 / 最大)",
+            "percent": "パーセンテージ (%)"
+        },
+        "reset": {
+            "name": "デフォルトにリセット",
+            "hint": "設定をリセットして、デフォルトのトークン･リソースを表示します。",
+            "button": "リセット"
+        },
+        "config": {
+            "attribute": "能力値",
+            "visibility": "可視性",
+            "value": "値 (現在 / 最大)",
+            "color": "色 (最小 / 最大)",
+            "position": "位置",
+            "style": "ラベル",
+            "ignoreLimits": "制限無視",
+            "ignoreMin": "下限",
+            "ignoreMax": "上限",
+            "invert": "値の反転"
+        },
+        "attribute": {
+            "none": "なし (除去)",
+            "custom": "カスタム (以下の値)"
+        },
+        "position": {
+            "top-inner": "上部 (内)",
+            "top-outer": "上部 (外)",
+            "bottom-inner": "下部 (内)",
+            "bottom-outer": "下部 (外)"
+        },
+        "add": "バー追加",
+        "save": "デフォルトとして保存",
+        "saveConfirmation": "デフォルトのトークン･リソース･バーとして保存しました。",
+        "resetConfirmation": "トークン･リソース設定のデフォルトがリセットされて、初期状態になりました。"
+    }
+}
