@@ -3,63 +3,64 @@
  * @author Adrian Haberecht
  */
 
+import { getBars } from "./module/api.js";
 import { extendBarRenderer, extendTokenConfig, extendTokenHud, redrawBar } from "./module/rendering.js";
 import { registerSettings } from "./module/settings.js";
 import { prepareUpdate } from "./module/synchronization.js";
 
 /** Hook to register settings. */
-Hooks.once('init', async function() {
-	console.log('barbrawl | Initializing barbrawl');
+Hooks.once('init', async function () {
+    console.log('barbrawl | Initializing barbrawl');
 
-	registerSettings();
+    registerSettings();
 
     getTemplate("modules/barbrawl/templates/bar-config.hbs");
 });
 
 /** Hook to replace the token bar rendering. */
-Hooks.once("setup", function() {
-	extendBarRenderer();
+Hooks.once("setup", function () {
+    extendBarRenderer();
 });
 
 /** Hook to replace the resource value inputs. */
-Hooks.on("renderTokenHUD", function(tokenHud, html, data) {
-	extendTokenHud(tokenHud, html, data);
+Hooks.on("renderTokenHUD", function (tokenHud, html, data) {
+    extendTokenHud(tokenHud, html, data);
 });
 
 /** Hook to replace the resource bar configuration menu. */
-Hooks.on("renderTokenConfig", function(tokenConfig, html, data) {
-	extendTokenConfig(tokenConfig, html, data);
+Hooks.on("renderTokenConfig", function (tokenConfig, html, data) {
+    extendTokenConfig(tokenConfig, html, data);
 });
 
 /** Hook to remove bars and synchronize legacy bars. */
-Hooks.on("preUpdateToken", function(doc, changes) {
+Hooks.on("preUpdateToken", function (doc, changes) {
     prepareUpdate(doc.data, changes);
 });
 
 /** Hook to apply changes to the prototype token. */
-Hooks.on("preUpdateActor", function(actor, newData) {
+Hooks.on("preUpdateActor", function (actor, newData) {
     if (!hasProperty(newData, "token.flags.barbrawl.resourceBars")) return;
     prepareUpdate(actor.data.token, newData.token);
 });
 
 /** Hook to update bars. */
-Hooks.on("updateToken", function(doc, changes) {
-	const token = doc.object;
-	if (!token) return;
+Hooks.on("updateToken", function (doc, changes) {
+    const token = doc.object;
+    if (!token) return;
 
-	if ("bar1" in changes || "bar2" in changes) {
-		if (token.hasActiveHUD) canvas.tokens.hud.render();
-		return;
-	}
+    if ("bar1" in changes || "bar2" in changes) {
+        if (token.hasActiveHUD) canvas.tokens.hud.render();
+        return;
+    }
 
-	if (!hasProperty(changes, "flags.barbrawl.resourceBars")) return;
+    if (!hasProperty(changes, "flags.barbrawl.resourceBars")) return;
 
-	// Check if only one bar value was changed (not added or removed)
-	let changedBars = changes.flags.barbrawl.resourceBars;
-	let changedBarIds = Object.keys(changedBars);
-	if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
-		let changedData = changedBars[changedBarIds[0]];
-		if (!changedData.position && !changedData.id && !("max" in changedData)) {
+    // Check if only one bar value was changed (not added or removed)
+    let changedBars = changes.flags.barbrawl.resourceBars;
+    let changedBarIds = Object.keys(changedBars);
+    if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
+        let changedData = changedBars[changedBarIds[0]];
+        if (!changedData.position && !changedData.id && !("max" in changedData)) {
             const barData = doc.data.flags.barbrawl.resourceBars[changedBarIds[0]];
 
             if (barData.attribute !== "custom") {
@@ -70,32 +71,31 @@ Hooks.on("updateToken", function(doc, changes) {
                 return;
             }
 
-			redrawBar(token, barData);
+            redrawBar(token, barData);
 
-			// Update HUD
-			if (token.hasActiveHUD && changedData.value) {
-				let valueInput = canvas.tokens.hud._element.find(`input[data-bar='${changedBarIds[0]}']`);
-				if (valueInput) valueInput.val(changedData.value);
-			}
-			return;
-		}
-	}
+            // Update HUD
+            if (token.hasActiveHUD && changedData.value) {
+                let valueInput = canvas.tokens.hud._element
+                    .find(`input[name='flags.barbrawl.resourceBars.${changedBarIds[0]}.value']`);
+                if (valueInput) valueInput.val(changedData.value);
+            }
+            return;
+        }
+    }
 
-	// Otherwise, completely redraw all bars
-	token.drawBars();
-	if (token.hasActiveHUD) canvas.tokens.hud.render();
+    // Otherwise, completely redraw all bars
+    token.drawBars();
+    if (token.hasActiveHUD) canvas.tokens.hud.render();
 });
 
 /** Hook to update bar visibility on hover */
-Hooks.on("hoverToken", function(token) {
-	const resourceBars = foundry.utils.getProperty(token.data, "flags.barbrawl.resourceBars");
-	if (!resourceBars) return;
-
-	const barContainer = token.bars.children;
-	for (let pixiBar of barContainer) {
-		let bar = resourceBars[pixiBar.name];
-		if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
-	}
+Hooks.on("hoverToken", function (token) {
+    const resourceBars = getBars(token.document);
+    const barContainer = token.bars.children;
+    for (let pixiBar of barContainer) {
+        let bar = resourceBars[pixiBar.name];
+        if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
+    }
 });
 
 /** Hook to initialize tokens with default bars. */
