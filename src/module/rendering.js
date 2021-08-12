@@ -169,6 +169,8 @@ export const extendTokenHud = async function (tokenHud, html, data) {
  * @param {jQuery.Event} event The event of the value change.
  */
 function updateBarAttribute(event) {
+    if (!this.object) return; // HUD has already been closed.
+
     const input = event.currentTarget;
     if (input.dataset.bar) return this._onAttributeUpdate(event);
 
