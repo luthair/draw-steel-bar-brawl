@@ -48,6 +48,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
 
     html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     html.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
+    html.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
     html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig.token));
     html.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, data));
 }
@@ -122,8 +123,8 @@ function onOpenAdvancedConfiguration(event, data) {
  * @param {Object} data The data of the token configuration.
  */
 async function onAddResource(event, tokenConfig, data) {
-    const addButton = $(event.currentTarget);
-    const htmlBars = addButton.siblings("details");
+    const barControls = $(event.currentTarget.parentElement);
+    const htmlBars = barControls.siblings("details");
     const newBar = getDefaultBar(getNewBarId(htmlBars), "custom");
     data.brawlBars.push(newBar);
 
@@ -136,7 +137,7 @@ async function onAddResource(event, tokenConfig, data) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
     }
     adjustConfigHeight(tokenConfig.element, 1);
-    addButton.before(barConfiguration);
+    barControls.before(barConfiguration);
 }
 
 /**
@@ -156,6 +157,22 @@ async function onSaveDefaults(tokenConfig) {
 
     await game.settings.set("barbrawl", "defaultResources", expandObject(data).flags.barbrawl.resourceBars);
     ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
+}
+
+/**
+ * Handles a load button click by updating the token with the default bar
+ *  configuration and re-rendering the config application.
+ * @param {TokenConfig} tokenConfig The token configuration object.
+ */
+async function onLoadDefaults(tokenConfig) {
+    const defaults = game.settings.get("barbrawl", "defaultResources");
+    if (!defaults) {
+        ui.notifications.error("Bar Brawl | " + game.i18n.localize("barbrawl.noDefaults"));
+        return;
+    }
+
+    await tokenConfig.token.update({ "flags.barbrawl.resourceBars": defaults }, { diff: false });
+    return tokenConfig.render();
 }
 
 /**

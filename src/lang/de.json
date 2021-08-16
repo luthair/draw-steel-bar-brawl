@@ -50,6 +50,8 @@
         "add": "Ressource hinzufügen",
         "save": "Als Standard speichern",
         "saveConfirmation": "Standard-Ressourcen gespeichert.",
+        "load": "Standards laden",
+        "noDefaults": "Für diese Welt existieren keine Standard-Ressourcen.",
         "resetConfirmation": "Standard-Ressourcen zurückgesetzt."
     }
 }

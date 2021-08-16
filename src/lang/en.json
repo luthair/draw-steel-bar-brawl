@@ -50,6 +50,8 @@
         "add": "Add resource",
         "save": "Save as default",
         "saveConfirmation": "Saved default token resources.",
+        "load": "Load defaults",
+        "noDefaults": "No default configuration stored for this world.",
         "resetConfirmation": "Default token resources reset."
     }
 }
