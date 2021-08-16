@@ -26,11 +26,16 @@
             "value": "Value (current/max)",
             "color": "Color (min/max)",
             "position": "Position",
+            "advanced": "Advanced configuration",
+            "advancedButton": "Show more settings",
             "style": "Label",
             "ignoreLimits": "Ignore limits",
+            "ignoreLimitsHint": "Disables clamping of input values between 0 (lower) and the maximum (upper). This is only applied to custom bars as clamping for other attributes is handled by the system.",
             "ignoreMin": "Lower limit",
             "ignoreMax": "Upper limit",
-            "invert": "Invert values"
+            "invert": "Invert values",
+            "invertHint": "Displays 0 as a full bar and the maximum value as an empty bar.",
+            "save": "Update bar"
         },
         "attribute": {
             "none": "None (remove)",

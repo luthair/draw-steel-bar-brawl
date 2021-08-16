@@ -106,6 +106,8 @@ export const getDefaultBar = function (id, attribute) {
     if (attribute === "custom") {
         defaultBar.value = 10;
         defaultBar.max = 10;
+        defaultBar.ignoreMin = false;
+        defaultBar.ignoreMax = false;
     }
 
     if (id === "bar1") {

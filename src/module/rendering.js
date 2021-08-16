@@ -1,4 +1,5 @@
 import { getBars, getBar, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
+import BarConfigExtended from "./extendedConfig.js";
 
 /**
  * Extends the original Token.drawBars() with custom bar rendering. 
@@ -45,9 +46,10 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.append(barConfiguration);
     if (resourceTab.hasClass("active")) adjustConfigHeight(html, data.brawlBars.length);
 
-    html.find(".brawlbar.add").click(event => onAddResource(event, tokenConfig, data));
-    html.find(".brawlbar.save").click(() => onSaveDefaults(tokenConfig));
-    html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig));
+    html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
+    html.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
+    html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig.token));
+    html.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, data));
 }
 
 /**
@@ -55,9 +57,10 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
  * @constant {TokenConfig} this The token configuration that this function is bound to.
  * @param {jQuery.Event} event The event of the selection change.
  */
-function onChangeBarAttribute(event) {
+export const onChangeBarAttribute = function (event) {
     const barId = event.target.name.split(".")[3];
-    const form = event.target.form.querySelector("#" + barId);
+    let form = event.target.form;
+    if (!form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
     if (!form) return;
 
     const valueInput = form.querySelector(`input.${barId}-value`);
@@ -78,7 +81,7 @@ function onChangeBarAttribute(event) {
             el.checked = true;
         });
 
-        const resource = this.token.getBarAttribute(null, { alternative: event.target.value });
+        const resource = this.getBarAttribute(null, { alternative: event.target.value });
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");
@@ -95,6 +98,24 @@ function onChangeBarAttribute(event) {
 }
 
 /**
+ * Opens an application with additional configuration options.
+ * @param {jQuery.Event} event The event of the button click.
+ * @param {Object} data The data of the request.
+ */
+function onOpenAdvancedConfiguration(event, data) {
+    const barId = event.currentTarget.parentElement.parentElement.id;
+    const barData = data.brawlBars.find(bar => bar.id === barId);
+    if (!barData) return;
+
+    new BarConfigExtended(barData, {
+        parent: data.object.document,
+        displayModes: data.displayModes,
+        barAttributes: data.barAttributes
+    }).render(true);
+    return false;
+}
+
+/**
  * Handles an add button click event by adding another resource.
  * @param {jQuery.Event} event The event of the button click.
  * @param {TokenConfig} tokenConfig The token configuration object.
@@ -103,9 +124,14 @@ function onChangeBarAttribute(event) {
 async function onAddResource(event, tokenConfig, data) {
     const addButton = $(event.currentTarget);
     const htmlBars = addButton.siblings("details");
-    data["brawlBars"] = [getDefaultBar(getNewBarId(htmlBars), "custom")];
+    const newBar = getDefaultBar(getNewBarId(htmlBars), "custom");
+    data.brawlBars.push(newBar);
 
-    const barConfiguration = await renderTemplate("modules/barbrawl/templates/bar-config.hbs", data);
+    const barConfiguration = await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+        brawlBars: [newBar],
+        displayModes: data.displayModes,
+        barAttributes: data.barAttributes
+    });
     if (htmlBars.length > 0) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
     }
@@ -141,7 +167,7 @@ async function onSaveDefaults(tokenConfig) {
 function adjustConfigHeight(html, additionalBars) {
     if (additionalBars <= 0) return;
     const height = parseInt(html.css("height"), 10);
-    html.css("height", (additionalBars * 17) + Math.max(height, 465) + "px");
+    html.css("height", (additionalBars * 17) + Math.max(height, 434) + "px");
 }
 
 /**

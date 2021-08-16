@@ -10,22 +10,22 @@
     color: #aaa;
 }
 
-.token-sheet .tab[data-tab="resources"] label {
+.token-sheet .tab[data-tab="resources"] label,
+.brawlbar-configuration label {
     white-space: nowrap;
 }
 
-.token-sheet .tab[data-tab = "resources"] .form-fields label {
+.token-sheet .tab[data-tab = "resources"] .form-fields label,
+.brawlbar-configuration .form-fields label {
     display: flex;
 }
 
-button.brawlbar {
-    line-height: 24px;
-    width: 90%;
-    margin-left: 5%;
+.bar-controls {
+    margin: 0 5%;
 }
 
-button.brawlbar.save {
-    margin-bottom: 5px;
+.bar-controls button.brawlbar-add {
+    flex: 1 1 100%;
 }
 
 form .form-group .form-fields button.barbrawl-reset {

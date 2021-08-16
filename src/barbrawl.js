@@ -14,7 +14,7 @@ Hooks.once('init', async function () {
 
     registerSettings();
 
-    getTemplate("modules/barbrawl/templates/bar-config.hbs");
+    loadTemplates(["modules/barbrawl/templates/bar-config-minimal.hbs", "modules/barbrawl/templates/bar-config.hbs"]);
 });
 
 /** Hook to replace the token bar rendering. */

@@ -1,0 +1,52 @@
+<form class="brawlbar-configuration">
+    {{> "modules/barbrawl/templates/bar-config-minimal.hbs" this.object displayModes=this.options.displayModes
+    barAttributes=this.options.barAttributes}}
+
+    {{#with this.object}}
+    <div class="form-group">
+        <label>{{localize "barbrawl.config.style"}}:</label>
+        <div class="form-fields">
+            <select name="flags.barbrawl.resourceBars.{{this.id}}.style">
+                {{#select this.style}}
+                <option value="user">{{localize "barbrawl.textStyle.user"}}</option>
+                <option value="none">{{localize "barbrawl.textStyle.none"}}</option>
+                <option value="fraction">{{localize "barbrawl.textStyle.fraction"}}</option>
+                <option value="percent">{{localize "barbrawl.textStyle.percent"}}</option>
+                {{/select}}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "barbrawl.config.ignoreLimits"}}:</label>
+        <div class="form-fields">
+            <label>
+                <input class="ignore-limit" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMin"
+                    {{#if this.ignoreMin}}checked{{/if}} {{#if (ne this.attribute "custom" )}}disabled{{/if}} />
+                <span>{{localize "barbrawl.config.ignoreMin"}}</span>
+            </label>
+            <span class="sep" style="margin: 0;">-</span>
+            <label>
+                <input class="ignore-limit" type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.ignoreMax"
+                    {{#if this.ignoreMax}}checked{{/if}} {{#if (ne this.attribute "custom" )}}disabled{{/if}} />
+                <span>{{localize "barbrawl.config.ignoreMax"}}</span>
+            </label>
+        </div>
+        <p class="notes">{{localize "barbrawl.config.ignoreLimitsHint"}}</p>
+    </div>
+
+    <div class="form-group">
+        <label for="invert">{{localize "barbrawl.config.invert"}}:</label>
+        <div class="form-fields">
+            <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.invert" {{#if
+                this.invert}}checked{{/if}} />
+        </div>
+        <p class="notes">{{localize "barbrawl.config.invertHint"}}</p>
+    </div>
+    {{/with}}
+
+    <footer class="sheet-footer">
+        <button type="submit" name="submit" value="1"><i class="far fa-save"></i> {{localize
+            "barbrawl.config.save"}}</button>
+    </footer>
+</form>
