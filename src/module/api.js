@@ -5,11 +5,11 @@
  */
 export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
-    const barArray = Object.values(resourceBars).filter(bar => bar.id);
+    const barArray = Object.values(resourceBars);
 
-    if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1?.id)
+    if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1)
         barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute));
-    if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2?.id)
+    if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
         barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute));
     return barArray;
 }
@@ -22,8 +22,8 @@ export const getBars = function (tokenDoc) {
  */
 export const getBar = function (tokenDoc, barId) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
-    if (barId === "bar1" && !resourceBars.bar1?.id) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
-    if (barId === "bar2" && !resourceBars.bar2?.id) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
+    if (barId === "bar1" && !resourceBars.bar1) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
+    if (barId === "bar2" && !resourceBars.bar2) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
     return resourceBars[barId];
 }
 

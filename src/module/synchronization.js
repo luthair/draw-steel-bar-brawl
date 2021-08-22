@@ -18,15 +18,23 @@ export const prepareUpdate = function (tokenData, newData) {
             // Remove bars that were explicitly set to "None" attribute.
             if (barId.startsWith("-=")) continue; // Already queued for removal
 
-            let bar = changedBars[barId];
+            const bar = changedBars[barId];
             if (bar.attribute === "") {
                 delete changedBars[barId];
                 changedBars["-=" + barId] = null;
             }
 
+            const barData = (foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
+
+            // Validate update.
+            if (!bar.id && !barData?.id) {
+                console.warn("barbrawl | Skipping invalid bar update. This may indicate a compatibility issue.");
+                delete changedBars[barId];
+                continue;
+            }
+
             // Clamp values.
             if (bar.hasOwnProperty("value")) {
-                const barData = (foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
                 if (barData && !barData.ignoreMin) bar.value = Math.max(0, bar.value);
                 if (barData && !barData.ignoreMax && barData.max) bar.value = Math.min(barData.max, bar.value);
             }
