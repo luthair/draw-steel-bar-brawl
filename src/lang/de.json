@@ -35,6 +35,8 @@
             "ignoreMax": "Obergrenze",
             "invert": "Werte umkehren",
             "invertHint": "Zeigt 0 als leere Bar und den Maximalwert als volle Bar an.",
+            "label": "Beschriftungspräfix",
+            "labelHint": "Zeit den konfigurierten Text vor den Nummern der Bar-Beschriftung an. Dies gilt nicht, wenn die Bar nicht beschriftet ist.",
             "save": "Bar aktualisieren"
         },
         "attribute": {

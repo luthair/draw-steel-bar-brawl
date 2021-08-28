@@ -341,10 +341,10 @@ function drawResourceBar(token, bar, data) {
             if (existingLabel) bar.removeChild(existingLabel);
             break;
         case "fraction":
-            drawBarLabel(bar, width, height, `${data.value} / ${data.max}`);
+            drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${data.value} / ${data.max}`);
             break;
         case "percent":
-            drawBarLabel(bar, width, height, `${Math.round(percentage * 100)}%`);
+            drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${Math.round(percentage * 100)}%`);
             break;
         default:
             console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
