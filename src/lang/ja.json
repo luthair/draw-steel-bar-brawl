@@ -1,50 +1,50 @@
 {
     "barbrawl": {
         "barStyle": {
-            "name": "バー･スタイル",
+            "name": "バーのスタイル",
             "hint": "バーの表示方法を変更します。",
-            "minimal": "最小限 (スリム, 枠線無)",
-            "default": "デフォルト (枠線有)",
-            "large": "最大限 (ワイド, 枠線有)"
+            "minimal": "最小限 (スリム,ボーダー線なし)",
+            "default": "オンセ工房デフォルト (太いボーダー線)",
+            "large": "大きい (広め, 細いボーダー線)"
         },
         "textStyle": {
-            "name": "バー･ラベル",
-            "hint": "バーが表示される数を変更します。",
-            "user": "デフォルト",
+            "name": "バーの表記",
+            "hint": "バーに表示される数値の表記を変更します。",
+            "user": "ユーザーのデフォルト",
             "none": "なし",
-            "fraction": "分数 (値 / 最大)",
+            "fraction": "分数 (現在値 / 最大値)",
             "percent": "パーセンテージ (%)"
         },
         "reset": {
-            "name": "デフォルトにリセット",
-            "hint": "設定をリセットして、デフォルトのトークン･リソースを表示します。",
+            "name": "デフォルト設定にリセットする",
+            "hint": "デフォルトのトークンリソース構成をクリアします。",
             "button": "リセット"
         },
         "config": {
-            "attribute": "能力値",
-            "visibility": "可視性",
-            "value": "値 (現在 / 最大)",
-            "color": "色 (最小 / 最大)",
-            "position": "位置",
-            "style": "ラベル",
-            "ignoreLimits": "制限無視",
+            "attribute": "属性",
+            "visibility": "可視権限",
+            "value": "値 (現在値/最大値)",
+            "color": "色 (最小値/最大値)",
+            "position": "表示位置",
+            "style": "ラベル設定",
+            "ignoreLimits": "限界を無視する",
             "ignoreMin": "下限",
             "ignoreMax": "上限",
-            "invert": "値の反転"
+            "invert": "値を反転させる"
         },
         "attribute": {
             "none": "なし (除去)",
-            "custom": "カスタム (以下の値)"
+            "custom": "カスタム (以下の値を利用)"
         },
         "position": {
-            "top-inner": "上部 (内)",
-            "top-outer": "上部 (外)",
-            "bottom-inner": "下部 (内)",
-            "bottom-outer": "下部 (外)"
+            "top-inner": "上 (内側)",
+            "top-outer": "上 (外側)",
+            "bottom-inner": "下 (内側)",
+            "bottom-outer": "下 (外側)"
         },
-        "add": "バー追加",
-        "save": "デフォルトとして保存",
-        "saveConfirmation": "デフォルトのトークン･リソース･バーとして保存しました。",
-        "resetConfirmation": "トークン･リソース設定のデフォルトがリセットされて、初期状態になりました。"
+        "add": "リソースを加える",
+        "save": "デフォルト設定として保存する",
+        "saveConfirmation": "現在のトークンリソースがデフォルトとして保存されました。",
+        "resetConfirmation": "デフォルトのトークンリソースがリセットされました。"
     }
 }
