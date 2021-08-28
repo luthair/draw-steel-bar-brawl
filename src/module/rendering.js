@@ -67,10 +67,16 @@ function onChangeBarAttribute(event) {
         valueInput.removeAttribute("disabled");
         maxInput.removeAttribute("disabled");
         if (maxInput.value === "") maxInput.value = valueInput.value;
-        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.removeAttribute("disabled"));
+        form.querySelectorAll(`input.ignore-limit`).forEach(el => {
+            el.removeAttribute("disabled");
+            el.checked = false;
+        });
     } else {
         valueInput.setAttribute("disabled", "");
-        form.querySelectorAll(`input.ignore-limit`).forEach(el => el.setAttribute("disabled", ""));
+        form.querySelectorAll(`input.ignore-limit`).forEach(el => {
+            el.setAttribute("disabled", "");
+            el.checked = true;
+        });
 
         const resource = this.token.getBarAttribute(null, { alternative: event.target.value });
         if (resource === null) {
@@ -165,7 +171,7 @@ export const extendTokenHud = async function (tokenHud, html, data) {
 function updateBarAttribute(event) {
     const input = event.currentTarget;
     if (input.dataset.bar) return this._onAttributeUpdate(event);
-    
+
     // Workaround for https://gitlab.com/foundrynet/foundryvtt/-/issues/5606
     const data = this.object.data;
     data[input.name] = foundry.utils.getProperty(this.object.data, input.name);

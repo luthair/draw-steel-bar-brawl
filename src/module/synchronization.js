@@ -67,7 +67,7 @@ function synchronizeBrawlBar(barId, newData) {
     if (brawlBarData?.attribute) {
         newData[barId] = { attribute: brawlBarData.attribute };
     } else if (newData.flags.barbrawl.resourceBars["-=" + barId] === null) {
-        newData[barId] = { attribute: "" };
+        newData[barId] = { attribute: null };
     }
 }
 
@@ -84,7 +84,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
     const brawlBars = foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {};
     const brawlBarChanges = newData.flags.barbrawl.resourceBars;
     const brawlBarData = brawlBars[barId];
-    const remove = Object.keys(foundryBarData).length === 0 || foundryBarData.attribute === "";
+    const remove = Object.keys(foundryBarData).length === 0 || foundryBarData.attribute === null;
 
     if (brawlBarData) {
         if (remove) {
