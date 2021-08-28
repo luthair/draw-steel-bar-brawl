@@ -51,6 +51,15 @@
         </div>
         <p class="notes">{{localize "barbrawl.config.labelHint"}}</p>
     </div>
+
+    <div class="form-group">
+        <label>{{localize "barbrawl.config.approximate"}}:</label>
+        <div class="form-fields">
+            <input type="number" name="flags.barbrawl.resourceBars.{{this.id}}.subdivisions"
+                value="{{this.subdivisions}}" />
+        </div>
+        <p class="notes">{{localize "barbrawl.config.approximateHint"}}</p>
+    </div>
     {{/with}}
 
     <footer class="sheet-footer">

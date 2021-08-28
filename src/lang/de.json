@@ -4,7 +4,7 @@
             "name": "Bar Stil",
             "hint": "Verändert, wie die Balken angezeigt werden.",
             "minimal": "Minimalistisch (dünn, kein Rand)",
-            "default": "Foundry-Standard (dicker Rand)",
+            "default": "Foundry-Standard",
             "large": "Groß (breit, dünner Rand)"
         },
         "textStyle": {
@@ -37,6 +37,8 @@
             "invertHint": "Zeigt 0 als leere Bar und den Maximalwert als volle Bar an.",
             "label": "Beschriftungspräfix",
             "labelHint": "Zeit den konfigurierten Text vor den Nummern der Bar-Beschriftung an. Dies gilt nicht, wenn die Bar nicht beschriftet ist.",
+            "approximate": "Näherungswert",
+            "approximateHint": "Zeigt einen angenäherten Wert auf der Bar und deren Beschriftung an. Die Einstellung bestimmt, wie viele Segmente angezeigt werden.",
             "save": "Bar aktualisieren"
         },
         "attribute": {

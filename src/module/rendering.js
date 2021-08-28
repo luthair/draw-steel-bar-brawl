@@ -303,8 +303,17 @@ function drawResourceBar(token, bar, data) {
     let height = Math.max((canvas.dimensions.size / 12), 8);
     if (token.data.height >= 2) height *= 1.6;  // Enlarge the bar for large tokens
 
-    const baseValue = data.invert ? data.max - data.value : data.value;
-    let percentage = Math.clamped(baseValue, 0, data.max) / data.max;
+    let labelValue = data.value;
+    let labelMax = data.max;
+
+    // Apply approximation.
+    if (data.subdivisions) {
+        labelValue = Math.ceil(labelValue / data.max * data.subdivisions);
+        labelMax = data.subdivisions;
+    }
+
+    const barValue = data.invert ? labelMax - labelValue : labelValue;
+    const barPercentage = Math.clamped(barValue, 0, labelMax) / labelMax;
 
     // Defer rendering to HP Bar module for compatibility.
     if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
@@ -312,20 +321,21 @@ function drawResourceBar(token, bar, data) {
         token._drawBar(0, bar, data);
         bar.position.set(0, posY);
     } else {
-        let color = interpolateColor(data.mincolor, data.maxcolor, percentage);
+        const color = interpolateColor(data.mincolor, data.maxcolor, barPercentage);
+        const segments = data.subdivisions ? barValue : 1;
 
         // Draw the bar itself
         switch (game.settings.get("barbrawl", "barStyle")) {
             case "minimal":
                 height -= 2;
-                drawMinimalBar(bar, width, height, percentage, color);
+                drawMinimalBar(bar, width, height, barPercentage, color, segments);
                 break;
             case "default":
-                drawDefaultBar(bar, width, height, percentage, color);
+                drawDefaultBar(bar, width, height, barPercentage, color, segments);
                 break;
             case "large":
                 height += 2;
-                drawLargeBar(bar, width, height, percentage, color);
+                drawLargeBar(bar, width, height, barPercentage, color, segments);
                 break;
             default:
                 console.error(`barbrawl | Unknown bar style ${game.settings.get("barbrawl", "barStyle")}.`);
@@ -341,10 +351,12 @@ function drawResourceBar(token, bar, data) {
             if (existingLabel) bar.removeChild(existingLabel);
             break;
         case "fraction":
-            drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${data.value} / ${data.max}`);
+            drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${labelValue} / ${labelMax}`);
             break;
         case "percent":
-            drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${Math.round(percentage * 100)}%`);
+            // Label does not match bar percentage because of possible inversion.
+            const labelPercentage = Math.round((Math.clamped(labelValue, 0, labelMax) / labelMax) * 100);
+            drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${labelPercentage}%`);
             break;
         default:
             console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
@@ -363,8 +375,9 @@ function drawResourceBar(token, bar, data) {
  * @param {Height} height The target height of the bar.
  * @param {Number} percentage How far the bar should be filled.
  * @param {String} color The color to fill the bar with.
+ * @param {number} segments The amount of segments to draw.
  */
-function drawDefaultBar(bar, width, height, percentage, color) {
+function drawDefaultBar(bar, width, height, percentage, color, segments) {
     const strokeWidth = Math.clamped(height / 8, 1, 2);
     bar.clear()
         .beginFill(0x000000, 0.5)
@@ -372,8 +385,12 @@ function drawDefaultBar(bar, width, height, percentage, color) {
         .drawRoundedRect(0, 0, width, height, 3);
     if (percentage <= 0.01) return;
     bar.beginFill(color, 1.0)
-        .lineStyle(strokeWidth, 0x000000, 1.0)
-        .drawRoundedRect(0, 0, percentage * width, height, 2);
+        .lineStyle(strokeWidth, 0x000000, 1.0);
+
+    const segmentWidth = percentage * width / segments;
+    for (let i = 0; i < segments; i++) {
+        bar.drawRoundedRect(segmentWidth * i, 0, segmentWidth, height, 2);
+    }
 }
 
 /**
@@ -383,13 +400,20 @@ function drawDefaultBar(bar, width, height, percentage, color) {
  * @param {Height} height The target height of the bar.
  * @param {Number} percentage How far the bar should be filled.
  * @param {String} color The color to fill the bar with.
+ * @param {number} segments The amount of segments to draw.
  */
-function drawMinimalBar(bar, width, height, percentage, color) {
+function drawMinimalBar(bar, width, height, percentage, color, segments) {
     bar.clear()
         .beginFill(0x000000, 0.2)
-        .drawRect(0, 0, width, height)
-        .beginFill(color, 0.8)
-        .drawRect(0, 0, percentage * width, height);
+        .drawRect(0, 0, width, height);
+    if (percentage <= 0.01) return;
+    bar.beginFill(color, 0.8);
+
+    const segmentWidth = percentage * width / segments;
+    bar.drawRect(0, 0, segmentWidth, height);
+    for (let i = 1; i < segments; i++) {
+        bar.drawRect(segmentWidth * i + 1, 0, segmentWidth - 1, height);
+    }
 }
 
 /**
@@ -399,17 +423,21 @@ function drawMinimalBar(bar, width, height, percentage, color) {
  * @param {Height} height The target height of the bar.
  * @param {Number} percentage How far the bar should be filled.
  * @param {String} color The color to fill the bar with.
- * @param {Number} value The current value of the resource.
- * @param {Number} max The maximum value of the resource.
+ * @param {number} segments The amount of segments to draw.
  */
-function drawLargeBar(bar, width, height, percentage, color) {
+function drawLargeBar(bar, width, height, percentage, color, segments) {
     bar.clear()
         .beginFill(0x000000, 0.5)
         .lineStyle(1, 0x000000, 0.9)
-        .drawRoundedRect(0, 0, width, height, 2)
-        .beginFill(color, 0.8)
-        .lineStyle(0)
-        .drawRoundedRect(0.5, 0.5, percentage * (width - 1), height - 1, 1);
+        .drawRoundedRect(0, 0, width, height, 2);
+    if (percentage <= 0.01) return;
+    bar.beginFill(color, 0.8)
+        .lineStyle(0);
+
+    const segmentWidth = percentage * width / segments;
+    for (let i = 0; i < segments; i++) {
+        bar.drawRoundedRect(segmentWidth * i + 0.5, 0.5, segmentWidth - 1, height - 1, 1);
+    }
 }
 
 /**

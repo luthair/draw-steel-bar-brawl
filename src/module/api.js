@@ -100,7 +100,9 @@ export const getDefaultBar = function (id, attribute) {
         style: "user",
         ignoreMin: true,
         ignoreMax: true,
-        invert: false
+        invert: false,
+        label: "",
+        subdivisions: 0
     }
 
     if (attribute === "custom") {
