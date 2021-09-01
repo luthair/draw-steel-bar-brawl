@@ -5,7 +5,8 @@
             "hint": "Verändert, wie die Balken angezeigt werden.",
             "minimal": "Minimalistisch (dünn, kein Rand)",
             "default": "Foundry-Standard",
-            "large": "Groß (breit, dünner Rand)"
+            "large": "Groß (breit, dünner Rand)",
+            "legacy": "Alt (dicker Rand)"
         },
         "textStyle": {
             "name": "Bar Beschriftung",

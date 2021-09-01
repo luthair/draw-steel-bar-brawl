@@ -5,7 +5,8 @@
             "hint": "Changes how bars are displayed.",
             "minimal": "Minimalistic (slim, no border)",
             "default": "Foundry default",
-            "large": "Large (wide, thin border)"
+            "large": "Large (wide, thin border)",
+            "legacy": "Legacy (thick border)"
         },
         "textStyle": {
             "name": "Bar label",

@@ -337,6 +337,9 @@ function drawResourceBar(token, bar, data) {
                 height += 2;
                 drawLargeBar(bar, width, height, barPercentage, color, segments);
                 break;
+            case "legacy":
+                drawLegacyBar(bar, width, height, barPercentage, color, segments);
+                break;
             default:
                 console.error(`barbrawl | Unknown bar style ${game.settings.get("barbrawl", "barStyle")}.`);
         }
@@ -369,7 +372,7 @@ function drawResourceBar(token, bar, data) {
 }
 
 /**
- * Draws a bar using the default style with thick, rounded borders.
+ * Draws a bar using the default style with rounded borders.
  * @param {PIXI.Graphics} bar The graphics object to draw onto.
  * @param {Number} width The target width of the bar.
  * @param {Height} height The target height of the bar.
@@ -437,6 +440,30 @@ function drawLargeBar(bar, width, height, percentage, color, segments) {
     const segmentWidth = percentage * width / segments;
     for (let i = 0; i < segments; i++) {
         bar.drawRoundedRect(segmentWidth * i + 0.5, 0.5, segmentWidth - 1, height - 1, 1);
+    }
+}
+
+/**
+ * Draws a bar using the old default style with thick rounded borders.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Number} width The target width of the bar.
+ * @param {Height} height The target height of the bar.
+ * @param {Number} percentage How far the bar should be filled.
+ * @param {String} color The color to fill the bar with.
+ * @param {number} segments The amount of segments to draw.
+ */
+function drawLegacyBar(bar, width, height, percentage, color, segments) {
+    bar.clear()
+        .beginFill(0x000000, 0.5)
+        .lineStyle(2, 0x000000, 0.9)
+        .drawRoundedRect(0, 0, width, height, 3);
+    if (percentage <= 0.01) return;
+    bar.beginFill(color, 0.8)
+        .lineStyle(1, 0x000000, 0.8);
+
+    const segmentWidth = percentage * (width - 2) / segments;
+    for (let i = 0; i < segments; i++) {
+        bar.drawRoundedRect(segmentWidth * i + 1, 1, segmentWidth, height - 2, 2);
     }
 }
 

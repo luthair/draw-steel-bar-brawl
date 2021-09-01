@@ -11,7 +11,8 @@ export const registerSettings = function () {
         choices: {
             "minimal": "barbrawl.barStyle.minimal",
             "default": "barbrawl.barStyle.default",
-            "large": "barbrawl.barStyle.large"
+            "large": "barbrawl.barStyle.large",
+            "legacy": "barbrawl.barStyle.legacy"
         },
         default: "default",
         onChange: updateBars
