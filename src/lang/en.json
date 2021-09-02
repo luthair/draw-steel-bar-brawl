@@ -37,7 +37,7 @@
             "invert": "Invert values",
             "invertHint": "Displays 0 as a full bar and the maximum value as an empty bar.",
             "label": "Label prefix",
-            "labelHint": "Displays the configured text in front of the numbers of the bar's label. This is not applied when the bar does not have a label.",
+            "labelHint": "Displays the configured text on the bar.",
             "approximate": "Approximation",
             "approximateHint": "Shows an approximate value on the bar and its label. This configures the number of segments to display.",
             "save": "Update bar"

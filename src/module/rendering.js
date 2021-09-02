@@ -350,8 +350,7 @@ function drawResourceBar(token, bar, data) {
     if (!textStyle || textStyle === "user") textStyle = game.settings.get("barbrawl", "textStyle");
     switch (textStyle) {
         case "none":
-            const existingLabel = bar.getChildByName(bar.name + "-text");
-            if (existingLabel) bar.removeChild(existingLabel);
+            if (data.label) drawBarLabel(bar, width, height, data.label);
             break;
         case "fraction":
             drawBarLabel(bar, width, height, `${data.label ? data.label + "  " : ""}${labelValue} / ${labelMax}`);
