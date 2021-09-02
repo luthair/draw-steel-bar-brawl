@@ -50,7 +50,11 @@
             "top-inner": "Oben (innen)",
             "top-outer": "Oben (außen)",
             "bottom-inner": "Unten (innen)",
-            "bottom-outer": "Unten (außen)"
+            "bottom-outer": "Unten (außen)",
+            "left-inner": "Links (innen)",
+            "left-outer": "Links (außen)",
+            "right-inner": "Rechts (innen)",
+            "right-outer": "Rechts (außen)"
         },
         "add": "Ressource hinzufügen",
         "save": "Als Standard speichern",

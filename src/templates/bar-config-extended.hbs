@@ -56,7 +56,7 @@
         <label>{{localize "barbrawl.config.approximate"}}:</label>
         <div class="form-fields">
             <input type="number" name="flags.barbrawl.resourceBars.{{this.id}}.subdivisions"
-                value="{{this.subdivisions}}" />
+                min="0" max="{{this.max}}" value="{{this.subdivisions}}" />
         </div>
         <p class="notes">{{localize "barbrawl.config.approximateHint"}}</p>
     </div>

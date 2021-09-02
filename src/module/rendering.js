@@ -216,24 +216,48 @@ function drawBrawlBars() {
     let visibleBars = getVisibleBars(this.document);
     if (visibleBars.length === 0) return;
 
-    let positionCounts = [0, 0, 0, 0];
-    for (let barData of visibleBars) {
-        let barIndex = 0;
-        switch (barData.position) {
-            case "top-inner":
-                barIndex = positionCounts[0]++;
-                break;
-            case "top-outer":
-                barIndex = positionCounts[1]++;
-                break;
-            case "bottom-inner":
-                barIndex = positionCounts[2]++;
-                break;
-            case "bottom-outer":
-                barIndex = positionCounts[3]++;
-        }
-        this.bars.addChild(createResourceBar(this, barData, barIndex));
+    const reservedSpace = {
+        "top-inner": 0,
+        "top-outer": 0,
+        "bottom-inner": 0,
+        "bottom-outer": 0,
+        "left-inner": 0,
+        "left-outer": 0,
+        "right-inner": 0,
+        "right-outer": 0
+    };
+
+    // Group inner bars by position.
+    let maxLength = 0;
+    const groupedBars = {
+        "top-inner": [],
+        "bottom-inner": [],
+        "left-inner": [],
+        "right-inner": [],
+        "outer": []
     }
+
+    for (let barData of visibleBars) {
+        const pos = barData.position;
+        if (pos.endsWith("outer")) {
+            groupedBars.outer.push(barData);
+            continue;
+        }
+
+        groupedBars[pos].push(barData);
+        maxLength = Math.max(groupedBars[pos].length, maxLength); // Store highest count on one side.
+    }
+
+    // Render inner bars in sliced order.
+    for (let i = 0; i < maxLength; i++) {
+        createResourceBar(this, groupedBars["top-inner"][i], reservedSpace);
+        createResourceBar(this, groupedBars["bottom-inner"][i], reservedSpace);
+        createResourceBar(this, groupedBars["left-inner"][i], reservedSpace);
+        createResourceBar(this, groupedBars["right-inner"][i], reservedSpace);
+    }
+
+    // Render outer bars sequentially.
+    groupedBars["outer"].forEach(barData => createResourceBar(this, barData, reservedSpace));
 
     this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     this.bars.visible = this.bars.children.length > 0;
@@ -243,20 +267,21 @@ function drawBrawlBars() {
  * Creates a rendering object for a single resource bar.
  * @param {Token} token The token on which to create the bar.
  * @param {Object} data The object containing the bar's data.
- * @param {Number} index The amount of bars previously rendered at the same position.
+ * @param {Object} reservedSpace The amount of already used space per position.
  */
-function createResourceBar(token, data, index) {
+function createResourceBar(token, data, reservedSpace) {
+    if (!data?.max) return;
+
     // Create the rendering object
     let bar = new PIXI.Graphics();
     bar.name = data.id;
-    if (!data.max) {
-        bar.visible = false;
-        return bar;
-    }
 
-    let height = drawResourceBar(token, bar, data);
-    bar.position.set(0, calculatePosition(data.position, height, token.h, index));
-    return bar;
+    const width = calculateWidth(data.position, token, reservedSpace);
+    const renderedHeight = drawResourceBar(token, bar, width, data);
+    const position = calculatePosition(data.position, renderedHeight, token, reservedSpace);
+    reservedSpace[data.position] += renderedHeight;
+    bar.position.set(position[0], position[1]);
+    token.bars.addChild(bar);
 }
 
 /**
@@ -268,7 +293,7 @@ export const redrawBar = function (token, barData) {
     const bar = token.bars.getChildByName(barData.id);
     if (bar) {
         bar.removeChildren();
-        drawResourceBar(token, bar, barData);
+        drawResourceBar(token, bar, bar.width - bar.line.width, barData);
     }
 }
 
@@ -277,11 +302,11 @@ export const redrawBar = function (token, barData) {
  *  PIXI object.
  * @param {Token} token The token to draw the bar on.
  * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {number} width The width of the bar.
  * @param {Object} data The data of the bar to draw.
- * @returns {Number} The final height of the bar.
+ * @returns {number} The final height of the bar.
  */
-function drawResourceBar(token, bar, data) {
-    let width = token.w;
+function drawResourceBar(token, bar, width, data) {
     let height = Math.max((canvas.dimensions.size / 12), 8);
     if (token.data.height >= 2) height *= 1.6;  // Enlarge the bar for large tokens
 
@@ -313,14 +338,14 @@ function drawResourceBar(token, bar, data) {
                 drawMinimalBar(bar, width, height, barPercentage, color, segments);
                 break;
             case "default":
-                drawDefaultBar(bar, width, height, barPercentage, color, segments);
+                drawRoundedBar(bar, width, height, barPercentage, color, segments, Math.clamped(height / 8, 1, 2), 2);
                 break;
             case "large":
                 height += 2;
-                drawLargeBar(bar, width, height, barPercentage, color, segments);
+                drawRoundedBar(bar, width, height, barPercentage, color, segments, 1, 2);
                 break;
             case "legacy":
-                drawLegacyBar(bar, width, height, barPercentage, color, segments);
+                drawRoundedBar(bar, width, height, barPercentage, color, segments, 2, 3);
                 break;
             default:
                 console.error(`barbrawl | Unknown bar style ${game.settings.get("barbrawl", "barStyle")}.`);
@@ -349,50 +374,29 @@ function drawResourceBar(token, bar, data) {
     // Update visibility.
     bar.visible = token._canViewMode(data.visibility);
 
+    // Rotate left & right bars.
+    if (data.position.startsWith("left")) bar.angle = -90;
+    else if (data.position.startsWith("right")) bar.angle = 90;
+
     return height;
-}
-
-/**
- * Draws a bar using the default style with rounded borders.
- * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
- * @param {number} segments The amount of segments to draw.
- */
-function drawDefaultBar(bar, width, height, percentage, color, segments) {
-    const strokeWidth = Math.clamped(height / 8, 1, 2);
-    bar.clear()
-        .beginFill(0x000000, 0.5)
-        .lineStyle(strokeWidth, 0x000000, 1.0)
-        .drawRoundedRect(0, 0, width, height, 3);
-    if (percentage <= 0.01) return;
-    bar.beginFill(color, 1.0)
-        .lineStyle(strokeWidth, 0x000000, 1.0);
-
-    const segmentWidth = percentage * width / segments;
-    for (let i = 0; i < segments; i++) {
-        bar.drawRoundedRect(segmentWidth * i, 0, segmentWidth, height, 2);
-    }
 }
 
 /**
  * Draws a bar without borders.
  * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
+ * @param {number} width The target width of the bar.
+ * @param {number} height The target height of the bar.
+ * @param {number} percentage How far the bar should be filled.
+ * @param {string} color The color to fill the bar with.
  * @param {number} segments The amount of segments to draw.
  */
 function drawMinimalBar(bar, width, height, percentage, color, segments) {
     bar.clear()
         .beginFill(0x000000, 0.2)
         .drawRect(0, 0, width, height);
+
     if (percentage <= 0.01) return;
     bar.beginFill(color, 0.8);
-
     const segmentWidth = percentage * width / segments;
     bar.drawRect(0, 0, segmentWidth, height);
     for (let i = 1; i < segments; i++) {
@@ -401,59 +405,36 @@ function drawMinimalBar(bar, width, height, percentage, color, segments) {
 }
 
 /**
- * Draws a bar with a thin border.
+ * Draws a bar with rounded borders.
  * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
+ * @param {number} width The target width of the bar.
+ * @param {number} height The target height of the bar.
+ * @param {number} percentage How far the bar should be filled.
+ * @param {string} color The color to fill the bar with.
  * @param {number} segments The amount of segments to draw.
+ * @param {number} borderWidth The stroke width of the borders.
+ * @param {number} borderRadius The radius of the borders.
  */
-function drawLargeBar(bar, width, height, percentage, color, segments) {
+function drawRoundedBar(bar, width, height, percentage, color, segments, borderWidth, borderRadius) {
     bar.clear()
         .beginFill(0x000000, 0.5)
-        .lineStyle(1, 0x000000, 0.9)
-        .drawRoundedRect(0, 0, width, height, 2);
-    if (percentage <= 0.01) return;
-    bar.beginFill(color, 0.8)
-        .lineStyle(0);
+        .lineStyle(borderWidth, 0x000000, 0.9)
+        .drawRoundedRect(0, 0, width, height, borderRadius);
 
+    if (percentage <= 0.01) return;
+    bar.beginFill(color, 0.8);
     const segmentWidth = percentage * width / segments;
     for (let i = 0; i < segments; i++) {
-        bar.drawRoundedRect(segmentWidth * i + 0.5, 0.5, segmentWidth - 1, height - 1, 1);
-    }
-}
-
-/**
- * Draws a bar using the old default style with thick rounded borders.
- * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
- * @param {number} segments The amount of segments to draw.
- */
-function drawLegacyBar(bar, width, height, percentage, color, segments) {
-    bar.clear()
-        .beginFill(0x000000, 0.5)
-        .lineStyle(2, 0x000000, 0.9)
-        .drawRoundedRect(0, 0, width, height, 3);
-    if (percentage <= 0.01) return;
-    bar.beginFill(color, 0.8)
-        .lineStyle(1, 0x000000, 0.8);
-
-    const segmentWidth = percentage * (width - 2) / segments;
-    for (let i = 0; i < segments; i++) {
-        bar.drawRoundedRect(segmentWidth * i + 1, 1, segmentWidth, height - 2, 2);
+        bar.drawRoundedRect(segmentWidth * i, 0, segmentWidth, height, borderRadius - 1);
     }
 }
 
 /**
  * Adds a PIXI.Text object on top of the given graphics object.
  * @param {PIXI.Graphics} bar The PIXI object to add the text to.
- * @param {Number} width The width of the bar.
- * @param {Number} height The height of the bar.
- * @param {String} text The text to display.
+ * @param {number} width The width of the bar.
+ * @param {number} height The height of the bar.
+ * @param {string} text The text to display.
  */
 function drawBarLabel(bar, width, height, text) {
     let font = CONFIG.canvasTextStyle.clone();
@@ -472,10 +453,10 @@ function drawBarLabel(bar, width, height, text) {
  * Interpolates two RGB hex colors to get a midway point at the given
  *  percentage. The colors are converted into the HSV space to produce more
  *  intuitive results.
- * @param {String} minColor The lowest color as RGB hex string.
- * @param {String} maxColor The highest color as RGB hex string.
- * @param {Number} percentage The interpolation interval.
- * @returns {String} The interpolated color as RBG hex string.
+ * @param {string} minColor The lowest color as RGB hex string.
+ * @param {string} maxColor The highest color as RGB hex string.
+ * @param {number} percentage The interpolation interval.
+ * @returns {string} The interpolated color as RBG hex string.
  */
 function interpolateColor(minColor, maxColor, percentage) {
     let minRgb = PIXI.utils.hex2rgb(PIXI.utils.string2hex(minColor));
@@ -497,10 +478,10 @@ function interpolateColor(minColor, maxColor, percentage) {
 /**
  * Converts a color from RGB to HSV space.
  * Source: https://stackoverflow.com/questions/8022885/rgb-to-hsv-color-in-javascript/54070620#54070620
- * @param {Number} r The red value of the color as float (0 to 1).
- * @param {Number} g The green value of the color as float (0 to 1).
- * @param {Number} b The blue value of the color as float (0 to 1).
- * @returns {Number[]} The HSV color with hue in degrese (0 to 360), saturation and value as float (0 to 1).
+ * @param {number} r The red value of the color as float (0 to 1).
+ * @param {number} g The green value of the color as float (0 to 1).
+ * @param {number} b The blue value of the color as float (0 to 1).
+ * @returns {number[]} The HSV color with hue in degrese (0 to 360), saturation and value as float (0 to 1).
  */
 function rgb2hsv(r, g, b) {
     let v = Math.max(r, g, b), c = v - Math.min(r, g, b);
@@ -511,10 +492,10 @@ function rgb2hsv(r, g, b) {
 /**
  * Converts a color from HSV to RGB space.
  * Source: https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately/54024653#54024653
- * @param {Number} h The hue of the color in degrees (0 to 360).
- * @param {Number} s The saturation of the color as float (0 to 1).
- * @param {Number} v The value of the color as float (0 to 1).
- * @returns {Number[]} The RGB color with each component as float (0 to 1).
+ * @param {number} h The hue of the color in degrees (0 to 360).
+ * @param {number} s The saturation of the color as float (0 to 1).
+ * @param {number} v The value of the color as float (0 to 1).
+ * @returns {number[]} The RGB color with each component as float (0 to 1).
  */
 function hsv2rgb(h, s, v) {
     let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
@@ -522,19 +503,48 @@ function hsv2rgb(h, s, v) {
 }
 
 /**
- * Calculates the vertical coordinate of the bar with the given position
- *  relative to the token's boundaries.
- * @param {String} positionType The configured position indicator.
- * @param {Number} barHeight The height of the rendered bar.
- * @param {Number} tokenHeight The height of the rendered token.
- * @param {Number} index The amount of bars previously rendered at the same position.
- * @returns {Number} The Y-coordinate of the bar.
+ * Calculates the width of the bar with the given position relative to the
+ *  token's dimensions, respecting already reserved space.
+ * @param {string} positionType The configured position indicator.
+ * @param {Token} token The token to read dimensions from.
+ * @param {Object} reservedSpace The amount of already used space per position.
+ * @returns {number} The target width of the bar.
  */
-function calculatePosition(positionType, barHeight, tokenHeight, index) {
+function calculateWidth(positionType, token, reservedSpace) {
     switch (positionType) {
-        case "top-inner": return barHeight * index;
-        case "top-outer": return barHeight * (index + 1) * -1;
-        case "bottom-inner": return tokenHeight - barHeight * (index + 1);
-        case "bottom-outer": return tokenHeight + barHeight * index;
+        case "top-inner":
+        case "bottom-inner":
+            return token.w - reservedSpace["left-inner"] - reservedSpace["right-inner"];
+        case "top-outer":
+        case "bottom-outer":
+            return token.w;
+        case "left-inner":
+        case "right-inner":
+            return token.h - reservedSpace["top-inner"] - reservedSpace["bottom-inner"];
+        case "left-outer":
+        case "right-outer":
+            return token.h;
+    }
+}
+
+/**
+ * Calculates the vertical coordinate of the bar with the given position
+ *  relative to the token's dimension, respecting already reserved space.
+ * @param {string} positionType The configured position indicator.
+ * @param {number} barHeight The height of the rendered bar.
+ * @param {Token} token The token to read dimensions from.
+ * @param {Object} reservedSpace The amount of already used space per position.
+ * @returns {number[]} The target X- and Y-coordinate of the bar.
+ */
+function calculatePosition(positionType, barHeight, token, reservedSpace) {
+    switch (positionType) {
+        case "top-inner": return [reservedSpace["left-inner"], reservedSpace["top-inner"]];
+        case "top-outer": return [0, (reservedSpace["top-outer"] + barHeight) * -1];
+        case "bottom-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"] - barHeight];
+        case "bottom-outer": return [0, token.h + reservedSpace["bottom-outer"]];
+        case "left-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"]];
+        case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, token.h];
+        case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"]];
+        case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, 0];
     }
 }
