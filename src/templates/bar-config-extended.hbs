@@ -4,6 +4,24 @@
 
     {{#with this.object}}
     <div class="form-group">
+        <label>{{localize "barbrawl.config.indent"}}:</label>
+        <div class="form-fields">
+            <label>
+                <input type="number" class="indent-input" name="flags.barbrawl.resourceBars.{{this.id}}.indentLeft"
+                    min="0" max="100" value="{{this.indentLeft}}" />
+                <span>% {{localize "barbrawl.config.indentLeft"}}</span>
+            </label>
+            <span class="sep" style="margin: 0;">-</span>
+            <label>
+                <input type="number" class="indent-input" name="flags.barbrawl.resourceBars.{{this.id}}.indentRight"
+                    min="0" max="100" value="{{this.indentRight}}" />
+                <span>% {{localize "barbrawl.config.indentRight"}}</span>
+            </label>
+        </div>
+        <p class="notes">{{localize "barbrawl.config.indentHint"}}</p>
+    </div>
+
+    <div class="form-group">
         <label>{{localize "barbrawl.config.style"}}:</label>
         <div class="form-fields">
             <select name="flags.barbrawl.resourceBars.{{this.id}}.style">
@@ -55,8 +73,8 @@
     <div class="form-group">
         <label>{{localize "barbrawl.config.approximate"}}:</label>
         <div class="form-fields">
-            <input type="number" name="flags.barbrawl.resourceBars.{{this.id}}.subdivisions"
-                min="0" max="{{this.max}}" value="{{this.subdivisions}}" />
+            <input type="number" name="flags.barbrawl.resourceBars.{{this.id}}.subdivisions" min="0" max="{{this.max}}"
+                value="{{this.subdivisions}}" />
         </div>
         <p class="notes">{{localize "barbrawl.config.approximateHint"}}</p>
     </div>

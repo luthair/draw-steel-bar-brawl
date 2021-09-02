@@ -276,9 +276,9 @@ function createResourceBar(token, data, reservedSpace) {
     let bar = new PIXI.Graphics();
     bar.name = data.id;
 
-    const width = calculateWidth(data.position, token, reservedSpace);
+    const width = calculateWidth(data, token, reservedSpace);
     const renderedHeight = drawResourceBar(token, bar, width, data);
-    const position = calculatePosition(data.position, renderedHeight, token, reservedSpace);
+    const position = calculatePosition(data, renderedHeight, token, reservedSpace);
     reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
     token.bars.addChild(bar);
@@ -391,6 +391,7 @@ function drawResourceBar(token, bar, width, data) {
  * @param {number} segments The amount of segments to draw.
  */
 function drawMinimalBar(bar, width, height, percentage, color, segments) {
+    if (width <= 0) return;
     bar.clear()
         .beginFill(0x000000, 0.2)
         .drawRect(0, 0, width, height);
@@ -416,6 +417,7 @@ function drawMinimalBar(bar, width, height, percentage, color, segments) {
  * @param {number} borderRadius The radius of the borders.
  */
 function drawRoundedBar(bar, width, height, percentage, color, segments, borderWidth, borderRadius) {
+    if (width <= 0) return;
     bar.clear()
         .beginFill(0x000000, 0.5)
         .lineStyle(borderWidth, 0x000000, 0.9)
@@ -505,46 +507,49 @@ function hsv2rgb(h, s, v) {
 /**
  * Calculates the width of the bar with the given position relative to the
  *  token's dimensions, respecting already reserved space.
- * @param {string} positionType The configured position indicator.
+ * @param {Object} barData The data of the bar.
  * @param {Token} token The token to read dimensions from.
  * @param {Object} reservedSpace The amount of already used space per position.
  * @returns {number} The target width of the bar.
  */
-function calculateWidth(positionType, token, reservedSpace) {
-    switch (positionType) {
+function calculateWidth(barData, token, reservedSpace) {
+    const indent = ((barData.indentLeft ?? 0) + (barData.indentRight ?? 0)) / 100;
+    switch (barData.position) {
         case "top-inner":
         case "bottom-inner":
-            return token.w - reservedSpace["left-inner"] - reservedSpace["right-inner"];
+            return token.w - reservedSpace["left-inner"] - reservedSpace["right-inner"] - indent * token.w;
         case "top-outer":
         case "bottom-outer":
-            return token.w;
+            return token.w - indent * token.w;
         case "left-inner":
         case "right-inner":
-            return token.h - reservedSpace["top-inner"] - reservedSpace["bottom-inner"];
+            return token.h - reservedSpace["top-inner"] - reservedSpace["bottom-inner"] - indent * token.h;
         case "left-outer":
         case "right-outer":
-            return token.h;
+            return token.h - indent * token.h;
     }
 }
 
 /**
  * Calculates the vertical coordinate of the bar with the given position
  *  relative to the token's dimension, respecting already reserved space.
- * @param {string} positionType The configured position indicator.
+ * @param {Object} barData The data of the bar.
  * @param {number} barHeight The height of the rendered bar.
+ * @param {number} leftIndent The amount of bar indentation to apply.
  * @param {Token} token The token to read dimensions from.
  * @param {Object} reservedSpace The amount of already used space per position.
  * @returns {number[]} The target X- and Y-coordinate of the bar.
  */
-function calculatePosition(positionType, barHeight, token, reservedSpace) {
-    switch (positionType) {
-        case "top-inner": return [reservedSpace["left-inner"], reservedSpace["top-inner"]];
-        case "top-outer": return [0, (reservedSpace["top-outer"] + barHeight) * -1];
-        case "bottom-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"] - barHeight];
-        case "bottom-outer": return [0, token.h + reservedSpace["bottom-outer"]];
-        case "left-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"]];
-        case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, token.h];
-        case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"]];
-        case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, 0];
+function calculatePosition(barData, barHeight, token, reservedSpace) {
+    const leftIndent = (barData.indentLeft ?? 0) / 100;
+    switch (barData.position) {
+        case "top-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, reservedSpace["top-inner"]];
+        case "top-outer": return [leftIndent * token.w, (reservedSpace["top-outer"] + barHeight) * -1];
+        case "bottom-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, token.h - reservedSpace["bottom-inner"] - barHeight];
+        case "bottom-outer": return [leftIndent * token.w, token.h + reservedSpace["bottom-outer"]];
+        case "left-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"] - leftIndent * token.h];
+        case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, token.h - leftIndent * token.h];
+        case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"] + leftIndent * token.h];
+        case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, leftIndent * token.h];
     }
 }

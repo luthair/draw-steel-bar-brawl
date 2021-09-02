@@ -15,9 +15,15 @@
     white-space: nowrap;
 }
 
-.token-sheet .tab[data-tab = "resources"] .form-fields label,
+.token-sheet .tab[data-tab="resources"] .form-fields label,
 .brawlbar-configuration .form-fields label {
     display: flex;
+}
+
+input.indent-input {
+    text-align: right;
+    width: 32px;
+    margin-right: 1px;
 }
 
 .bar-controls {

@@ -102,7 +102,9 @@ export const getDefaultBar = function (id, attribute) {
         ignoreMax: true,
         invert: false,
         label: "",
-        subdivisions: 0
+        subdivisions: 0,
+        indentLeft: 0,
+        indentRight: 0
     }
 
     if (attribute === "custom") {
