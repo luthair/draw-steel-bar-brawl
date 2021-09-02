@@ -136,7 +136,7 @@ async function onAddResource(event, tokenConfig, data) {
     if (htmlBars.length > 0) {
         htmlBars[htmlBars.length - 1].removeAttribute("open");
     }
-    adjustConfigHeight(tokenConfig.element, 1);
+    adjustConfigHeight(tokenConfig.element, htmlBars.length + 1);
     barControls.before(barConfiguration);
 }
 
@@ -179,12 +179,13 @@ async function onLoadDefaults(tokenConfig) {
  * Adjusts the height of the given container to account for additional bar
  *  configuration sections.
  * @param {jQuery.Element} html The JQuery element of the token configuration.
- * @param {number} additionalBars The number of additional bars to account for.
+ * @param {number} barCount The number of additional bars to account for.
  */
-function adjustConfigHeight(html, additionalBars) {
-    if (additionalBars <= 0) return;
+function adjustConfigHeight(html, barCount) {
+    if (barCount <= 0) return;
+    if (html[0].tagName === "FORM") html = html.parent().parent(); // Fix parent when force render is false.
     const height = parseInt(html.css("height"), 10);
-    html.css("height", (additionalBars * 17) + Math.max(height, 434) + "px");
+    html.css("height", Math.max(height, barCount * 17 + 416) + "px");
 }
 
 /**
