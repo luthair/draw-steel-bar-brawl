@@ -46,11 +46,15 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.append(barConfiguration);
     if (resourceTab.hasClass("active")) adjustConfigHeight(html, data.brawlBars.length);
 
-    html.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
-    html.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
-    html.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
-    html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig.token));
-    html.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, data));
+    resourceTab.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig.token));
+    resourceTab.on("click", ".bar-modifiers .fa-trash", onDeleteBar);
+    resourceTab.on("click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
+    resourceTab.on("click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
+    resourceTab.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, data));
+
+    resourceTab.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
+    resourceTab.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
+    resourceTab.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
 }
 
 /**
@@ -99,13 +103,84 @@ export const onChangeBarAttribute = function (event) {
 }
 
 /**
+ * Removes the bar associated with the event's target from the resources.
+ */
+function onDeleteBar() {
+    const configEl = $(this.parentElement.parentElement.nextElementSibling);
+    configEl.parent().hide();
+    configEl.find("select.brawlbar-attribute").val("");
+}
+
+/**
+ * Decreases the order of the bar associated with the event's target by 1 and
+ *  moves its element accordingly.
+ */
+function onMoveBarUp() {
+    const barEl = this.parentElement.parentElement.parentElement;
+    const prevBarEl = barEl.previousElementSibling;
+    if (!prevBarEl || prevBarEl.tagName !== "DETAILS") return;
+    moveBarElement(barEl, prevBarEl);
+    swapButtonState("a.fa-chevron-down", this.parentElement, prevBarEl);
+    swapButtonState("a.fa-chevron-up", prevBarEl, this.parentElement);
+}
+
+/**
+ * Increases the order of the bar associated with the event's target by 1 and
+ *  moves its element accordingly.
+ */
+function onMoveBarDown() {
+    const barEl = this.parentElement.parentElement.parentElement;
+    const nextBarEl = barEl.nextElementSibling;
+    if (!nextBarEl || nextBarEl.tagName !== "DETAILS") return;
+    moveBarElement(nextBarEl, barEl);
+    swapButtonState("a.fa-chevron-down", nextBarEl, this.parentElement);
+    swapButtonState("a.fa-chevron-up", this.parentElement, nextBarEl);
+}
+
+/**
+ * Moves the first bar element in front of the second bar element, effectively
+ *  swapping their positions relative to each other. This also swaps their
+ *  configured order.
+ * @param {HTMLElement} firstElement The details DOM element containing the bar to move.
+ * @param {HTMLElement} secondElement The details DOM element containing the pivot bar.
+ */
+function moveBarElement(firstElement, secondElement) {
+    firstElement.parentElement.insertBefore(firstElement, secondElement);
+    const firstId = firstElement.lastElementChild.id;
+    const firstOrderEl = firstElement.querySelector(`input[name="flags.barbrawl.resourceBars.${firstId}.order"]`);
+    const firstOrder = firstOrderEl.value;
+
+    const secondId = secondElement.lastElementChild.id;
+    const secondOrderEl = secondElement.querySelector(`input[name="flags.barbrawl.resourceBars.${secondId}.order"]`);
+    const secondOrder = secondOrderEl.value;
+
+    firstOrderEl.value = secondOrder;
+    secondOrderEl.value = firstOrder;
+}
+
+/**
+ * Swaps the disabled class of the elements identified by the given selector
+ *  within the two given parent elements.
+ * @param {string} selector The query selector that uniquely identifies the button.
+ * @param {HTMLElement} firstElement The parent of the element to read the disabled state from.
+ * @param {HTMLElement} secondElement The parent of the element to swap the disabled state with.
+ */
+function swapButtonState(selector, firstElement, secondElement) {
+    const button = firstElement.querySelector(selector);
+    if (button.classList.contains("disabled")) {
+        secondElement.querySelector(selector).classList.add("disabled");
+        button.classList.remove("disabled");
+    }
+}
+
+/**
  * Opens an application with additional configuration options.
  * @param {jQuery.Event} event The event of the button click.
  * @param {Object} data The data of the request.
  */
 function onOpenAdvancedConfiguration(event, data) {
     const barId = event.currentTarget.parentElement.parentElement.id;
-    const barData = data.brawlBars.find(bar => bar.id === barId);
+    const barData = getBar(data.object.document, barId);
     if (!barData) return;
 
     new BarConfigExtended(barData, {
@@ -124,18 +199,26 @@ function onOpenAdvancedConfiguration(event, data) {
  */
 async function onAddResource(event, tokenConfig, data) {
     const barControls = $(event.currentTarget.parentElement);
-    const htmlBars = barControls.siblings("details");
+    const htmlBars = barControls.siblings("details").filter(":visible");
     const newBar = getDefaultBar(getNewBarId(htmlBars), "custom");
     data.brawlBars.push(newBar);
 
-    const barConfiguration = await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+    const barConfiguration = $(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: [newBar],
         displayModes: data.displayModes,
         barAttributes: data.barAttributes
-    });
-    if (htmlBars.length > 0) {
-        htmlBars[htmlBars.length - 1].removeAttribute("open");
+    }));
+
+    if (htmlBars.length) {
+        const prevBarConf = htmlBars[htmlBars.length - 1];
+        prevBarConf.removeAttribute("open");
+        prevBarConf.querySelector("a.fa-chevron-down").classList.remove("disabled");
+
+        const newBarConf = barConfiguration[0];
+        newBarConf.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = htmlBars.length;
+        newBarConf.querySelector("a.fa-chevron-up").classList.remove("disabled");
     }
+
     adjustConfigHeight(tokenConfig.element, htmlBars.length + 1);
     barControls.before(barConfiguration);
 }
@@ -154,6 +237,8 @@ async function onSaveDefaults(tokenConfig) {
     for (let [key, value] of Object.entries(formData)) {
         if (key.startsWith("flags.barbrawl")) data[key] = value;
     }
+
+    // TODO merge with advanced settings
 
     await game.settings.set("barbrawl", "defaultResources", expandObject(data).flags.barbrawl.resourceBars);
     ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
@@ -195,13 +280,16 @@ function adjustConfigHeight(html, barCount) {
  * @param {Object} data The data of the token HUD.
  */
 export const extendTokenHud = async function (tokenHud, html, data) {
-    let visibleBars = getVisibleBars(tokenHud.object.document, false);
+    const visibleBars = getVisibleBars(tokenHud.object.document, false);
     data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
     data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
 
-    let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.hbs", data);
-    let middleColumn = html.find(".col.middle");
+    const resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.hbs", data);
+    const middleColumn = html.find(".col.middle");
     middleColumn.html(resourceInputs);
+
+    // TODO display left and right inputs in separate column
+
     middleColumn.find(".attribute input")
         .click(tokenHud._onAttributeClick)
         .keydown(tokenHud._onAttributeKeydown.bind(tokenHud))

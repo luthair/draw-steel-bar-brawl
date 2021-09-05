@@ -1,7 +1,15 @@
 {{#each brawlBars}}
 <details {{#if @last}}open{{/if}}>
-    <summary>{{this.attribute}}</summary>
+    <summary class="bar-summary">
+        <span>{{this.attribute}}</span>
+        <span class="bar-modifiers">
+            <a class="fas fa-chevron-up {{#if @first}}disabled{{/if}}"></a>
+            <a class="fas fa-chevron-down {{#if @last}}disabled{{/if}}"></a>
+            <a class="fas fa-trash"></a>
+        </span>
+    </summary>
     <div id="{{this.id}}">
+        <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.order" value="{{@index}}" />
         {{> "modules/barbrawl/templates/bar-config-minimal.hbs" displayModes=../displayModes
         barAttributes=../barAttributes}}
 

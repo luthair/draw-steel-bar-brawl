@@ -26,6 +26,19 @@ input.indent-input {
     margin-right: 1px;
 }
 
+.bar-modifiers {
+    visibility: hidden;
+}
+
+.bar-summary:hover .bar-modifiers {
+    visibility: visible;
+}
+
+.bar-modifiers a.disabled {
+    color: #999;
+    pointer-events: none;
+}
+
 .bar-controls {
     margin: 0 5%;
 }
