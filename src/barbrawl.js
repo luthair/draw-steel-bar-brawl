@@ -91,7 +91,7 @@ Hooks.on("updateToken", function (doc, changes) {
 
 /** Hook to update bar visibility on hover */
 Hooks.on("hoverToken", function (token) {
-    const resourceBars = getBars(token.document);
+    const resourceBars = token.document.getFlag("barbrawl", "resourceBars");
     const barContainer = token.bars.children;
     for (let pixiBar of barContainer) {
         let bar = resourceBars[pixiBar.name];
