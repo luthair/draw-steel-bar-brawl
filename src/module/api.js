@@ -11,7 +11,7 @@ export const getBars = function (tokenDoc) {
         barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute));
     if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
         barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute));
-    return barArray;
+    return barArray.sort((b1, b2) => (b2.order ?? 0) - (b1.order ?? 0));
 }
 
 /**
@@ -92,6 +92,7 @@ export const getNewBarId = function (existingBars) {
 export const getDefaultBar = function (id, attribute) {
     let defaultBar = {
         id: id,
+        order: 0,
         attribute: attribute,
         visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
         mincolor: "#000000",
@@ -118,6 +119,7 @@ export const getDefaultBar = function (id, attribute) {
         defaultBar.mincolor = "#FF0000";
         defaultBar.maxcolor = "#80FF00";
     } else if (id === "bar2") {
+        defaultBar.order = 1;
         defaultBar.position = "top-inner";
         defaultBar.mincolor = "#000080";
         defaultBar.maxcolor = "#80B3FF";
