@@ -204,15 +204,18 @@ async function onSaveDefaults(tokenConfig) {
     const html = tokenConfig.element;
     if (!html?.length) return;
 
-    const formData = tokenConfig._getSubmitData();
-    let data = {};
-    for (let [key, value] of Object.entries(formData)) {
-        if (key.startsWith("flags.barbrawl")) data[key] = value;
-    }
+    // Parse form data.
+    let data = tokenConfig._getSubmitData();
+    data = foundry.utils.expandObject(data).flags.barbrawl.resourceBars;
 
-    // TODO merge with advanced settings
+    // Merge extended bar data without overriding the form.
+    const extData = foundry.utils.getProperty(tokenConfig.object.data._source, "flags.barbrawl.resourceBars");
+    foundry.utils.mergeObject(data, extData, { insertKeys: false, overwrite: false });
 
-    await game.settings.set("barbrawl", "defaultResources", expandObject(data).flags.barbrawl.resourceBars);
+    // Drop bars that were removed.
+    for (let id of Object.keys(data)) if (!data[id].attribute) delete data[id];
+
+    await game.settings.set("barbrawl", "defaultResources", data);
     ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
 }
 

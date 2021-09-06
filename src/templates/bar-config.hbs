@@ -9,7 +9,7 @@
         </span>
     </summary>
     <div id="{{this.id}}">
-        <input type="hidden" name="flags.barbrawl.resourceBars.{{this.id}}.order" value="{{@index}}" />
+        <input type="number" style="display: none;" name="flags.barbrawl.resourceBars.{{this.id}}.order" value="{{@index}}" />
         {{> "modules/barbrawl/templates/bar-config-minimal.hbs" displayModes=../displayModes
         barAttributes=../barAttributes}}
 
