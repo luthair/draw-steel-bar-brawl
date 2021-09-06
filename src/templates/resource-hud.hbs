@@ -1,14 +1,5 @@
-<div class="attribute bar2 resource-input">
-    {{#each topBars}}
-    <input type="text" style="border: 1px solid {{this.maxcolor}};"
-        {{#if (eq this.attribute "custom")}}name="flags.barbrawl.resourceBars.{{this.id}}.value"
-        {{else}}data-bar="{{this.id}}"{{/if}}
-        value="{{this.value}}" {{#unless this.editable}}disabled{{/unless}}>
-    {{/each}}
-</div>
-
-<div class="attribute bar1 resource-input">
-    {{#each bottomBars}}
+<div class="attribute {{css}} resource-input">
+    {{#each bars}}
     <input type="text" style="border: 1px solid {{this.maxcolor}};"
         {{#if (eq this.attribute "custom")}}name="flags.barbrawl.resourceBars.{{this.id}}.value"
         {{else}}data-bar="{{this.id}}"{{/if}}
