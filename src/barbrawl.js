@@ -3,8 +3,9 @@
  * @author Adrian Haberecht
  */
 
-import { getBars } from "./module/api.js";
-import { extendBarRenderer, extendTokenConfig, extendTokenHud, redrawBar } from "./module/rendering.js";
+import { extendBarRenderer, redrawBar } from "./module/rendering.js";
+import { extendTokenConfig } from "./module/config.js";
+import { extendTokenHud } from "./module/hud.js";
 import { registerSettings } from "./module/settings.js";
 import { prepareUpdate } from "./module/synchronization.js";
 

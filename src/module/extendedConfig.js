@@ -1,5 +1,5 @@
 import { getBar } from "./api.js";
-import { onChangeBarAttribute } from "./rendering.js";
+import { onChangeBarAttribute } from "./config.js";
 
 export default class BarConfigExtended extends FormApplication {
     /** @override */
