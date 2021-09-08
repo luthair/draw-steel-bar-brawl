@@ -14,7 +14,13 @@ Hooks.once('init', async function () {
     console.log('barbrawl | Initializing barbrawl');
 
     registerSettings();
-    Handlebars.registerHelper("print", input => console.log(input));
+    Handlebars.registerHelper("barbrawl-concat", function () {
+        let output = "";
+        for (let input of arguments) {
+            if (typeof input !== "object") output += input;
+        }
+        return output;
+    });
 
     loadTemplates(["modules/barbrawl/templates/bar-config-minimal.hbs", "modules/barbrawl/templates/bar-config.hbs"]);
 });

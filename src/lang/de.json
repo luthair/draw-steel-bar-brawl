@@ -44,6 +44,10 @@
             "labelHint": "Zeit den konfigurierten Text auf der Bar an.",
             "approximate": "Näherungswert",
             "approximateHint": "Zeigt einen angenäherten Wert auf der Bar und deren Beschriftung an. Die Einstellung bestimmt, wie viele Segmente angezeigt werden.",
+            "fgImage": "Vordergrundbild",
+            "fgImageHint": "Ersetzt die übliche Bar mit einem Bild, das entsprechend der Füllung abgeschnitten ist.",
+            "bgImage": "Hintergrundbild",
+            "bgImageHint": "Ersetzt den üblichen Hintergrund der Bar mit einem Bild.",
             "save": "Bar aktualisieren"
         },
         "attribute": {
