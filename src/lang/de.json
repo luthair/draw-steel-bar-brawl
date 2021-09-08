@@ -44,6 +44,8 @@
             "labelHint": "Zeit den konfigurierten Text auf der Bar an.",
             "approximate": "Näherungswert",
             "approximateHint": "Zeigt einen angenäherten Wert auf der Bar und deren Beschriftung an. Die Einstellung bestimmt, wie viele Segmente angezeigt werden.",
+            "approximateOwner": "Näherung für Besitzer",
+            "approximateOwnerHint": "Gibt an, ob der angenäherte Wert auch für den Besitzer des Tokens angezeigt wird.",
             "fgImage": "Vordergrundbild",
             "fgImageHint": "Ersetzt die übliche Bar mit einem Bild, das entsprechend der Füllung abgeschnitten ist.",
             "bgImage": "Hintergrundbild",

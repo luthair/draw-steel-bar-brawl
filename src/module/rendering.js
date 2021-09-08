@@ -168,7 +168,7 @@ function drawResourceBar(token, bar, width, data, textures) {
     let labelMax = data.max;
 
     // Apply approximation.
-    if (data.subdivisions) {
+    if (data.subdivisions && (data.subdivisionsOwner || !token.isOwner)) {
         labelValue = Math.ceil(labelValue / data.max * data.subdivisions);
         labelMax = data.subdivisions;
     }
@@ -262,7 +262,7 @@ function drawBarForeground(bar, width, height, data, texture, value, percentage)
         // Draw foreground color.
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
         const color = interpolateColor(data.mincolor, data.maxcolor, percentage);
-        const segments = data.subdivisions > 0 ? value : 1;
+        const segments = value === data.value ? 1 : value;
 
         bar.beginFill(color, 0.8);
         const segmentWidth = percentage * width / segments;

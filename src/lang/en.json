@@ -44,6 +44,8 @@
             "labelHint": "Displays the configured text on the bar.",
             "approximate": "Approximation",
             "approximateHint": "Shows an approximate value on the bar and its label. This configures the number of segments to display.",
+            "approximateOwner": "Approximation for owner",
+            "approximateOwnerHint": "Indicates whether the approximated value is also displayed for the owner of the token.",
             "fgImage": "Foreground image",
             "fgImageHint": "Replaces the usual bar with an image that is clipped based on the fill percentage.",
             "bgImage": "Background image",

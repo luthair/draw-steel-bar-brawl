@@ -97,22 +97,12 @@ export const getDefaultBar = function (id, attribute) {
         visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
-        position: "bottom-inner",
-        style: "user",
-        ignoreMin: true,
-        ignoreMax: true,
-        invert: false,
-        label: "",
-        subdivisions: 0,
-        indentLeft: 0,
-        indentRight: 0
+        position: "bottom-inner"
     }
 
     if (attribute === "custom") {
         defaultBar.value = 10;
         defaultBar.max = 10;
-        defaultBar.ignoreMin = false;
-        defaultBar.ignoreMax = false;
     }
 
     if (id === "bar1") {
