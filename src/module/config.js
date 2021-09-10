@@ -22,7 +22,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.on("click", ".bar-modifiers .fa-trash", onDeleteBar);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
-    resourceTab.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, data));
+    resourceTab.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, tokenConfig, data));
 
     resourceTab.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     resourceTab.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
@@ -148,12 +148,17 @@ function swapButtonState(selector, firstElement, secondElement) {
 /**
  * Opens an application with additional configuration options.
  * @param {jQuery.Event} event The event of the button click.
+ * @param {TokenConfig} tokenConfig The token configuration object.
  * @param {Object} data The data of the request.
  */
-function onOpenAdvancedConfiguration(event, data) {
+function onOpenAdvancedConfiguration(event, tokenConfig, data) {
     const barId = event.currentTarget.parentElement.parentElement.id;
-    const barData = api.getBar(data.object.document, barId);
-    if (!barData) return;
+    const barData = api.getBar(data.object.document, barId) ?? {};
+
+    // Parse form data and merge with stored data.
+    let formData = tokenConfig._getSubmitData();
+    formData = foundry.utils.expandObject(formData).flags.barbrawl.resourceBars[barId];
+    foundry.utils.mergeObject(barData, formData);
 
     new BarConfigExtended(barData, {
         parent: data.object.document,
