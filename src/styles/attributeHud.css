@@ -62,3 +62,7 @@ form .form-group .form-fields button.barbrawl-reset {
     left: 100%;
     z-index: -1;
 }
+
+#token-hud .attribute.bar1 {
+    margin-top: auto;
+}
