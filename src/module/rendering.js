@@ -106,14 +106,14 @@ async function createResourceBar(token, data, reservedSpace) {
     // Create the rendering object
     let bar = new PIXI.Container();
     bar.name = data.id;
-    if (!data.fgImage) { // When there is no foreground image, we'll need a drawing object.
+    if (!data.fgImage) {
+        // When there is no foreground image, we'll need a drawing object.
         const gfx = bar.addChild(new PIXI.Graphics);
         gfx.name = "gfx";
     }
 
-    const width = calculateWidth(data, token, reservedSpace);
-    const textures = await loadBarTextures(data);
-    const renderedHeight = drawResourceBar(token, bar, width, data, textures);
+    bar.contentWidth = calculateWidth(data, token, reservedSpace);
+    const renderedHeight = drawResourceBar(token, bar, data, await loadBarTextures(data));
     const position = calculatePosition(data, renderedHeight, token, reservedSpace);
     reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
@@ -128,11 +128,16 @@ async function createResourceBar(token, data, reservedSpace) {
 export const redrawBar = async function (token, barData) {
     const bar = token.bars.getChildByName(barData.id);
     if (bar) {
-        const width = bar.width; // TODO wrong width for images
-        const lineWidth = bar.getChildByName("gfx")?.line.width ?? 0;
+        const gfx = bar.getChildByName("gfx");
         bar.removeChildren();
+        if (gfx) {
+            // Clear graphics object instead of removing it.
+            gfx.clear();
+            bar.addChild(gfx);
+        }
+
         const textures = await loadBarTextures(barData);
-        drawResourceBar(token, bar, width - lineWidth, barData, textures);
+        drawResourceBar(token, bar, barData, textures);
     }
 }
 
@@ -151,24 +156,20 @@ async function loadBarTextures(data) {
  * Renders all components of the bar onto the given PIXI object.
  * @param {Token} token The token to draw the bar on.
  * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
- * @param {number} width The width of the bar.
  * @param {Object} data The data of the bar to draw.
  * @param {PIXI.Texture[]} textures The loaded textures of bar images.
  * @returns {number} The final height of the bar.
  */
-function drawResourceBar(token, bar, width, data, textures) {
+function drawResourceBar(token, bar, data, textures) {
     // Defer rendering to HP Bar module for compatibility.
     if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
-        const posY = bar.position.y; // Store position for bar redraws.
-        token._drawBar(0, bar, data);
-        bar.position.set(0, posY); // TODO doesn't respect side bars
-        return getBarHeight(token, width, {}); // TODO remove height offset
+        return drawExternalBar(token, bar, data);
     }
 
-    const height = getBarHeight(token, width, textures);
-    if (width <= 0 || height <= 0) return;
+    bar.contentHeight ||= getBarHeight(token, bar.contentWidth, textures);
+    if (bar.contentWidth <= 0 || bar.contentHeight <= 0) return;
 
-    drawBarBackground(bar, width, height, data, textures[0]);
+    drawBarBackground(bar, data, textures[0]);
 
     let labelValue = data.value;
     let labelMax = data.max;
@@ -182,8 +183,8 @@ function drawResourceBar(token, bar, width, data, textures) {
     const barValue = data.invert ? labelMax - labelValue : labelValue;
     const barPercentage = Math.clamped(barValue, 0, labelMax) / labelMax;
 
-    drawBarForeground(bar, width, height, data, textures[1], barValue, barPercentage);
-    drawBarLabel(bar, token, width, height, data, labelValue, labelMax);
+    drawBarForeground(bar, data, textures[1], barValue, barPercentage);
+    drawBarLabel(bar, token, data, labelValue, labelMax);
 
     // Update visibility.
     bar.visible = token._canViewMode(data.visibility);
@@ -192,7 +193,7 @@ function drawResourceBar(token, bar, width, data, textures) {
     if (data.position.startsWith("left")) bar.angle = -90;
     else if (data.position.startsWith("right")) bar.angle = 90;
 
-    return height;
+    return bar.contentHeight;
 }
 
 /**
@@ -200,10 +201,10 @@ function drawResourceBar(token, bar, width, data, textures) {
  *  from the canvas dimensions and its style.
  * @param {Token} token The token that the bar belongs to.
  * @param {number} width The width of the bar.
- * @param {PIXI.Texture[]} textures The loaded textures of bar images.
+ * @param {PIXI.Texture[]=} textures The loaded textures of bar images. Defaults to two null elements.
  * @returns {number} The target height of the bar.
  */
-function getBarHeight(token, width, textures) {
+function getBarHeight(token, width, textures = [null, null]) {
     if (textures[0]) return textures[0].height * width / textures[0].width;
     else if (textures[1]) return textures[1].height * width / textures[1].width;
 
@@ -217,18 +218,16 @@ function getBarHeight(token, width, textures) {
  * Draws the bar's background, which can be a texture or a style. Note that no
  *  regular styles will be drawn when the bar has a foreground image.
  * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
- * @param {number} width The width of the bar.
- * @param {number} height The height of the bar.
  * @param {Object} data The data of the bar.
  * @param {PIXI.Texture?} texture The optional background texture to draw.
  */
-function drawBarBackground(bar, width, height, data, texture) {
+function drawBarBackground(bar, data, texture) {
     if (texture) {
         // Draw background texture.
         const bgSprite = new PIXI.Sprite(texture);
-        bgSprite.width = width;
-        bgSprite.height = height;
-        if (bgSprite.scale.y < 0.5) console.warn("barbrawl | Background " + data.bgImage + " is more than twice the size of the token. Consider using a smaller image.");
+        bgSprite.width = bar.contentWidth;
+        bgSprite.height = bar.contentHeight;
+        if (bgSprite.scale.y < 0.5) console.warn(`barbrawl | Background ${data.bgImage} is over twice the target width of ${bar.contentWidth}px. Consider using a smaller image.`);
         bar.addChildAt(bgSprite, 0); // Insert at 0 to render first.
     } else if (!data.fgImage) { // Don't draw background behind foreground image.
         // Draw background color.
@@ -236,34 +235,32 @@ function drawBarBackground(bar, width, height, data, texture) {
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
         gfx.beginFill(0x000000, 0.5);
         if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
-        gfx.drawRoundedRect(0, 0, width, height, preset.borderRadius);
+        gfx.drawRoundedRect(0, 0, bar.contentWidth, bar.contentHeight, preset.borderRadius);
     }
 }
 
 /**
  * Draws the bar's foreground, which can be a texture or a style.
  * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
- * @param {number} width The width of the bar.
- * @param {number} height The height of the bar.
  * @param {Object} data The data of the bar.
  * @param {PIXI.Texture?} texture The optional foreground texture to draw.
  * @param {number} value The displayed value of the bar.
  * @param {number} percentage The displayed percentage of the bar.
  */
-function drawBarForeground(bar, width, height, data, texture, value, percentage) {
+function drawBarForeground(bar, data, texture, value, percentage) {
     if (percentage <= 0.01) return;
     if (texture) {
         // Draw foreground texture.
         const croppedTex = new PIXI.Texture(texture,
             new PIXI.Rectangle(0, 0, texture.width * percentage, texture.height));
         const fgSprite = new PIXI.Sprite(croppedTex);
-        fgSprite.width = width * percentage;
-        fgSprite.height = texture.height * width / texture.width;
-        if (fgSprite.scale.y < 0.5) console.warn("barbrawl | Foreground " + data.fgImage + " is more than twice the size of the token. Consider using a smaller image.");
+        fgSprite.width = bar.contentWidth * percentage;
+        fgSprite.height = texture.height * bar.contentWidth / texture.width;
+        if (fgSprite.scale.y < 0.5) console.warn(`barbrawl | Foreground ${data.fgImage} is over twice the target width of ${bar.contentWidth}px. Consider using a smaller image.`);
 
         // Center foreground on top of background image.
         if (data.bgImage) {
-            const heightDiff = height - fgSprite.height;
+            const heightDiff = bar.contentHeight - fgSprite.height;
             if (Math.abs(heightDiff) > 0.01) fgSprite.y = heightDiff / 2;
         }
 
@@ -277,19 +274,19 @@ function drawBarForeground(bar, width, height, data, texture, value, percentage)
 
         gfx.beginFill(color, 0.8);
         if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
-        const segmentWidth = percentage * width / segments;
+        const segmentWidth = percentage * bar.contentWidth / segments;
         const radius = Math.max(0, preset.borderRadius - 1);
 
         if (preset.borderWidth > 0) {
             // With borders, draw all segments sequentially.
             for (let i = 0; i < segments; i++) {
-                gfx.drawRoundedRect(segmentWidth * i, 0, segmentWidth, height, radius);
+                gfx.drawRoundedRect(segmentWidth * i, 0, segmentWidth, bar.contentHeight, radius);
             }
         } else {
             // Without borders, additional space between segments is needed as a divider.
-            gfx.drawRoundedRect(0, 0, segmentWidth, height, radius);
+            gfx.drawRoundedRect(0, 0, segmentWidth, bar.contentHeight, radius);
             for (let i = 1; i < segments; i++) {
-                gfx.drawRoundedRect(segmentWidth * i + 1, 0, segmentWidth - 1, height, radius);
+                gfx.drawRoundedRect(segmentWidth * i + 1, 0, segmentWidth - 1, bar.contentHeight, radius);
             }
         }
     }
@@ -299,26 +296,24 @@ function drawBarForeground(bar, width, height, data, texture, value, percentage)
  * Draws the bar's label, including the bar text and the configured label style.
  * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
  * @param {Token} token The token that the bar belongs to.
- * @param {number} width The width of the bar.
- * @param {number} height The height of the bar.
  * @param {Object} data The data of the bar.
  * @param {number} value The value for the label.
  * @param {number} max The maximum value for the label.
  */
-function drawBarLabel(bar, token, width, height, data, value, max) {
+function drawBarLabel(bar, token, data, value, max) {
     let textStyle = data.style;
     if (!textStyle || textStyle === "user") textStyle = game.settings.get("barbrawl", "textStyle");
     switch (textStyle) {
         case "none":
-            if (data.label) createBarLabel(bar, token, width, height, data, data.label);
+            if (data.label) createBarLabel(bar, token, data, data.label);
             break;
         case "fraction":
-            createBarLabel(bar, token, width, height, data, `${data.label ? data.label + "  " : ""}${value} / ${max}`);
+            createBarLabel(bar, token, data, `${data.label ? data.label + "  " : ""}${value} / ${max}`);
             break;
         case "percent":
             // Label does not match bar percentage because of possible inversion.
             const percentage = Math.round((Math.clamped(value, 0, max) / max) * 100);
-            createBarLabel(bar, token, width, height, data, `${data.label ? data.label + "  " : ""}${percentage}%`);
+            createBarLabel(bar, token, data, `${data.label ? data.label + "  " : ""}${percentage}%`);
             break;
         default:
             console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
@@ -329,19 +324,17 @@ function drawBarLabel(bar, token, width, height, data, value, max) {
  * Adds a PIXI.Text object on top of the given graphics object.
  * @param {PIXI.Graphics | PIXI.Sprite} bar The PIXI object to add the text to.
  * @param {Token} token The token that the bar belongs to.
- * @param {number} width The width of the bar.
- * @param {number} height The height of the bar.
  * @param {Object} data The data of the bar.
  * @param {string} text The text to display.
  */
-function createBarLabel(bar, token, width, height, data, text) {
+function createBarLabel(bar, token, data, text) {
     let font = CONFIG.canvasTextStyle.clone();
-    font.fontSize = data.fgImage || data.bgImage ? getBarHeight(token, width, [null, null]) : height;
+    font.fontSize = data.fgImage || data.bgImage ? getBarHeight(token, bar.contentWidth) : bar.contentHeight;
 
     const barText = new PIXI.Text(text, font);
     barText.name = bar.name + "-text";
-    barText.x = width / 2;
-    barText.y = height / 2;
+    barText.x = bar.contentWidth / 2;
+    barText.y = bar.contentHeight / 2;
     barText.anchor.set(0.5);
     barText.resolution = 1.5;
     bar.addChild(barText);
@@ -448,4 +441,30 @@ function calculatePosition(barData, barHeight, token, reservedSpace) {
         case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"] + leftIndent * token.h];
         case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, leftIndent * token.h];
     }
+}
+
+/**
+ * Renders a bar using the Foundry function instead of the Bar Brawl renderer.
+ * After the bar is drawn, its position and angle will be overriden.
+ * @param {Token} token The token to draw the bar on.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Object} data The data of the bar to draw.
+ * @returns {number} The final height of the bar.
+ */
+function drawExternalBar(token, bar, data) {
+    let gfx = bar.getChildByName("gfx");
+    if (!gfx) {
+        gfx = bar.addChild(new PIXI.Graphics());
+        gfx.name = "gfx";
+    }
+
+    token._drawBar(0, gfx, data);
+    gfx.position.set(0, 0); // Do not allow external code to set the bar's position.
+    bar.contentHeight = gfx.height - (gfx.line?.width ?? 0);
+
+    // Rotate left & right bars.
+    if (data.position.startsWith("left")) bar.angle = -90;
+    else if (data.position.startsWith("right")) bar.angle = 90;
+
+    return bar.contentHeight;
 }
