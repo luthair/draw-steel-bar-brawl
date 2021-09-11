@@ -227,7 +227,6 @@ function drawBarBackground(bar, data, texture) {
         const bgSprite = new PIXI.Sprite(texture);
         bgSprite.width = bar.contentWidth;
         bgSprite.height = bar.contentHeight;
-        if (bgSprite.scale.y < 0.5) console.warn(`barbrawl | Background ${data.bgImage} is over twice the target width of ${bar.contentWidth}px. Consider using a smaller image.`);
         bar.addChildAt(bgSprite, 0); // Insert at 0 to render first.
     } else if (!data.fgImage) { // Don't draw background behind foreground image.
         // Draw background color.
@@ -256,7 +255,6 @@ function drawBarForeground(bar, data, texture, value, percentage) {
         const fgSprite = new PIXI.Sprite(croppedTex);
         fgSprite.width = bar.contentWidth * percentage;
         fgSprite.height = texture.height * bar.contentWidth / texture.width;
-        if (fgSprite.scale.y < 0.5) console.warn(`barbrawl | Foreground ${data.fgImage} is over twice the target width of ${bar.contentWidth}px. Consider using a smaller image.`);
 
         // Center foreground on top of background image.
         if (data.bgImage) {

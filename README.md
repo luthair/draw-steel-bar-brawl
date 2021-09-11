@@ -99,6 +99,8 @@ Instead of drawing the usual styles, bars can instead have an image as foregroun
 
 ![Image bars](images/images.png "Image bars")
 
+It is recommended that your images are at most twice the size of the token grid (as defined in the scene's settings). User larger images will work, but may negatively impact performance.
+
 ## Development
 
 Bar Brawl is purely data based, meaning that you can adjust everything by updating via Foundry and expect the changes to be applied automatically. The resource bar object is stored for each token in `Token.data.flags.barbrawl.resourceBars` and has the following format:
