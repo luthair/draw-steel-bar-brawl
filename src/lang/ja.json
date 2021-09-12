@@ -5,7 +5,8 @@
             "hint": "バーの表示方法を変更します。",
             "minimal": "最小限 (スリム,ボーダー線なし)",
             "default": "オンセ工房デフォルト (太いボーダー線)",
-            "large": "大きい (広め, 細いボーダー線)"
+            "large": "大きい (広め, 細いボーダー線)",
+            "legacy": "Legacy (thick border)"
         },
         "textStyle": {
             "name": "バーの表記",
@@ -26,11 +27,30 @@
             "value": "値 (現在値/最大値)",
             "color": "色 (最小値/最大値)",
             "position": "表示位置",
+            "advanced": "詳細な設定",
+            "advancedButton": "設定を更に表示する",
+            "indent": "字下げ（インデント）",
+            "indentHint": "コマの幅（％）に応じて追加の空白をバーに追加します。",
+            "indentLeft": "Left",
+            "indentRight": "Right",
             "style": "ラベル設定",
             "ignoreLimits": "限界を無視する",
+            "ignoreLimitsHint": "バーの最低値（０）と最大値を超えた場合に自動的に限界内に収める機能を無効化します。カスタムバーにのみ対応しています。",
             "ignoreMin": "下限",
             "ignoreMax": "上限",
-            "invert": "値を反転させる"
+            "invert": "値を反転させる",
+            "invertHint": "０をバーで満タンとして、最大をバーを空として表示する。",
+            "label": "ラベル表示",
+            "labelHint": "設定したラベルをバーに表示します",
+            "approximate": "近似値",
+            "approximateHint": "バーに近似値とテキストを表示します。表示するセグメントを自動的に設定します。",
+            "approximateOwner": "近似値オーナー表示",
+            "approximateOwnerHint": "近似された値がコマのオーナーにも表示されるかどうかを設定します。",
+            "fgImage": "前景画像",
+            "fgImageHint": "通常のバーの前景を設定された画像に置き換えます。",
+            "bgImage": "背景画像",
+            "bgImageHint": "通常のバーの背景を設定された画像に置き換えます。画像の幅はシーンのグリッド幅と一致していることをお勧めします。",
+            "save": "バー更新"
         },
         "attribute": {
             "none": "なし (除去)",
@@ -40,11 +60,17 @@
             "top-inner": "上 (内側)",
             "top-outer": "上 (外側)",
             "bottom-inner": "下 (内側)",
-            "bottom-outer": "下 (外側)"
+            "bottom-outer": "下 (外側)",
+            "left-inner": "左（内側）",
+            "left-outer": "左（外側）",
+            "right-inner": "右（内側）",
+            "right-outer": "右（外側）"
         },
         "add": "リソースを加える",
         "save": "デフォルト設定として保存する",
         "saveConfirmation": "現在のトークンリソースがデフォルトとして保存されました。",
+        "load": "デフォルト設定を読み込む",
+        "noDefaults": "このワールドにデフォルト設定が保存されていません。",
         "resetConfirmation": "デフォルトのトークンリソースがリセットされました。"
     }
 }
