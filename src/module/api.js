@@ -5,13 +5,13 @@
  */
 export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
-    const barArray = Object.values(resourceBars).filter(bar => bar.id);
+    const barArray = Object.values(resourceBars);
 
-    if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1?.id)
+    if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1)
         barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute));
-    if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2?.id)
+    if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
         barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute));
-    return barArray;
+    return barArray.sort((b1, b2) => (b1.order ?? 0) - (b2.order ?? 0));
 }
 
 /**
@@ -21,9 +21,9 @@ export const getBars = function (tokenDoc) {
  * @returns {Object} A bar data object.
  */
 export const getBar = function (tokenDoc, barId) {
-    const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
-    if (barId === "bar1" && !resourceBars.bar1?.id) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
-    if (barId === "bar2" && !resourceBars.bar2?.id) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
+    const resourceBars = foundry.utils.getProperty(tokenDoc.data._source, "flags.barbrawl.resourceBars") ?? {};
+    if (barId === "bar1" && !resourceBars.bar1) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
+    if (barId === "bar2" && !resourceBars.bar2) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
     return resourceBars[barId];
 }
 
@@ -92,15 +92,12 @@ export const getNewBarId = function (existingBars) {
 export const getDefaultBar = function (id, attribute) {
     let defaultBar = {
         id: id,
+        order: 0,
         attribute: attribute,
         visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
-        position: "bottom-inner",
-        style: "user",
-        ignoreMin: true,
-        ignoreMax: true,
-        invert: false
+        position: "bottom-inner"
     }
 
     if (attribute === "custom") {
@@ -112,6 +109,7 @@ export const getDefaultBar = function (id, attribute) {
         defaultBar.mincolor = "#FF0000";
         defaultBar.maxcolor = "#80FF00";
     } else if (id === "bar2") {
+        defaultBar.order = 1;
         defaultBar.position = "top-inner";
         defaultBar.mincolor = "#000080";
         defaultBar.maxcolor = "#80B3FF";

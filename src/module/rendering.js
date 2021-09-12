@@ -1,4 +1,33 @@
-import { getBars, getBar, getVisibleBars, getDefaultBar, getNewBarId } from "./api.js";
+import { getBar, getVisibleBars } from "./api.js";
+
+/**
+ * Object containing current bar rendering promises per token.
+ */
+var renderingTokens = {};
+
+/**
+ * Object containing settings for the different bar styles.
+ */
+const barPresets = {
+    minimal: {
+        heightOffset: -2,
+        borderWidth: 0,
+        borderRadius: 0
+    },
+    default: {
+        borderWidth: 1,
+        borderRadius: 2
+    },
+    large: {
+        heightOffset: 2,
+        borderWidth: 1,
+        borderRadius: 2
+    },
+    legacy: {
+        borderWidth: 2,
+        borderRadius: 3
+    }
+}
 
 /**
  * Extends the original Token.drawBars() with custom bar rendering. 
@@ -29,158 +58,6 @@ export const extendBarRenderer = function () {
 }
 
 /**
- * Modifies the given HTML to replace the resource bar configuration with our
- *  own template.
- * @param {TokenConfig} tokenConfig The token configuration object.
- * @param {jQuery} html The jQuery element of the token configuration.
- * @param {Object} data The data of the token configuration.
- */
-export const extendTokenConfig = async function (tokenConfig, html, data) {
-    data.brawlBars = getBars(tokenConfig.token);
-
-    const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
-
-    const resourceTab = html.find("div[data-tab='resources']");
-    resourceTab.find("div.form-fields").parent().remove();
-    resourceTab.append(barConfiguration);
-    if (resourceTab.hasClass("active")) adjustConfigHeight(html, data.brawlBars.length);
-
-    html.find(".brawlbar.add").click(event => onAddResource(event, tokenConfig, data));
-    html.find(".brawlbar.save").click(() => onSaveDefaults(tokenConfig));
-    html.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig));
-}
-
-/**
- * Handles an attribute selection change event by updating the resource value.
- * @constant {TokenConfig} this The token configuration that this function is bound to.
- * @param {jQuery.Event} event The event of the selection change.
- */
-function onChangeBarAttribute(event) {
-    const barId = event.target.name.split(".")[3];
-    const form = event.target.form.querySelector("#" + barId);
-    if (!form) return;
-
-    const valueInput = form.querySelector(`input.${barId}-value`);
-    const maxInput = form.querySelector(`input.${barId}-max`);
-
-    if (event.target.value === "custom") {
-        valueInput.removeAttribute("disabled");
-        maxInput.removeAttribute("disabled");
-        if (maxInput.value === "") maxInput.value = valueInput.value;
-        form.querySelectorAll(`input.ignore-limit`).forEach(el => {
-            el.removeAttribute("disabled");
-            el.checked = false;
-        });
-    } else {
-        valueInput.setAttribute("disabled", "");
-        form.querySelectorAll(`input.ignore-limit`).forEach(el => {
-            el.setAttribute("disabled", "");
-            el.checked = true;
-        });
-
-        const resource = this.token.getBarAttribute(null, { alternative: event.target.value });
-        if (resource === null) {
-            valueInput.value = maxInput.value = "";
-            maxInput.setAttribute("disabled", "");
-        } else if (resource.type === "bar") {
-            valueInput.value = resource.value;
-            maxInput.value = resource.max;
-            maxInput.setAttribute("disabled", "");
-        } else {
-            valueInput.value = resource.value;
-            maxInput.value = "";
-            maxInput.removeAttribute("disabled");
-        }
-    }
-}
-
-/**
- * Handles an add button click event by adding another resource.
- * @param {jQuery.Event} event The event of the button click.
- * @param {TokenConfig} tokenConfig The token configuration object.
- * @param {Object} data The data of the token configuration.
- */
-async function onAddResource(event, tokenConfig, data) {
-    const addButton = $(event.currentTarget);
-    const htmlBars = addButton.siblings("details");
-    data["brawlBars"] = [getDefaultBar(getNewBarId(htmlBars), "custom")];
-
-    const barConfiguration = await renderTemplate("modules/barbrawl/templates/bar-config.hbs", data);
-    if (htmlBars.length > 0) {
-        htmlBars[htmlBars.length - 1].removeAttribute("open");
-    }
-    adjustConfigHeight(tokenConfig.element, 1);
-    addButton.before(barConfiguration);
-}
-
-/**
- * Handles a save button click by storing the current resource configuration in
- *  the user configuration.
- * @param {TokenConfig} tokenConfig The token configuration object.
- */
-async function onSaveDefaults(tokenConfig) {
-    const html = tokenConfig.element;
-    if (!html?.length) return;
-
-    const formData = tokenConfig._getSubmitData();
-    let data = {};
-    for (let [key, value] of Object.entries(formData)) {
-        if (key.startsWith("flags.barbrawl")) data[key] = value;
-    }
-
-    await game.settings.set("barbrawl", "defaultResources", expandObject(data).flags.barbrawl.resourceBars);
-    ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
-}
-
-/**
- * Adjusts the height of the given container to account for additional bar
- *  configuration sections.
- * @param {jQuery.Element} html The JQuery element of the token configuration.
- * @param {number} additionalBars The number of additional bars to account for.
- */
-function adjustConfigHeight(html, additionalBars) {
-    if (additionalBars <= 0) return;
-    const height = parseInt(html.css("height"), 10);
-    html.css("height", (additionalBars * 17) + Math.max(height, 465) + "px");
-}
-
-/**
- * Modifies the given HTML to render additional resource input fields.
- * @param {TokenHUD} tokenHud The HUD object.
- * @param {jQuery} html The jQuery element of the token HUD.
- * @param {Object} data The data of the token HUD.
- */
-export const extendTokenHud = async function (tokenHud, html, data) {
-    let visibleBars = getVisibleBars(tokenHud.object.document, false);
-    data["topBars"] = visibleBars.filter(bar => bar.position.startsWith("top"));
-    data["bottomBars"] = visibleBars.filter(bar => bar.position.startsWith("bottom")).reverse();
-
-    let resourceInputs = await renderTemplate("modules/barbrawl/templates/resource-hud.hbs", data);
-    let middleColumn = html.find(".col.middle");
-    middleColumn.html(resourceInputs);
-    middleColumn.find(".attribute input")
-        .click(tokenHud._onAttributeClick)
-        .keydown(tokenHud._onAttributeKeydown.bind(tokenHud))
-        .change(updateBarAttribute.bind(tokenHud));
-}
-
-/**
- * Handles a token HUD input change event by applying the value to the resource.
- * @param {jQuery.Event} event The event of the value change.
- */
-function updateBarAttribute(event) {
-    const input = event.currentTarget;
-    if (input.dataset.bar) return this._onAttributeUpdate(event);
-
-    // Workaround for https://gitlab.com/foundrynet/foundryvtt/-/issues/5606
-    const data = this.object.data;
-    data[input.name] = foundry.utils.getProperty(this.object.data, input.name);
-    const rv = this._onAttributeUpdate(event);
-    delete data[input.name];
-    return rv;
-}
-
-/**
  * Creates rendering objects for each of the token's resource bars.
  * @constant {Token} this The token that this function is called on.
  */
@@ -189,47 +66,58 @@ function drawBrawlBars() {
     let visibleBars = getVisibleBars(this.document);
     if (visibleBars.length === 0) return;
 
-    let positionCounts = [0, 0, 0, 0];
-    for (let barData of visibleBars) {
-        let barIndex = 0;
-        switch (barData.position) {
-            case "top-inner":
-                barIndex = positionCounts[0]++;
-                break;
-            case "top-outer":
-                barIndex = positionCounts[1]++;
-                break;
-            case "bottom-inner":
-                barIndex = positionCounts[2]++;
-                break;
-            case "bottom-outer":
-                barIndex = positionCounts[3]++;
-        }
-        this.bars.addChild(createResourceBar(this, barData, barIndex));
-    }
+    const reservedSpace = {
+        "top-inner": 0,
+        "top-outer": 0,
+        "bottom-inner": 0,
+        "bottom-outer": 0,
+        "left-inner": 0,
+        "left-outer": 0,
+        "right-inner": 0,
+        "right-outer": 0
+    };
 
     this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
-    this.bars.visible = this.bars.children.length > 0;
+    const asyncRender = async () => {
+        for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
+        this.bars.visible = this.bars.children.length > 0;
+    };
+
+    // Make sure that we are only rendering bars for each token once.
+    if (renderingTokens[this.id]) {
+        console.log("barbrawl | Bars are already rendering, deferring second call.");
+        renderingTokens[this.id] = renderingTokens[this.id]
+            .then(asyncRender).finally(() => delete renderingTokens[this.id]);
+    }
+    else {
+        renderingTokens[this.id] = asyncRender().finally(() => delete renderingTokens[this.id]);
+    }
 }
 
 /**
  * Creates a rendering object for a single resource bar.
  * @param {Token} token The token on which to create the bar.
  * @param {Object} data The object containing the bar's data.
- * @param {Number} index The amount of bars previously rendered at the same position.
+ * @param {Object} reservedSpace The amount of already used space per position.
  */
-function createResourceBar(token, data, index) {
+async function createResourceBar(token, data, reservedSpace) {
+    if (!data?.max) return;
+
     // Create the rendering object
-    let bar = new PIXI.Graphics();
+    let bar = new PIXI.Container();
     bar.name = data.id;
-    if (!data.max) {
-        bar.visible = false;
-        return bar;
+    if (!data.fgImage) {
+        // When there is no foreground image, we'll need a drawing object.
+        const gfx = bar.addChild(new PIXI.Graphics);
+        gfx.name = "gfx";
     }
 
-    let height = drawResourceBar(token, bar, data);
-    bar.position.set(0, calculatePosition(data.position, height, token.h, index));
-    return bar;
+    bar.contentWidth = calculateWidth(data, token, reservedSpace);
+    const renderedHeight = drawResourceBar(token, bar, data, await loadBarTextures(data));
+    const position = calculatePosition(data, renderedHeight, token, reservedSpace);
+    reservedSpace[data.position] += renderedHeight;
+    bar.position.set(position[0], position[1]);
+    token.bars.addChild(bar);
 }
 
 /**
@@ -237,151 +125,214 @@ function createResourceBar(token, data, index) {
  * @param {Token} token The token to redraw the bar on.
  * @param {Object} barData The data of the bar to refresh.
  */
-export const redrawBar = function (token, barData) {
+export const redrawBar = async function (token, barData) {
     const bar = token.bars.getChildByName(barData.id);
     if (bar) {
+        const gfx = bar.getChildByName("gfx");
         bar.removeChildren();
-        drawResourceBar(token, bar, barData);
+        if (gfx) {
+            // Clear graphics object instead of removing it.
+            gfx.clear();
+            bar.addChild(gfx);
+        }
+
+        const textures = await loadBarTextures(barData);
+        drawResourceBar(token, bar, barData, textures);
     }
 }
 
 /**
- * Draws the geometry and colors calculated from the given data onto the given
- *  PIXI object.
- * @param {Token} token The token to draw the bar on.
- * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Object} data The data of the bar to draw.
- * @returns {Number} The final height of the bar.
+ * Loads textures required for rendering the bar.
+ * @param {Object} data The data of the bar.
+ * @returns {Promise.<PIXI.Texture[]>} An array containing the background and foreground texture.
  */
-function drawResourceBar(token, bar, data) {
-    let width = token.w;
-    let height = Math.max((canvas.dimensions.size / 12), 8);
-    if (token.data.height >= 2) height *= 1.6;  // Enlarge the bar for large tokens
+async function loadBarTextures(data) {
+    const bgTexture = data.bgImage ? await loadTexture(data.bgImage) : null;
+    const fgTexture = data.fgImage ? await loadTexture(data.fgImage) : null;
+    return [bgTexture, fgTexture];
+}
 
-    const baseValue = data.invert ? data.max - data.value : data.value;
-    let percentage = Math.clamped(baseValue, 0, data.max) / data.max;
-
+/**
+ * Renders all components of the bar onto the given PIXI object.
+ * @param {Token} token The token to draw the bar on.
+ * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
+ * @param {Object} data The data of the bar to draw.
+ * @param {PIXI.Texture[]} textures The loaded textures of bar images.
+ * @returns {number} The final height of the bar.
+ */
+function drawResourceBar(token, bar, data, textures) {
     // Defer rendering to HP Bar module for compatibility.
     if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
-        const posY = bar.position.y; // Store position for bar redraws.
-        token._drawBar(0, bar, data);
-        bar.position.set(0, posY);
-    } else {
-        let color = interpolateColor(data.mincolor, data.maxcolor, percentage);
-
-        // Draw the bar itself
-        switch (game.settings.get("barbrawl", "barStyle")) {
-            case "minimal":
-                height -= 2;
-                drawMinimalBar(bar, width, height, percentage, color);
-                break;
-            case "default":
-                drawDefaultBar(bar, width, height, percentage, color);
-                break;
-            case "large":
-                height += 2;
-                drawLargeBar(bar, width, height, percentage, color);
-                break;
-            default:
-                console.error(`barbrawl | Unknown bar style ${game.settings.get("barbrawl", "barStyle")}.`);
-        }
+        return drawExternalBar(token, bar, data);
     }
 
-    // Draw the label (if any)
-    let textStyle = data.style;
-    if (!textStyle || textStyle === "user") textStyle = game.settings.get("barbrawl", "textStyle");
-    switch (textStyle) {
-        case "none":
-            const existingLabel = bar.getChildByName(bar.name + "-text");
-            if (existingLabel) bar.removeChild(existingLabel);
-            break;
-        case "fraction":
-            drawBarLabel(bar, width, height, `${data.value} / ${data.max}`);
-            break;
-        case "percent":
-            drawBarLabel(bar, width, height, `${Math.round(percentage * 100)}%`);
-            break;
-        default:
-            console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
+    bar.contentHeight ||= getBarHeight(token, bar.contentWidth, textures);
+    if (bar.contentWidth <= 0 || bar.contentHeight <= 0) return;
+
+    drawBarBackground(bar, data, textures[0]);
+
+    let labelValue = data.value;
+    let labelMax = data.max;
+
+    // Apply approximation.
+    if (data.subdivisions && (data.subdivisionsOwner || !token.isOwner)) {
+        labelValue = Math.ceil(labelValue / data.max * data.subdivisions);
+        labelMax = data.subdivisions;
     }
+
+    const barValue = data.invert ? labelMax - labelValue : labelValue;
+    const barPercentage = Math.clamped(barValue, 0, labelMax) / labelMax;
+
+    drawBarForeground(bar, data, textures[1], barValue, barPercentage);
+    drawBarLabel(bar, token, data, labelValue, labelMax);
 
     // Update visibility.
     bar.visible = token._canViewMode(data.visibility);
 
+    // Rotate left & right bars.
+    if (data.position.startsWith("left")) bar.angle = -90;
+    else if (data.position.startsWith("right")) bar.angle = 90;
+
+    return bar.contentHeight;
+}
+
+/**
+ * Calculates the target height of the bar from its textures (if available) or
+ *  from the canvas dimensions and its style.
+ * @param {Token} token The token that the bar belongs to.
+ * @param {number} width The width of the bar.
+ * @param {PIXI.Texture[]=} textures The loaded textures of bar images. Defaults to two null elements.
+ * @returns {number} The target height of the bar.
+ */
+function getBarHeight(token, width, textures = [null, null]) {
+    if (textures[0]) return textures[0].height * width / textures[0].width;
+    else if (textures[1]) return textures[1].height * width / textures[1].width;
+
+    let height = Math.max((canvas.dimensions.size / 12), 8);
+    if (token.data.height >= 2) height *= 1.6; // Enlarge the bar for large tokens.
+    height += barPresets[game.settings.get("barbrawl", "barStyle")].heightOffset ?? 0;
     return height;
 }
 
 /**
- * Draws a bar using the default style with thick, rounded borders.
- * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
+ * Draws the bar's background, which can be a texture or a style. Note that no
+ *  regular styles will be drawn when the bar has a foreground image.
+ * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
+ * @param {Object} data The data of the bar.
+ * @param {PIXI.Texture?} texture The optional background texture to draw.
  */
-function drawDefaultBar(bar, width, height, percentage, color) {
-    const strokeWidth = Math.clamped(height / 8, 1, 2);
-    bar.clear()
-        .beginFill(0x000000, 0.5)
-        .lineStyle(strokeWidth, 0x000000, 1.0)
-        .drawRoundedRect(0, 0, width, height, 3);
+function drawBarBackground(bar, data, texture) {
+    if (texture) {
+        // Draw background texture.
+        const bgSprite = new PIXI.Sprite(texture);
+        bgSprite.width = bar.contentWidth;
+        bgSprite.height = bar.contentHeight;
+        bar.addChildAt(bgSprite, 0); // Insert at 0 to render first.
+    } else if (!data.fgImage) { // Don't draw background behind foreground image.
+        // Draw background color.
+        const gfx = bar.getChildByName("gfx");
+        const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
+        gfx.beginFill(0x000000, 0.5);
+        if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
+        gfx.drawRoundedRect(0, 0, bar.contentWidth, bar.contentHeight, preset.borderRadius);
+    }
+}
+
+/**
+ * Draws the bar's foreground, which can be a texture or a style.
+ * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
+ * @param {Object} data The data of the bar.
+ * @param {PIXI.Texture?} texture The optional foreground texture to draw.
+ * @param {number} value The displayed value of the bar.
+ * @param {number} percentage The displayed percentage of the bar.
+ */
+function drawBarForeground(bar, data, texture, value, percentage) {
     if (percentage <= 0.01) return;
-    bar.beginFill(color, 1.0)
-        .lineStyle(strokeWidth, 0x000000, 1.0)
-        .drawRoundedRect(0, 0, percentage * width, height, 2);
+    if (texture) {
+        // Draw foreground texture.
+        const croppedTex = new PIXI.Texture(texture,
+            new PIXI.Rectangle(0, 0, texture.width * percentage, texture.height));
+        const fgSprite = new PIXI.Sprite(croppedTex);
+        fgSprite.width = bar.contentWidth * percentage;
+        fgSprite.height = texture.height * bar.contentWidth / texture.width;
+
+        // Center foreground on top of background image.
+        if (data.bgImage) {
+            const heightDiff = bar.contentHeight - fgSprite.height;
+            if (Math.abs(heightDiff) > 0.01) fgSprite.y = heightDiff / 2;
+        }
+
+        bar.addChild(fgSprite);
+    } else {
+        // Draw foreground color.
+        const gfx = bar.getChildByName("gfx");
+        const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
+        const color = interpolateColor(data.mincolor, data.maxcolor, percentage);
+        const segments = value === data.value ? 1 : value;
+
+        gfx.beginFill(color, 0.8);
+        if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
+        const segmentWidth = percentage * bar.contentWidth / segments;
+        const radius = Math.max(0, preset.borderRadius - 1);
+
+        if (preset.borderWidth > 0) {
+            // With borders, draw all segments sequentially.
+            for (let i = 0; i < segments; i++) {
+                gfx.drawRoundedRect(segmentWidth * i, 0, segmentWidth, bar.contentHeight, radius);
+            }
+        } else {
+            // Without borders, additional space between segments is needed as a divider.
+            gfx.drawRoundedRect(0, 0, segmentWidth, bar.contentHeight, radius);
+            for (let i = 1; i < segments; i++) {
+                gfx.drawRoundedRect(segmentWidth * i + 1, 0, segmentWidth - 1, bar.contentHeight, radius);
+            }
+        }
+    }
 }
 
 /**
- * Draws a bar without borders.
- * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
+ * Draws the bar's label, including the bar text and the configured label style.
+ * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
+ * @param {Token} token The token that the bar belongs to.
+ * @param {Object} data The data of the bar.
+ * @param {number} value The value for the label.
+ * @param {number} max The maximum value for the label.
  */
-function drawMinimalBar(bar, width, height, percentage, color) {
-    bar.clear()
-        .beginFill(0x000000, 0.2)
-        .drawRect(0, 0, width, height)
-        .beginFill(color, 0.8)
-        .drawRect(0, 0, percentage * width, height);
-}
-
-/**
- * Draws a bar with a thin border.
- * @param {PIXI.Graphics} bar The graphics object to draw onto.
- * @param {Number} width The target width of the bar.
- * @param {Height} height The target height of the bar.
- * @param {Number} percentage How far the bar should be filled.
- * @param {String} color The color to fill the bar with.
- * @param {Number} value The current value of the resource.
- * @param {Number} max The maximum value of the resource.
- */
-function drawLargeBar(bar, width, height, percentage, color) {
-    bar.clear()
-        .beginFill(0x000000, 0.5)
-        .lineStyle(1, 0x000000, 0.9)
-        .drawRoundedRect(0, 0, width, height, 2)
-        .beginFill(color, 0.8)
-        .lineStyle(0)
-        .drawRoundedRect(0.5, 0.5, percentage * (width - 1), height - 1, 1);
+function drawBarLabel(bar, token, data, value, max) {
+    let textStyle = data.style;
+    if (!textStyle || textStyle === "user") textStyle = game.settings.get("barbrawl", "textStyle");
+    switch (textStyle) {
+        case "none":
+            if (data.label) createBarLabel(bar, token, data, data.label);
+            break;
+        case "fraction":
+            createBarLabel(bar, token, data, `${data.label ? data.label + "  " : ""}${value} / ${max}`);
+            break;
+        case "percent":
+            // Label does not match bar percentage because of possible inversion.
+            const percentage = Math.round((Math.clamped(value, 0, max) / max) * 100);
+            createBarLabel(bar, token, data, `${data.label ? data.label + "  " : ""}${percentage}%`);
+            break;
+        default:
+            console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
+    }
 }
 
 /**
  * Adds a PIXI.Text object on top of the given graphics object.
- * @param {PIXI.Graphics} bar The PIXI object to add the text to.
- * @param {Number} width The width of the bar.
- * @param {Number} height The height of the bar.
- * @param {String} text The text to display.
+ * @param {PIXI.Graphics | PIXI.Sprite} bar The PIXI object to add the text to.
+ * @param {Token} token The token that the bar belongs to.
+ * @param {Object} data The data of the bar.
+ * @param {string} text The text to display.
  */
-function drawBarLabel(bar, width, height, text) {
+function createBarLabel(bar, token, data, text) {
     let font = CONFIG.canvasTextStyle.clone();
-    font.fontSize = height;
+    font.fontSize = data.fgImage || data.bgImage ? getBarHeight(token, bar.contentWidth) : bar.contentHeight;
 
-    let barText = new PIXI.Text(text, font);
+    const barText = new PIXI.Text(text, font);
     barText.name = bar.name + "-text";
-    barText.x = width / 2;
-    barText.y = height / 2;
+    barText.x = bar.contentWidth / 2;
+    barText.y = bar.contentHeight / 2;
     barText.anchor.set(0.5);
     barText.resolution = 1.5;
     bar.addChild(barText);
@@ -391,10 +342,10 @@ function drawBarLabel(bar, width, height, text) {
  * Interpolates two RGB hex colors to get a midway point at the given
  *  percentage. The colors are converted into the HSV space to produce more
  *  intuitive results.
- * @param {String} minColor The lowest color as RGB hex string.
- * @param {String} maxColor The highest color as RGB hex string.
- * @param {Number} percentage The interpolation interval.
- * @returns {String} The interpolated color as RBG hex string.
+ * @param {string} minColor The lowest color as RGB hex string.
+ * @param {string} maxColor The highest color as RGB hex string.
+ * @param {number} percentage The interpolation interval.
+ * @returns {string} The interpolated color as RBG hex string.
  */
 function interpolateColor(minColor, maxColor, percentage) {
     let minRgb = PIXI.utils.hex2rgb(PIXI.utils.string2hex(minColor));
@@ -416,10 +367,10 @@ function interpolateColor(minColor, maxColor, percentage) {
 /**
  * Converts a color from RGB to HSV space.
  * Source: https://stackoverflow.com/questions/8022885/rgb-to-hsv-color-in-javascript/54070620#54070620
- * @param {Number} r The red value of the color as float (0 to 1).
- * @param {Number} g The green value of the color as float (0 to 1).
- * @param {Number} b The blue value of the color as float (0 to 1).
- * @returns {Number[]} The HSV color with hue in degrese (0 to 360), saturation and value as float (0 to 1).
+ * @param {number} r The red value of the color as float (0 to 1).
+ * @param {number} g The green value of the color as float (0 to 1).
+ * @param {number} b The blue value of the color as float (0 to 1).
+ * @returns {number[]} The HSV color with hue in degrese (0 to 360), saturation and value as float (0 to 1).
  */
 function rgb2hsv(r, g, b) {
     let v = Math.max(r, g, b), c = v - Math.min(r, g, b);
@@ -430,10 +381,10 @@ function rgb2hsv(r, g, b) {
 /**
  * Converts a color from HSV to RGB space.
  * Source: https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately/54024653#54024653
- * @param {Number} h The hue of the color in degrees (0 to 360).
- * @param {Number} s The saturation of the color as float (0 to 1).
- * @param {Number} v The value of the color as float (0 to 1).
- * @returns {Number[]} The RGB color with each component as float (0 to 1).
+ * @param {number} h The hue of the color in degrees (0 to 360).
+ * @param {number} s The saturation of the color as float (0 to 1).
+ * @param {number} v The value of the color as float (0 to 1).
+ * @returns {number[]} The RGB color with each component as float (0 to 1).
  */
 function hsv2rgb(h, s, v) {
     let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
@@ -441,19 +392,77 @@ function hsv2rgb(h, s, v) {
 }
 
 /**
- * Calculates the vertical coordinate of the bar with the given position
- *  relative to the token's boundaries.
- * @param {String} positionType The configured position indicator.
- * @param {Number} barHeight The height of the rendered bar.
- * @param {Number} tokenHeight The height of the rendered token.
- * @param {Number} index The amount of bars previously rendered at the same position.
- * @returns {Number} The Y-coordinate of the bar.
+ * Calculates the width of the bar with the given position relative to the
+ *  token's dimensions, respecting already reserved space.
+ * @param {Object} barData The data of the bar.
+ * @param {Token} token The token to read dimensions from.
+ * @param {Object} reservedSpace The amount of already used space per position.
+ * @returns {number} The target width of the bar.
  */
-function calculatePosition(positionType, barHeight, tokenHeight, index) {
-    switch (positionType) {
-        case "top-inner": return barHeight * index;
-        case "top-outer": return barHeight * (index + 1) * -1;
-        case "bottom-inner": return tokenHeight - barHeight * (index + 1);
-        case "bottom-outer": return tokenHeight + barHeight * index;
+function calculateWidth(barData, token, reservedSpace) {
+    const indent = ((barData.indentLeft ?? 0) + (barData.indentRight ?? 0)) / 100;
+    switch (barData.position) {
+        case "top-inner":
+        case "bottom-inner":
+            return token.w - reservedSpace["left-inner"] - reservedSpace["right-inner"] - indent * token.w;
+        case "top-outer":
+        case "bottom-outer":
+            return token.w - indent * token.w;
+        case "left-inner":
+        case "right-inner":
+            return token.h - reservedSpace["top-inner"] - reservedSpace["bottom-inner"] - indent * token.h;
+        case "left-outer":
+        case "right-outer":
+            return token.h - indent * token.h;
     }
+}
+
+/**
+ * Calculates the vertical coordinate of the bar with the given position
+ *  relative to the token's dimension, respecting already reserved space.
+ * @param {Object} barData The data of the bar.
+ * @param {number} barHeight The height of the rendered bar.
+ * @param {number} leftIndent The amount of bar indentation to apply.
+ * @param {Token} token The token to read dimensions from.
+ * @param {Object} reservedSpace The amount of already used space per position.
+ * @returns {number[]} The target X- and Y-coordinate of the bar.
+ */
+function calculatePosition(barData, barHeight, token, reservedSpace) {
+    const leftIndent = (barData.indentLeft ?? 0) / 100;
+    switch (barData.position) {
+        case "top-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, reservedSpace["top-inner"]];
+        case "top-outer": return [leftIndent * token.w, (reservedSpace["top-outer"] + barHeight) * -1];
+        case "bottom-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, token.h - reservedSpace["bottom-inner"] - barHeight];
+        case "bottom-outer": return [leftIndent * token.w, token.h + reservedSpace["bottom-outer"]];
+        case "left-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"] - leftIndent * token.h];
+        case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, token.h - leftIndent * token.h];
+        case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"] + leftIndent * token.h];
+        case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, leftIndent * token.h];
+    }
+}
+
+/**
+ * Renders a bar using the Foundry function instead of the Bar Brawl renderer.
+ * After the bar is drawn, its position and angle will be overriden.
+ * @param {Token} token The token to draw the bar on.
+ * @param {PIXI.Graphics} bar The graphics object to draw onto.
+ * @param {Object} data The data of the bar to draw.
+ * @returns {number} The final height of the bar.
+ */
+function drawExternalBar(token, bar, data) {
+    let gfx = bar.getChildByName("gfx");
+    if (!gfx) {
+        gfx = bar.addChild(new PIXI.Graphics());
+        gfx.name = "gfx";
+    }
+
+    token._drawBar(0, gfx, data);
+    gfx.position.set(0, 0); // Do not allow external code to set the bar's position.
+    bar.contentHeight = gfx.height - (gfx.line?.width ?? 0);
+
+    // Rotate left & right bars.
+    if (data.position.startsWith("left")) bar.angle = -90;
+    else if (data.position.startsWith("right")) bar.angle = 90;
+
+    return bar.contentHeight;
 }
