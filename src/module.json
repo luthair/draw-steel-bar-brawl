@@ -1,34 +1,34 @@
 {
-  "name": "barbrawl",
-  "title": "Bar Brawl",
-  "description": "Adds additional options for displaying multiple resource bars on a token.",
-  "version": "1.2.5",
-  "author": "Adrian Haberecht",
-  "esmodules": [
-    "barbrawl.js"
-  ],
-  "styles": [
-    "styles/attributeHud.css"
-  ],
-  "languages": [
-    {
-      "lang": "de",
-      "name": "Deutsch",
-      "path": "lang/de.json"
-    },
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    }
-  ],
-  "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "0.8.8",
-  "url": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl",
-  "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/master/src/module.json",
-  "download": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/uploads/95f1615df468619c2bcb1a0664f42fbf/barbrawl-v1.2.5.zip",
-  "license": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/LICENSE",
-  "readme": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/README.md",
-  "bugs": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/issues",
-  "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md"
+    "name": "barbrawl",
+    "title": "Bar Brawl",
+    "description": "Adds additional options for displaying multiple resource bars on a token.",
+    "version": "1.3.0",
+    "author": "Adrian Haberecht",
+    "esmodules": [
+        "barbrawl.js"
+    ],
+    "styles": [
+        "styles/attributeHud.css"
+    ],
+    "languages": [
+        {
+            "lang": "de",
+            "name": "Deutsch",
+            "path": "lang/de.json"
+        },
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "minimumCoreVersion": "0.8.9",
+    "compatibleCoreVersion": "0.8.9",
+    "url": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl",
+    "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/master/src/module.json",
+    "download": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/uploads/0228d4403c30ef10be0e068161a29b28/barbrawl-v1.3.0.zip",
+    "license": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/LICENSE",
+    "readme": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/README.md",
+    "bugs": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/issues",
+    "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md"
 }

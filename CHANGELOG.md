@@ -1,3 +1,15 @@
+1.3.0
+- Fixed a compatibility issue with Pathfinder 1.
+- Moved default configuration to world scope. **This version will reset your default bar settings.**
+- Added button to restore the default bar configuration for a token.
+- Added configurable prefix text for bar labels.
+- Added approximate value segments.
+- Reintroduced old (FoundryVTT 0.7.9 and below) bar style as "legacy".
+- Added side bar positioning.
+- Added bar indentation.
+- Bars can now be explicitly removed or reordered in the token configuration.
+- Added bar foreground & background images.
+
 1.2.5
 - Fixed some labels being drawn twice.
 - Fixed updates not refreshing custom value bars.
