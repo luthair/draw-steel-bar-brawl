@@ -62,7 +62,6 @@ export const extendBarRenderer = function () {
  * @constant {Token} this The token that this function is called on.
  */
 function drawBrawlBars() {
-    this.bars.removeChildren();
     let visibleBars = getVisibleBars(this.document);
     if (visibleBars.length === 0) return;
 
@@ -79,6 +78,7 @@ function drawBrawlBars() {
 
     this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
+        this.bars.removeChildren();
         for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
         this.bars.visible = this.bars.children.length > 0;
     };
