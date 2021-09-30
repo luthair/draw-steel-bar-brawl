@@ -1,3 +1,7 @@
+1.3.1
+- Fixed a bug that caused bars to appear twice.
+- Fixed advanced bar configuration for prototype tokens.
+
 1.3.0
 - Fixed a compatibility issue with Pathfinder 1.
 - Moved default configuration to world scope. **This version will reset your default bar settings.**
