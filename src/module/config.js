@@ -153,7 +153,7 @@ function swapButtonState(selector, firstElement, secondElement) {
  */
 function onOpenAdvancedConfiguration(event, tokenConfig, data) {
     const barId = event.currentTarget.parentElement.parentElement.id;
-    const barData = api.getBar(data.object.document, barId) ?? {};
+    const barData = api.getBar(tokenConfig.token, barId) ?? {};
 
     // Parse form data and merge with stored data.
     let formData = tokenConfig._getSubmitData();
@@ -161,7 +161,7 @@ function onOpenAdvancedConfiguration(event, tokenConfig, data) {
     foundry.utils.mergeObject(barData, formData);
 
     new BarConfigExtended(barData, {
-        parent: data.object.document,
+        parent: tokenConfig.token,
         displayModes: data.displayModes,
         barAttributes: data.barAttributes
     }).render(true);
@@ -214,7 +214,7 @@ async function onSaveDefaults(tokenConfig) {
     data = foundry.utils.expandObject(data).flags.barbrawl.resourceBars;
 
     // Merge extended bar data without overriding the form.
-    const extData = foundry.utils.getProperty(tokenConfig.object.data._source, "flags.barbrawl.resourceBars");
+    const extData = foundry.utils.getProperty(tokenConfig.token.data._source, "flags.barbrawl.resourceBars");
     foundry.utils.mergeObject(data, extData, { insertKeys: false, overwrite: false });
 
     // Drop bars that were removed.
@@ -236,7 +236,13 @@ async function onLoadDefaults(tokenConfig) {
         return;
     }
 
-    await tokenConfig.token.update({ "flags.barbrawl.resourceBars": defaults }, { diff: false });
+    if (tokenConfig.token instanceof PrototypeTokenDocument) {
+        const actor = tokenConfig.token.actor;
+        await actor.update({ "token.flags.barbrawl.resourceBars": defaults }, { diff: false });
+        tokenConfig.token = new PrototypeTokenDocument(actor.data.token, { actor: actor });
+    } else {
+        await tokenConfig.token.update({ "flags.barbrawl.resourceBars": defaults }, { diff: false });
+    }
     return tokenConfig.render();
 }
 

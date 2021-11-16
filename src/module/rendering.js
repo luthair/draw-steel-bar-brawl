@@ -62,7 +62,6 @@ export const extendBarRenderer = function () {
  * @constant {Token} this The token that this function is called on.
  */
 function drawBrawlBars() {
-    this.bars.removeChildren();
     let visibleBars = getVisibleBars(this.document);
     if (visibleBars.length === 0) return;
 
@@ -79,6 +78,7 @@ function drawBrawlBars() {
 
     this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
+        this.bars.removeChildren();
         for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
         this.bars.visible = this.bars.children.length > 0;
     };
@@ -161,16 +161,6 @@ async function loadBarTextures(data) {
  * @returns {number} The final height of the bar.
  */
 function drawResourceBar(token, bar, data, textures) {
-    // Defer rendering to HP Bar module for compatibility.
-    if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
-        return drawExternalBar(token, bar, data);
-    }
-
-    bar.contentHeight ||= getBarHeight(token, bar.contentWidth, textures);
-    if (bar.contentWidth <= 0 || bar.contentHeight <= 0) return;
-
-    drawBarBackground(bar, data, textures[0]);
-
     let labelValue = data.value;
     let labelMax = data.max;
 
@@ -180,14 +170,26 @@ function drawResourceBar(token, bar, data, textures) {
         labelMax = data.subdivisions;
     }
 
+    // Update visibility.
+    bar.visible = token._canViewMode(data.visibility);
+
+    // Defer rendering to HP Bar module for compatibility.
+    if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
+        drawExternalBar(token, bar, data);
+        drawBarLabel(bar, token, data, labelValue, labelMax);
+        return bar.contentHeight;
+    }
+
+    bar.contentHeight ||= getBarHeight(token, bar.contentWidth, textures);
+    if (bar.contentWidth <= 0 || bar.contentHeight <= 0) return;
+
+    drawBarBackground(bar, data, textures[0]);
+
     const barValue = data.invert ? labelMax - labelValue : labelValue;
     const barPercentage = Math.clamped(barValue, 0, labelMax) / labelMax;
 
     drawBarForeground(bar, data, textures[1], barValue, barPercentage);
     drawBarLabel(bar, token, data, labelValue, labelMax);
-
-    // Update visibility.
-    bar.visible = token._canViewMode(data.visibility);
 
     // Rotate left & right bars.
     if (data.position.startsWith("left")) bar.angle = -90;

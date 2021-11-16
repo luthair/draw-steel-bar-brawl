@@ -22,12 +22,23 @@ export default class BarConfigExtended extends FormApplication {
 
     /** @override */
     async _updateObject(_event, formData) {
+        // Resolve token configuration for original document.
+        const tokenConfig = Object.values(ui.windows)
+            .find(conf => conf instanceof TokenConfig && conf.token === this.options.parent);
+
         // Update the data.
-        await this.options.parent.update(formData);
+        if (this.options.parent instanceof PrototypeTokenDocument) {
+            // Update the actor instead of the token.
+            const actor = this.options.parent.actor;
+            await actor.update({ token: formData });
+
+            // Refresh the prototype document because it won't be updated.
+            this.options.parent = new PrototypeTokenDocument(actor.data.token, { actor: actor });
+        } else {
+            await this.options.parent.update(formData);
+        }
 
         // Check if the token configuration is still open.
-        const tokenConfig = Object.values(ui.windows)
-            .find(conf => conf instanceof TokenConfig && conf.object === this.options.parent);
         if (!tokenConfig) return;
 
         // Replace the configuration element of the bar with an updated version to avoid discarding other changes.
