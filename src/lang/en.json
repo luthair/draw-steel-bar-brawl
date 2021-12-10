@@ -23,7 +23,8 @@
         },
         "config": {
             "attribute": "Attribute",
-            "visibility": "Visibility",
+            "ownerVisibility": "Visibility (owner)",
+            "otherVisibility": "Visibility (everyone)",
             "value": "Value (current/max)",
             "color": "Color (min/max)",
             "position": "Position",
@@ -55,6 +56,12 @@
         "attribute": {
             "none": "None (remove)",
             "custom": "Custom (values below)"
+        },
+        "visibility": {
+            "none": "Never",
+            "always": "Always",
+            "hover": "When hovered",
+            "control": "When selected"
         },
         "position": {
             "top-inner": "Top (inside)",

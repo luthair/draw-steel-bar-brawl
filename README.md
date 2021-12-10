@@ -46,7 +46,7 @@ In addition to the bar itself, the maximum color is also used as a border on the
 
 #### Visibility
 
-To hide bars in certain circumstances, use the visibility settings. Bars can always be displayed for just the owner or everyone. They can also be displayed only when the token is hovered (again for the owner or everyone). Alternatively, you can only show them when the token is controlled (meaning that it is selected by the owner).
+To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered or display it only when the token is selected (only available for the owner).
 
 #### Position & Order
 
@@ -110,7 +110,8 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
     "aBarId": {
         id: "aBarId",
         attribute: "custom",
-        visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+        ownerVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+        otherVisibility: CONST.TOKEN_DISPLAY_MODES.NONE,
         value: 5,
         max: 5,
         mincolor: "#000000",
@@ -134,7 +135,7 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
 - The **attribute** is a string representing the data path of the target attribute, relative to the actor's data (for examples, open the attribute menu through the UI configuration). Unlinked bars have the attribute "custom" and additionally contain number fields for the current and maximum value.
 - Valid **position**s are combinations of top/bottom/left/right and inner/outer, e.g. "bottom-inner".
 - Valid **style**s are "user", "none", "fraction" and "percent" - this overrides the user setting, so you should generally prefer the "user" mode.
-- The **visibility** can be any of the standard Foundry display modes (`CONST.TOKEN_DISPLAY_MODES`).
+- The **visibility** properties can be 50, 30, 10 or 0 for always, hovered, controlled or never, respectively (see `CONST.TOKEN_DISPLAY_MODES`).
 - Both **color**s are HTML color strings.
 - The fields "**ignoreMin**" and "**ignoreMax**" are boolean flags that disable clamping of the bar's value.
 - The **invert** flag is a boolean indicating whether a full value should be rendered as en empty bar.
