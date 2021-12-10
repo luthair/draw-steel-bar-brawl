@@ -8,6 +8,7 @@ import { extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { registerSettings } from "./module/settings.js";
 import { prepareUpdate } from "./module/synchronization.js";
+import { refreshBarVisibility } from "./module/api.js";
 
 /** Hook to register settings. */
 Hooks.once('init', async function () {
@@ -87,16 +88,6 @@ Hooks.on("updateToken", function (doc, changes) {
     if (token.hasActiveHUD) canvas.tokens.hud.render();
 });
 
-/** Hook to update bar visibility on hover */
-Hooks.on("hoverToken", function (token) {
-    const resourceBars = token.document.getFlag("barbrawl", "resourceBars") ?? {};
-    const barContainer = token.bars.children;
-    for (let pixiBar of barContainer) {
-        let bar = resourceBars[pixiBar.name];
-        if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
-    }
-});
-
 /** Hook to initialize tokens with default bars. */
 Hooks.on("preCreateToken", function (doc, data) {
     // Always make the bar container visible.
@@ -115,3 +106,7 @@ Hooks.on("preCreateToken", function (doc, data) {
 
     doc.data.update({ "flags.barbrawl.resourceBars": barConfig });
 });
+
+/** Hook to update bar visibility. */
+Hooks.on("hoverToken", refreshBarVisibility);
+Hooks.on("controlToken", refreshBarVisibility);
