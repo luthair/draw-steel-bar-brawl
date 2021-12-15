@@ -1,4 +1,4 @@
 {
-    "localization-moved": "This localization has been moved to the centralized localization module. It can be found here https://github.com/BrotherSharper/foundryVTTja",
-    "localization-moved-ja": "この翻訳ファイルは本体日本語化Modに移行しました。こちらから入手してください https://github.com/BrotherSharper/foundryVTTja"
+    "localization-moved": "Bar Brawl | The japanese localization of this module requires the dedicated translation module called 日本語化（オンセ工房 Foundry VTT 本体＆Mod日本語化）, which you can find on https://github.com/BrotherSharper/foundryVTTja.",
+    "localization-moved-ja": "Bar Brawl | このModの日本語化は専用の日本語化モジュールである「日本語化（オンセ工房 Foundry VTT 本体＆Mod日本語化）」を必要とします。このモジュールはこちらから入手できます： https://github.com/BrotherSharper/foundryVTTja"
 }
