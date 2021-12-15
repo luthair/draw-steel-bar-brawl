@@ -1,4 +1,4 @@
-import { getBar, getVisibleBars } from "./api.js";
+import { getBar, getVisibleBars, isBarVisible } from "./api.js";
 
 /**
  * Object containing current bar rendering promises per token.
@@ -171,7 +171,7 @@ function drawResourceBar(token, bar, data, textures) {
     }
 
     // Update visibility.
-    bar.visible = token._canViewMode(data.visibility);
+    bar.visible = isBarVisible(token, data);
 
     // Defer rendering to HP Bar module for compatibility.
     if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {

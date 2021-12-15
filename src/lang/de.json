@@ -23,7 +23,8 @@
         },
         "config": {
             "attribute": "Attribut",
-            "visibility": "Sichtbarkeit",
+            "ownerVisibility": "Sichtbarkeit (Besitzer)",
+            "otherVisibility": "Sichtbarkeit (alle)",
             "value": "Wert (aktuell/max)",
             "color": "Farbe (min/max)",
             "position": "Position",
@@ -55,6 +56,12 @@
         "attribute": {
             "none": "Keins (entfernen)",
             "custom": "Benutzerdefiniert (Werte unten)"
+        },
+        "visibility": {
+            "none": "Nie",
+            "always": "Immer",
+            "hover": "Wenn Mauszeiger darüber",
+            "control": "Wenn ausgewählt"
         },
         "position": {
             "top-inner": "Oben (innen)",

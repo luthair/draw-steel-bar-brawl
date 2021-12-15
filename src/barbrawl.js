@@ -8,6 +8,7 @@ import { extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { registerSettings } from "./module/settings.js";
 import { prepareUpdate } from "./module/synchronization.js";
+import { refreshBarVisibility } from "./module/api.js";
 
 /** Hook to register settings. */
 Hooks.once('init', async function () {
@@ -25,20 +26,10 @@ Hooks.once('init', async function () {
     loadTemplates(["modules/barbrawl/templates/bar-config-minimal.hbs", "modules/barbrawl/templates/bar-config.hbs"]);
 });
 
-/** Hook to replace the token bar rendering. */
-Hooks.once("setup", function () {
-    extendBarRenderer();
-});
-
-/** Hook to replace the resource value inputs. */
-Hooks.on("renderTokenHUD", function (tokenHud, html, data) {
-    extendTokenHud(tokenHud, html, data);
-});
-
-/** Hook to replace the resource bar configuration menu. */
-Hooks.on("renderTokenConfig", function (tokenConfig, html, data) {
-    extendTokenConfig(tokenConfig, html, data);
-});
+/** Hooks to replace UI elements. */
+Hooks.once("setup", extendBarRenderer);
+Hooks.on("renderTokenHUD", extendTokenHud);
+Hooks.on("renderTokenConfig", extendTokenConfig);
 
 /** Hook to remove bars and synchronize legacy bars. */
 Hooks.on("preUpdateToken", function (doc, changes) {
@@ -68,8 +59,8 @@ Hooks.on("updateToken", function (doc, changes) {
     let changedBarIds = Object.keys(changedBars);
     if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
         let changedData = changedBars[changedBarIds[0]];
-        if (!(["position", "id", "max", "indentLeft", "indentRight", "bgImage", "fgImage"]
-            .some(prop => prop in changedData))) {
+        if (!(["position", "id", "max", "indentLeft", "indentRight", "bgImage", "fgImage",
+            "ownerVisibility", "otherVisibility"].some(prop => prop in changedData))) {
             const barData = doc.data.flags.barbrawl.resourceBars[changedBarIds[0]];
 
             if (barData.attribute !== "custom") {
@@ -97,16 +88,6 @@ Hooks.on("updateToken", function (doc, changes) {
     if (token.hasActiveHUD) canvas.tokens.hud.render();
 });
 
-/** Hook to update bar visibility on hover */
-Hooks.on("hoverToken", function (token) {
-    const resourceBars = token.document.getFlag("barbrawl", "resourceBars") ?? {};
-    const barContainer = token.bars.children;
-    for (let pixiBar of barContainer) {
-        let bar = resourceBars[pixiBar.name];
-        if (bar) pixiBar.visible = token._canViewMode(bar.visibility);
-    }
-});
-
 /** Hook to initialize tokens with default bars. */
 Hooks.on("preCreateToken", function (doc, data) {
     // Always make the bar container visible.
@@ -125,3 +106,7 @@ Hooks.on("preCreateToken", function (doc, data) {
 
     doc.data.update({ "flags.barbrawl.resourceBars": barConfig });
 });
+
+/** Hook to update bar visibility. */
+Hooks.on("hoverToken", refreshBarVisibility);
+Hooks.on("controlToken", refreshBarVisibility);

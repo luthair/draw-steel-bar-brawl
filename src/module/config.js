@@ -256,5 +256,5 @@ function adjustConfigHeight(html, barCount) {
     if (barCount <= 0) return;
     if (html[0].tagName === "FORM") html = html.parent().parent(); // Fix parent when force render is false.
     const height = parseInt(html.css("height"), 10);
-    html.css("height", Math.max(height, barCount * 17 + 416) + "px");
+    html.css("height", Math.max(height, barCount * 17 + 454) + "px");
 }
