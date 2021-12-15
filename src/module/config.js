@@ -1,5 +1,6 @@
 import * as api from "./api.js";
 import BarConfigExtended from "./extendedConfig.js";
+import { getDefaultResources, setDefaultResources } from "./settings.js";
 
 /**
  * Modifies the given HTML to replace the resource bar configuration with our
@@ -220,8 +221,7 @@ async function onSaveDefaults(tokenConfig) {
     // Drop bars that were removed.
     for (let id of Object.keys(data)) if (!data[id].attribute) delete data[id];
 
-    await game.settings.set("barbrawl", "defaultResources", data);
-    ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
+    await setDefaultResources(tokenConfig.token.actor?.type, data);
 }
 
 /**
@@ -230,12 +230,7 @@ async function onSaveDefaults(tokenConfig) {
  * @param {TokenConfig} tokenConfig The token configuration object.
  */
 async function onLoadDefaults(tokenConfig) {
-    const defaults = game.settings.get("barbrawl", "defaultResources");
-    if (!defaults) {
-        ui.notifications.error("Bar Brawl | " + game.i18n.localize("barbrawl.noDefaults"));
-        return;
-    }
-
+    const defaults = getDefaultResources(tokenConfig.token.actor?.type, false);
     if (tokenConfig.token instanceof PrototypeTokenDocument) {
         const actor = tokenConfig.token.actor;
         await actor.update({ "token.flags.barbrawl.resourceBars": defaults }, { diff: false });

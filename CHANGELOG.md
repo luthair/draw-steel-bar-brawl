@@ -1,3 +1,7 @@
+1.4.0
+- Added separate visibility configuration for owner and everyone else.
+- Added option to store default settings per actor type.
+
 1.3.1
 - Fixed a bug that caused bars to appear twice.
 - Fixed advanced bar configuration for prototype tokens.

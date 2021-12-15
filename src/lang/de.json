@@ -16,11 +16,6 @@
             "fraction": "Bruch (Wert / Max.)",
             "percent": "Prozent (%)"
         },
-        "reset": {
-            "name": "Standards zurücksetzen",
-            "hint": "Setzt die Standardeinstellungen für Token-Ressourcen zurück.",
-            "button": "Zurücksetzen"
-        },
         "config": {
             "attribute": "Attribut",
             "ownerVisibility": "Sichtbarkeit (Besitzer)",
@@ -74,10 +69,14 @@
             "right-outer": "Rechts (außen)"
         },
         "add": "Ressource hinzufügen",
-        "save": "Als Standard speichern",
-        "saveConfirmation": "Standard-Ressourcen gespeichert.",
-        "load": "Standards laden",
-        "noDefaults": "Für diese Welt existieren keine Standard-Ressourcen.",
-        "resetConfirmation": "Standard-Ressourcen zurückgesetzt."
+        "defaults": {
+            "save": "Als Standard speichern",
+            "saveConfirmation": "Standard-Ressourcen gespeichert.",
+            "load": "Standards laden",
+            "storePerType": {
+                "name": "Standards pro Typ",
+                "hint": "Speichert die Standard-Ressourcen separat für jeden Charaktertyp."
+            }
+        }
     }
 }
