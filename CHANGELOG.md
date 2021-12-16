@@ -1,4 +1,5 @@
 1.4.0
+- Updated for FoundryVTT 0.9.
 - Added separate visibility configuration for owner and everyone else.
 - Added option to store default settings per actor type.
 - Fixed defaults not applying to prototype tokens.

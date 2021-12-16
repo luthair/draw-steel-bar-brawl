@@ -201,7 +201,7 @@ export const isBarVisible = function (token, bar) {
  */
 export const refreshBarVisibility = function (token) {
     const resourceBars = token.document.getFlag("barbrawl", "resourceBars") ?? {};
-    const barContainer = token.bars.children;
+    const barContainer = token.hud.bars.children;
     for (let pixiBar of barContainer) {
         const bar = resourceBars[pixiBar.name];
         if (!bar) continue;

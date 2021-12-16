@@ -78,9 +78,9 @@ function drawBrawlBars() {
 
     this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
-        this.bars.removeChildren();
+        this.hud.bars.removeChildren();
         for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
-        this.bars.visible = this.bars.children.length > 0;
+        this.hud.bars.visible = this.hud.bars.children.length > 0;
     };
 
     // Make sure that we are only rendering bars for each token once.
@@ -117,7 +117,7 @@ async function createResourceBar(token, data, reservedSpace) {
     const position = calculatePosition(data, renderedHeight, token, reservedSpace);
     reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
-    token.bars.addChild(bar);
+    token.hud.bars.addChild(bar);
 }
 
 /**
@@ -126,7 +126,7 @@ async function createResourceBar(token, data, reservedSpace) {
  * @param {Object} barData The data of the bar to refresh.
  */
 export const redrawBar = async function (token, barData) {
-    const bar = token.bars.getChildByName(barData.id);
+    const bar = token.hud.bars.getChildByName(barData.id);
     if (bar) {
         const gfx = bar.getChildByName("gfx");
         bar.removeChildren();
