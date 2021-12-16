@@ -1,4 +1,4 @@
-import { getDefaultBar } from "./api.js";
+import { convertBarVisibility, getDefaultBar } from "./api.js";
 
 /**
  * Generates the data for an update that overrides the current resource
@@ -37,11 +37,15 @@ export const prepareUpdate = function (tokenData, newData) {
             // Remove bars that were explicitly set to "None" attribute.
             if (barId.startsWith("-=")) continue; // Already queued for removal
 
+            // Remove bars without attribute.
             const bar = changedBars[barId];
             if (bar.attribute === "") {
                 delete changedBars[barId];
                 changedBars["-=" + barId] = null;
             }
+
+            // Convert legacy visibility.
+            if (bar.hasOwnProperty("visibility")) convertBarVisibility(bar);
 
             const barData = (foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
 
