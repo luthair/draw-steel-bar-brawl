@@ -1,6 +1,7 @@
 import * as api from "./api.js";
 import BarConfigExtended from "./extendedConfig.js";
 import { getDefaultResources, setDefaultResources } from "./settings.js";
+import { createOverrideData } from "./synchronization.js";
 
 /**
  * Modifies the given HTML to replace the resource bar configuration with our
@@ -233,10 +234,10 @@ async function onLoadDefaults(tokenConfig) {
     const defaults = getDefaultResources(tokenConfig.token.actor?.type, false);
     if (tokenConfig.token instanceof PrototypeTokenDocument) {
         const actor = tokenConfig.token.actor;
-        await actor.update({ "token.flags.barbrawl.resourceBars": defaults }, { diff: false });
+        await actor.update(createOverrideData(defaults, true), { recursive: false });
         tokenConfig.token = new PrototypeTokenDocument(actor.data.token, { actor: actor });
     } else {
-        await tokenConfig.token.update({ "flags.barbrawl.resourceBars": defaults }, { diff: false });
+        await tokenConfig.token.update(createOverrideData(defaults), { recursive: false });
     }
     return tokenConfig.render();
 }
@@ -251,5 +252,5 @@ function adjustConfigHeight(html, barCount) {
     if (barCount <= 0) return;
     if (html[0].tagName === "FORM") html = html.parent().parent(); // Fix parent when force render is false.
     const height = parseInt(html.css("height"), 10);
-    html.css("height", Math.max(height, barCount * 17 + 454) + "px");
+    html.css("height", Math.max(height, barCount * 17 + 446) + "px");
 }

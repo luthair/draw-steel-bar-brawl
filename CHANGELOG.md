@@ -1,6 +1,8 @@
 1.4.0
 - Added separate visibility configuration for owner and everyone else.
 - Added option to store default settings per actor type.
+- Fixed defaults not applying to prototype tokens.
+- It is now possible to load empty defaults using the button. Empty defaults will not be applied when creating actors and tokens.
 
 1.3.1
 - Fixed a bug that caused bars to appear twice.

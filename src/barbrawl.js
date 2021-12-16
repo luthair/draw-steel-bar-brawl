@@ -7,7 +7,7 @@ import { extendBarRenderer, redrawBar } from "./module/rendering.js";
 import { extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
-import { prepareUpdate } from "./module/synchronization.js";
+import { createOverrideData, prepareUpdate } from "./module/synchronization.js";
 import { refreshBarVisibility } from "./module/api.js";
 
 /** Hook to register settings. */
@@ -98,25 +98,15 @@ Hooks.on("preCreateToken", function (doc, data) {
 
     const barConfig = getDefaultResources(actor.type);
     if (!barConfig) return;
-    doc.data.update({
-        "flags.barbrawl.resourceBars": barConfig,
-        "bar1.attribute": barConfig.bar1?.attribute ?? null,
-        "bar2.attribute": barConfig.bar2?.attribute ?? null
-    });
+    doc.data.update(createOverrideData(barConfig));
 });
 
-Hooks.on("preCreateActor", function (doc, data) {
-    if (!data.token || foundry.utils.hasProperty(data.token, "flags.barbrawl.resourceBars")) return;
+Hooks.on("preCreateActor", function (doc) {
+    if (!doc.data.token || foundry.utils.hasProperty(doc.data.token, "flags.barbrawl.resourceBars")) return;
 
     const barConfig = getDefaultResources(doc.type);
     if (!barConfig) return;
-    doc.data.update({
-        token: {
-            "flags.barbrawl.resourceBars": barConfig,
-            "bar1.attribute": barConfig.bar1?.attribute ?? null,
-            "bar2.attribute": barConfig.bar2?.attribute ?? null
-        }
-    });
+    doc.data.update(createOverrideData(barConfig, true));
 });
 
 /** Hook to update bar visibility. */
