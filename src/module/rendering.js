@@ -40,9 +40,9 @@ export const extendBarRenderer = function () {
         libWrapper.register("barbrawl", "Token.prototype.drawBars", drawBrawlBars, "OVERRIDE");
         libWrapper.register("barbrawl", "TokenDocument.prototype.getBarAttribute",
             function (wrapped, barId, { alternative } = {}) {
-                return wrapped(null, {
-                    alternative: alternative ?? getBar(this, barId)?.attribute
-                });
+                const attribute = alternative ?? getBar(this, barId)?.attribute;
+                if (typeof attribute !== "string") return null;
+                return wrapped(null, { alternative: attribute });
             }, "WRAPPER");
     } else {
         // Manual override
@@ -50,9 +50,9 @@ export const extendBarRenderer = function () {
 
         const originalGetBarAttribute = TokenDocument.prototype.getBarAttribute;
         TokenDocument.prototype.getBarAttribute = function (barId, { alternative } = {}) {
-            return originalGetBarAttribute.call(this, null, {
-                alternative: alternative ?? getBar(this, barId)?.attribute
-            });
+            const attribute = alternative ?? getBar(this, barId)?.attribute;
+            if (typeof attribute !== "string") return null;
+            return originalGetBarAttribute.call(this, null, { alternative: attribute });
         };
     }
 }

@@ -178,9 +178,15 @@ function onOpenAdvancedConfiguration(event, tokenConfig, data) {
  */
 async function onAddResource(event, tokenConfig, data) {
     const barControls = $(event.currentTarget.parentElement);
-    const htmlBars = barControls.siblings("details").filter(":visible");
-    const newBar = api.getDefaultBar(api.getNewBarId(htmlBars), "custom");
+    const allBarEls = barControls.siblings("details");
+    const barEls = allBarEls.filter(":visible");
+
+    // Create raw bar data.
+    const newBar = api.getDefaultBar(api.getNewBarId(barEls), "custom");
     data.brawlBars.push(newBar);
+
+    // Remove insibible elements with the same ID.
+    if (allBarEls.length !== barEls.length) allBarEls.find("div#" + newBar.id).parent().remove();
 
     const barConfiguration = $(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: [newBar],
@@ -188,17 +194,17 @@ async function onAddResource(event, tokenConfig, data) {
         barAttributes: data.barAttributes
     }));
 
-    if (htmlBars.length) {
-        const prevBarConf = htmlBars[htmlBars.length - 1];
+    if (barEls.length) {
+        const prevBarConf = barEls[barEls.length - 1];
         prevBarConf.removeAttribute("open");
         prevBarConf.querySelector("a.fa-chevron-down").classList.remove("disabled");
 
         const newBarConf = barConfiguration[0];
-        newBarConf.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = htmlBars.length;
+        newBarConf.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = barEls.length;
         newBarConf.querySelector("a.fa-chevron-up").classList.remove("disabled");
     }
 
-    adjustConfigHeight(tokenConfig.element, htmlBars.length + 1);
+    adjustConfigHeight(tokenConfig.element, barEls.length + 1);
     barControls.before(barConfiguration);
 }
 
