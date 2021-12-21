@@ -43,7 +43,7 @@ export const extendBarRenderer = function () {
                 const attribute = alternative ?? getBar(this, barId)?.attribute;
                 if (typeof attribute !== "string") return null;
                 return wrapped(null, { alternative: attribute });
-            }, "WRAPPER");
+            }, "MIXED");
     } else {
         // Manual override
         Token.prototype.drawBars = drawBrawlBars;
