@@ -1,3 +1,7 @@
+1.4.1
+- Fixed a compatibility issue with libWrapper.
+- Fixed resource creation when there are less than two.
+
 1.4.0
 - Updated for FoundryVTT 0.9.
 - Added separate visibility configuration for owner and everyone else.
