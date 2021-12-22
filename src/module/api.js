@@ -126,11 +126,10 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
  * @param {Object[]} existingBars The array of existing bar data.
  */
 export const getNewBarId = function (existingBars) {
-    switch (existingBars.length) {
-        case 0: return "bar1";
-        case 1: return "bar2";
-        default: return "b" + randomID();
-    }
+    const existingIds = existingBars.map((_i, el) => el.lastElementChild.id).get();
+    if (!existingIds.includes("bar1")) return "bar1";
+    if (!existingIds.includes("bar2")) return "bar2";
+    return "bar" + randomID();
 }
 
 /**
