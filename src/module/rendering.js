@@ -37,8 +37,8 @@ const barPresets = {
 export const extendBarRenderer = function () {
     if (game.modules.get("lib-wrapper")?.active) {
         // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
-        libWrapper.register("barbrawl", "Token.prototype.drawBars", drawBrawlBars, "OVERRIDE");
-        libWrapper.register("barbrawl", "TokenDocument.prototype.getBarAttribute",
+        libWrapper.register("barbrawl", "CONFIG.Token.objectClass.prototype.drawBars", drawBrawlBars, "OVERRIDE");
+        libWrapper.register("barbrawl", "CONFIG.Token.documentClass.prototype.getBarAttribute",
             function (wrapped, barId, { alternative } = {}) {
                 const attribute = alternative ?? getBar(this, barId)?.attribute;
                 if (typeof attribute !== "string") return null;
@@ -46,10 +46,10 @@ export const extendBarRenderer = function () {
             }, "MIXED");
     } else {
         // Manual override
-        Token.prototype.drawBars = drawBrawlBars;
+        CONFIG.Token.objectClass.prototype.drawBars = drawBrawlBars;
 
-        const originalGetBarAttribute = TokenDocument.prototype.getBarAttribute;
-        TokenDocument.prototype.getBarAttribute = function (barId, { alternative } = {}) {
+        const originalGetBarAttribute = CONFIG.Token.documentClass.prototype.getBarAttribute;
+        CONFIG.Token.documentClass.prototype.getBarAttribute = function (barId, { alternative } = {}) {
             const attribute = alternative ?? getBar(this, barId)?.attribute;
             if (typeof attribute !== "string") return null;
             return originalGetBarAttribute.call(this, null, { alternative: attribute });
