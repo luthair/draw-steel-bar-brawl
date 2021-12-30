@@ -4,6 +4,7 @@
 const BAR_VISIBILITY = {
     NONE: 0,
     ALWAYS: 50,
+    HOVER_CONTROL: 35,
     HOVER: 30,
     CONTROL: 10
 }
@@ -191,7 +192,9 @@ function getBarVisibility(token, bar) {
  * @returns {boolean} True if the bar is currently visible, false otherwise.
  */
 export const isBarVisible = function (token, bar) {
-    return token._canViewMode(getBarVisibility(token, bar));
+    const visibility = getBarVisibility(token, bar);
+    if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token._controlled || token._hover;
+    return token._canViewMode(visibility);
 }
 
 /**
@@ -203,9 +206,6 @@ export const refreshBarVisibility = function (token) {
     const barContainer = token.hud.bars.children;
     for (let pixiBar of barContainer) {
         const bar = resourceBars[pixiBar.name];
-        if (!bar) continue;
-
-        const visibility = getBarVisibility(token, bar);
-        if (visibility !== BAR_VISIBILITY.ALWAYS) pixiBar.visible = token._canViewMode(visibility);
+        if (bar) pixiBar.visible = isBarVisible(token, bar);
     }
 }

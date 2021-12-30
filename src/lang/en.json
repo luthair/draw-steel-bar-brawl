@@ -56,7 +56,8 @@
             "none": "Never",
             "always": "Always",
             "hover": "When hovered",
-            "control": "When selected"
+            "control": "When selected",
+            "hoverOrControl": "When hovered or selected"
         },
         "position": {
             "top-inner": "Top (inside)",

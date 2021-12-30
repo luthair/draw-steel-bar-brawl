@@ -56,7 +56,8 @@
             "none": "Nie",
             "always": "Immer",
             "hover": "Wenn Mauszeiger darüber",
-            "control": "Wenn ausgewählt"
+            "control": "Wenn ausgewählt",
+            "hoverOrControl": "Wenn Mauszeiger darüber oder ausgewählt"
         },
         "position": {
             "top-inner": "Oben (innen)",
