@@ -42,33 +42,22 @@ export const registerSettings = function () {
         default: {}
     });
 
-    // Register hook to add a reset button to the settings.
-    Hooks.on("renderSettingsConfig", function (_settingsConfig, html, options) {
-        if (!options.canConfigure) return
+    game.settings.register("barbrawl", "defaultTypeResources", {
+        name: "Default actor type resources",
+        hint: "",
+        scope: "world",
+        config: false,
+        type: Object,
+        default: {}
+    });
 
-        // Find our settings block.
-        const barbrawlConfig = html.find("select[name='barbrawl.textStyle']").parent().parent();
-        if (!barbrawlConfig?.length) return;
-
-        // Add the reset button.
-        barbrawlConfig.after(`
-            <div class="form-group">
-                <label>${game.i18n.localize("barbrawl.reset.name")}</label>
-                <div class="form-fields">
-                    <button class="barbrawl-reset" type="button">
-                        <i class="fas fa-undo"></i>
-                        <label>${game.i18n.localize("barbrawl.reset.button")}</label>
-                    </button>
-                </div>
-                <p class="notes">${game.i18n.localize("barbrawl.reset.hint")}</p>
-            </div>`
-        );
-
-        // Connect the button.
-        barbrawlConfig.parent().find("button.barbrawl-reset").click(async () => {
-            await game.settings.set("barbrawl", "defaultResources", null);
-            ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.resetConfirmation"))
-        });
+    game.settings.register("barbrawl", "defaultsPerType", {
+        name: game.i18n.localize("barbrawl.defaults.storePerType.name"),
+        hint: game.i18n.localize("barbrawl.defaults.storePerType.hint"),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
     });
 }
 
@@ -77,4 +66,40 @@ export const registerSettings = function () {
  */
 function updateBars() {
     for (let token of canvas.tokens.placeables) token.drawBars();
+}
+
+/**
+ * Fetches the default resource configuration for the given type or globally,
+ *  depending on the defaultsPerType setting.
+ * @param {string} type The actor type to fetch the settings for.
+ * @param {boolean} checkEmpty Indicates whether empty defaults should be returned as null.
+ * @returns {Object} An object containing the default resource configuration.
+ */
+export const getDefaultResources = function (type, checkEmpty = true) {
+    let config;
+    if (game.settings.get("barbrawl", "defaultsPerType"))
+        config = game.settings.get("barbrawl", "defaultTypeResources")?.[type];
+    config ??= game.settings.get("barbrawl", "defaultResources") ?? {};
+    if (checkEmpty && Object.keys(config).length === 0) return null;
+    return config;
+}
+
+/**
+ * Stores the given resource configuration as the default for the given type or
+ *  globally, depending on the defaultsPerType setting.
+ * @param {string} type The actor type to set the configuration for.
+ * @param {Object} resources The resource configuration to store as default.
+ * @returns {Promise} A promise representing the setting update.
+ */
+export const setDefaultResources = async function (type, resources) {
+    if (game.settings.get("barbrawl", "defaultsPerType")) {
+        if (!type) return;
+        const barConfig = game.settings.get("barbrawl", "defaultResources") ?? {};
+        barConfig[type] = resources;
+        await game.settings.set("barbrawl", "defaultTypeResources", barConfig);
+    } else {
+        await game.settings.set("barbrawl", "defaultResources", resources);
+    }
+    
+    ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.defaults.saveConfirmation"));
 }

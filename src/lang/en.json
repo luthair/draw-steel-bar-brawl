@@ -16,11 +16,6 @@
             "fraction": "Fraction (value / max)",
             "percent": "Percentage (%)"
         },
-        "reset": {
-            "name": "Reset defaults",
-            "hint": "Clears the default token resource configuration.",
-            "button": "Reset"
-        },
         "config": {
             "attribute": "Attribute",
             "ownerVisibility": "Visibility (owner)",
@@ -61,7 +56,8 @@
             "none": "Never",
             "always": "Always",
             "hover": "When hovered",
-            "control": "When selected"
+            "control": "When selected",
+            "hoverOrControl": "When hovered or selected"
         },
         "position": {
             "top-inner": "Top (inside)",
@@ -74,10 +70,15 @@
             "right-outer": "Right (outside)"
         },
         "add": "Add resource",
-        "save": "Save as default",
-        "saveConfirmation": "Saved default token resources.",
-        "load": "Load defaults",
-        "noDefaults": "No default configuration stored for this world.",
-        "resetConfirmation": "Default token resources reset."
+        "defaults": {
+            "save": "Save as default",
+            "saveConfirmation": "Saved default token resources.",
+            "load": "Load defaults",
+            "storePerType": {
+                "name": "Defaults per type",
+                "hint": "Stores the default token resources separately for each actor type."
+            }
+        },
+        "localization-moved": "The japanese localization of this module requires the dedicated translation module called 日本語化（オンセ工房 Foundry VTT 本体＆Mod日本語化）, which you can find on https://github.com/BrotherSharper/foundryVTTja."
     }
 }

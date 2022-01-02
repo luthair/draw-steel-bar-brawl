@@ -1,5 +1,7 @@
 import * as api from "./api.js";
 import BarConfigExtended from "./extendedConfig.js";
+import { getDefaultResources, setDefaultResources } from "./settings.js";
+import { createOverrideData } from "./synchronization.js";
 
 /**
  * Modifies the given HTML to replace the resource bar configuration with our
@@ -176,9 +178,15 @@ function onOpenAdvancedConfiguration(event, tokenConfig, data) {
  */
 async function onAddResource(event, tokenConfig, data) {
     const barControls = $(event.currentTarget.parentElement);
-    const htmlBars = barControls.siblings("details").filter(":visible");
-    const newBar = api.getDefaultBar(api.getNewBarId(htmlBars), "custom");
+    const allBarEls = barControls.siblings("details");
+    const barEls = allBarEls.filter(":visible");
+
+    // Create raw bar data.
+    const newBar = api.getDefaultBar(api.getNewBarId(barEls), "custom");
     data.brawlBars.push(newBar);
+
+    // Remove insibible elements with the same ID.
+    if (allBarEls.length !== barEls.length) allBarEls.find("div#" + newBar.id).parent().remove();
 
     const barConfiguration = $(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: [newBar],
@@ -186,17 +194,17 @@ async function onAddResource(event, tokenConfig, data) {
         barAttributes: data.barAttributes
     }));
 
-    if (htmlBars.length) {
-        const prevBarConf = htmlBars[htmlBars.length - 1];
+    if (barEls.length) {
+        const prevBarConf = barEls[barEls.length - 1];
         prevBarConf.removeAttribute("open");
         prevBarConf.querySelector("a.fa-chevron-down").classList.remove("disabled");
 
         const newBarConf = barConfiguration[0];
-        newBarConf.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = htmlBars.length;
+        newBarConf.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = barEls.length;
         newBarConf.querySelector("a.fa-chevron-up").classList.remove("disabled");
     }
 
-    adjustConfigHeight(tokenConfig.element, htmlBars.length + 1);
+    adjustConfigHeight(tokenConfig.element, barEls.length + 1);
     barControls.before(barConfiguration);
 }
 
@@ -220,8 +228,7 @@ async function onSaveDefaults(tokenConfig) {
     // Drop bars that were removed.
     for (let id of Object.keys(data)) if (!data[id].attribute) delete data[id];
 
-    await game.settings.set("barbrawl", "defaultResources", data);
-    ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.saveConfirmation"));
+    await setDefaultResources(tokenConfig.token.actor?.type, data);
 }
 
 /**
@@ -230,18 +237,13 @@ async function onSaveDefaults(tokenConfig) {
  * @param {TokenConfig} tokenConfig The token configuration object.
  */
 async function onLoadDefaults(tokenConfig) {
-    const defaults = game.settings.get("barbrawl", "defaultResources");
-    if (!defaults) {
-        ui.notifications.error("Bar Brawl | " + game.i18n.localize("barbrawl.noDefaults"));
-        return;
-    }
-
+    const defaults = getDefaultResources(tokenConfig.token.actor?.type, false);
     if (tokenConfig.token instanceof PrototypeTokenDocument) {
         const actor = tokenConfig.token.actor;
-        await actor.update({ "token.flags.barbrawl.resourceBars": defaults }, { diff: false });
+        await actor.update(createOverrideData(defaults, true), { recursive: false });
         tokenConfig.token = new PrototypeTokenDocument(actor.data.token, { actor: actor });
     } else {
-        await tokenConfig.token.update({ "flags.barbrawl.resourceBars": defaults }, { diff: false });
+        await tokenConfig.token.update(createOverrideData(defaults), { recursive: false });
     }
     return tokenConfig.render();
 }
@@ -256,5 +258,5 @@ function adjustConfigHeight(html, barCount) {
     if (barCount <= 0) return;
     if (html[0].tagName === "FORM") html = html.parent().parent(); // Fix parent when force render is false.
     const height = parseInt(html.css("height"), 10);
-    html.css("height", Math.max(height, barCount * 17 + 454) + "px");
+    html.css("height", Math.max(height, barCount * 17 + 446) + "px");
 }

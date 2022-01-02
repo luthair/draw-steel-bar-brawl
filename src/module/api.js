@@ -4,6 +4,7 @@
 const BAR_VISIBILITY = {
     NONE: 0,
     ALWAYS: 50,
+    HOVER_CONTROL: 35,
     HOVER: 30,
     CONTROL: 10
 }
@@ -22,7 +23,6 @@ export const getBars = function (tokenDoc) {
     if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
         barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute));
 
-    barArray.forEach(convertBarVisibility);
     return barArray.sort((b1, b2) => (b1.order ?? 0) - (b2.order ?? 0));
 }
 
@@ -36,8 +36,6 @@ export const getBar = function (tokenDoc, barId) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data._source, "flags.barbrawl.resourceBars") ?? {};
     if (barId === "bar1" && !resourceBars.bar1) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
     if (barId === "bar2" && !resourceBars.bar2) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
-
-    convertBarVisibility(resourceBars[barId]);
     return resourceBars[barId];
 }
 
@@ -46,11 +44,11 @@ export const getBar = function (tokenDoc, barId) {
  *  owner and everyone else. Existing values are preserved.
  * @param {Object} bar The data of the bar to convert.
  */
-function convertBarVisibility (bar) {
-    if (bar.visibility === undefined) return; // Already converted.
+export const convertBarVisibility = function (bar) {
+    if (!bar.hasOwnProperty("visibility")) return; // Already converted.
 
     const modes = CONST.TOKEN_DISPLAY_MODES;
-    if (bar.ownerVisibility === undefined) {
+    if (!bar.hasOwnProperty("ownerVisibility")) {
         // Determine visibility for owner.
         switch (bar.visibility) {
             case modes.NONE:
@@ -70,7 +68,7 @@ function convertBarVisibility (bar) {
         }
     }
 
-    if (bar.otherVisibility === undefined) {
+    if (!bar.hasOwnProperty("otherVisibility")) {
         // Determine visibility for everyone else.
         switch (bar.visibility) {
             case modes.ALWAYS:
@@ -83,7 +81,7 @@ function convertBarVisibility (bar) {
                 bar.otherVisibility = BAR_VISIBILITY.NONE;
         }
     }
-    
+
     // Remove original visibility.
     delete bar.visibility;
 }
@@ -129,11 +127,10 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
  * @param {Object[]} existingBars The array of existing bar data.
  */
 export const getNewBarId = function (existingBars) {
-    switch (existingBars.length) {
-        case 0: return "bar1";
-        case 1: return "bar2";
-        default: return "b" + randomID();
-    }
+    const existingIds = existingBars.map((_i, el) => el.lastElementChild.id).get();
+    if (!existingIds.includes("bar1")) return "bar1";
+    if (!existingIds.includes("bar2")) return "bar2";
+    return "bar" + randomID();
 }
 
 /**
@@ -179,7 +176,13 @@ export const getDefaultBar = function (id, attribute) {
  * @returns {BAR_VISIBILITY} The visibility of the bar.
  */
 function getBarVisibility(token, bar) {
-    return token.isOwner ? bar.ownerVisibility : bar.otherVisibility;
+    if (token.isOwner) {
+        if (!bar.hasOwnProperty("ownerVisibility")) convertBarVisibility(bar);
+        return bar.ownerVisibility;
+    }
+
+    if (!bar.hasOwnProperty("otherVisibility")) convertBarVisibility(bar);
+    return bar.otherVisibility;
 }
 
 /**
@@ -189,7 +192,9 @@ function getBarVisibility(token, bar) {
  * @returns {boolean} True if the bar is currently visible, false otherwise.
  */
 export const isBarVisible = function (token, bar) {
-    return token._canViewMode(getBarVisibility(token, bar));
+    const visibility = getBarVisibility(token, bar);
+    if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token._controlled || token._hover;
+    return token._canViewMode(visibility);
 }
 
 /**
@@ -198,12 +203,9 @@ export const isBarVisible = function (token, bar) {
  */
 export const refreshBarVisibility = function (token) {
     const resourceBars = token.document.getFlag("barbrawl", "resourceBars") ?? {};
-    const barContainer = token.bars.children;
+    const barContainer = token.hud.bars.children;
     for (let pixiBar of barContainer) {
-        let bar = resourceBars[pixiBar.name];
-        if (!bar) continue;
-
-        const visibility = getBarVisibility(token, bar);
-        if (visibility !== BAR_VISIBILITY.ALWAYS) pixiBar.visible = token._canViewMode(visibility);
+        const bar = resourceBars[pixiBar.name];
+        if (bar) pixiBar.visible = isBarVisible(token, bar);
     }
 }

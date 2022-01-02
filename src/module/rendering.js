@@ -37,22 +37,22 @@ const barPresets = {
 export const extendBarRenderer = function () {
     if (game.modules.get("lib-wrapper")?.active) {
         // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
-        libWrapper.register("barbrawl", "Token.prototype.drawBars", drawBrawlBars, "OVERRIDE");
-        libWrapper.register("barbrawl", "TokenDocument.prototype.getBarAttribute",
+        libWrapper.register("barbrawl", "CONFIG.Token.objectClass.prototype.drawBars", drawBrawlBars, "OVERRIDE");
+        libWrapper.register("barbrawl", "CONFIG.Token.documentClass.prototype.getBarAttribute",
             function (wrapped, barId, { alternative } = {}) {
-                return wrapped(null, {
-                    alternative: alternative ?? getBar(this, barId)?.attribute
-                });
-            }, "WRAPPER");
+                const attribute = alternative ?? getBar(this, barId)?.attribute;
+                if (typeof attribute !== "string") return null;
+                return wrapped(null, { alternative: attribute });
+            }, "MIXED");
     } else {
         // Manual override
-        Token.prototype.drawBars = drawBrawlBars;
+        CONFIG.Token.objectClass.prototype.drawBars = drawBrawlBars;
 
-        const originalGetBarAttribute = TokenDocument.prototype.getBarAttribute;
-        TokenDocument.prototype.getBarAttribute = function (barId, { alternative } = {}) {
-            return originalGetBarAttribute.call(this, null, {
-                alternative: alternative ?? getBar(this, barId)?.attribute
-            });
+        const originalGetBarAttribute = CONFIG.Token.documentClass.prototype.getBarAttribute;
+        CONFIG.Token.documentClass.prototype.getBarAttribute = function (barId, { alternative } = {}) {
+            const attribute = alternative ?? getBar(this, barId)?.attribute;
+            if (typeof attribute !== "string") return null;
+            return originalGetBarAttribute.call(this, null, { alternative: attribute });
         };
     }
 }
@@ -78,9 +78,9 @@ function drawBrawlBars() {
 
     this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
-        this.bars.removeChildren();
+        this.hud.bars.removeChildren();
         for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
-        this.bars.visible = this.bars.children.length > 0;
+        this.hud.bars.visible = this.hud.bars.children.length > 0;
     };
 
     // Make sure that we are only rendering bars for each token once.
@@ -117,7 +117,7 @@ async function createResourceBar(token, data, reservedSpace) {
     const position = calculatePosition(data, renderedHeight, token, reservedSpace);
     reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
-    token.bars.addChild(bar);
+    token.hud.bars.addChild(bar);
 }
 
 /**
@@ -126,7 +126,7 @@ async function createResourceBar(token, data, reservedSpace) {
  * @param {Object} barData The data of the bar to refresh.
  */
 export const redrawBar = async function (token, barData) {
-    const bar = token.bars.getChildByName(barData.id);
+    const bar = token.hud.bars.getChildByName(barData.id);
     if (bar) {
         const gfx = bar.getChildByName("gfx");
         bar.removeChildren();

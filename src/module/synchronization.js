@@ -1,4 +1,23 @@
-import { getDefaultBar } from "./api.js";
+import { convertBarVisibility, getDefaultBar } from "./api.js";
+
+/**
+ * Generates the data for an update that overrides the current resource
+ *  configuration for a token or an actor.
+ * @param {Object} resources The resources to apply.
+ * @param {boolean=} prototype Indicates whether the update is for an actor. Defaults to false.
+ * @returns {Object} An object containing the data of the update.
+ */
+export const createOverrideData = function (resources, prototype = false) {
+    return prototype ? {
+        "token.flags.barbrawl.resourceBars": resources,
+        "token.bar1.attribute": resources.bar1?.attribute ?? null,
+        "token.bar2.attribute": resources.bar2?.attribute ?? null
+    } : {
+        "flags.barbrawl.resourceBars": resources,
+        "bar1.attribute": resources.bar1?.attribute ?? null,
+        "bar2.attribute": resources.bar2?.attribute ?? null
+    };
+}
 
 /**
  * Prepares the update of a token (or a prototype token) by removing invalid
@@ -18,11 +37,15 @@ export const prepareUpdate = function (tokenData, newData) {
             // Remove bars that were explicitly set to "None" attribute.
             if (barId.startsWith("-=")) continue; // Already queued for removal
 
+            // Remove bars without attribute.
             const bar = changedBars[barId];
             if (bar.attribute === "") {
                 delete changedBars[barId];
                 changedBars["-=" + barId] = null;
             }
+
+            // Convert legacy visibility.
+            if (bar.hasOwnProperty("visibility")) convertBarVisibility(bar);
 
             const barData = (foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
 

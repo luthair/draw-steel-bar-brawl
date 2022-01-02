@@ -101,6 +101,24 @@ Instead of drawing the usual styles, bars can instead have an image as foregroun
 
 It is recommended that your images are at most twice the size of the token grid (as defined in the scene's settings). User larger images will work, but may negatively impact performance.
 
+#### Combinations
+
+All of the options can be combined with each other to create highly customizable resource displays. For example, you could use images, indentation and approximation to create an ammunition display like this:
+
+| Setting | Value |
+| --- | --- |
+| Indent right | 40% |
+| Approximation | 3 |
+| Approximation for owner | Yes |
+| Label | None |
+| Background image | ![Background image](images/ammo_bg.png "Background image") |
+| Foreground image | ![Foreground image](images/ammo_fg.png "Foreground image") |
+
+... to create this result:
+
+![Result](images/combination.png "Result")
+
+
 ## Development
 
 Bar Brawl is purely data based, meaning that you can adjust everything by updating via Foundry and expect the changes to be applied automatically. The resource bar object is stored for each token in `Token.data.flags.barbrawl.resourceBars` and has the following format:
