@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Run in browser",
-            "program": "${env:ProgramFiles}/FoundryVTT/resources/app/main.js",
+            "program": "${env:ProgramFiles}/Foundry Virtual Tabletop/resources/app/main.js",
             "args": [
                 "--world=tde5Test"
             ],
@@ -28,7 +28,7 @@
             "args": [
                 "--noupnp"
             ],
-            "cwd": "${env:ProgramFiles}/FoundryVTT/resources/app",
+            "cwd": "${env:ProgramFiles}/Foundry Virtual Tabletop/resources/app",
             "preLaunchTask": "${defaultBuildTask}",
             "type": "pwa-node",
             "request": "launch",
@@ -62,11 +62,11 @@
             "type": "pwa-chrome",
             "request": "attach",
             "port": 9223,
-            "webRoot": "${env:ProgramFiles}/FoundryVTT/resources/app/public",
+            "webRoot": "${env:ProgramFiles}/Foundry Virtual Tabletop/resources/app/public",
             "pathMapping": {
-                "/systems": "${env:AppData}/../Local/FoundryVTT/Data/systems/*",
+                "/systems": "${env:AppData}/../Local/Foundry Virtual Tabletop/Data/systems/*",
                 "/modules/barbrawl": "${workspaceRoot}/src",
-                "/modules/*": "${env:AppData}/../Local/FoundryVTT/Data/modules"
+                "/modules/*": "${env:AppData}/../Local/Foundry Virtual Tabletop/Data/modules"
             },
             "skipFiles": [
                 "<node_internals>/**/*.js",
