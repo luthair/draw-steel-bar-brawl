@@ -1,6 +1,6 @@
 {
-    "Localization Provided By": "tonishi",
     "barbrawl": {
+        "translatedBy": "tonishi",
         "barStyle": {
             "name": "バーのスタイル",
             "hint": "バーの表示方法を変更します。",
@@ -16,11 +16,6 @@
             "none": "なし",
             "fraction": "分数(値/最大)",
             "percent": "パーセンテージ(%)"
-        },
-        "reset": {
-            "name": "デフォルトにリセット",
-            "hint": "設定をリセットして、デフォルトのトークン･リソースを表示します。",
-            "button": "リセット"
         },
         "config": {
             "attribute": "能力値",
@@ -62,7 +57,8 @@
             "none": "なし",
             "always": "常に",
             "hover": "ホバー時",
-            "control": "選択時"
+            "control": "選択時",
+            "hoverOrControl": "When hovered or selected"
         },
         "position": {
             "top-inner": "上部(内)",
@@ -75,10 +71,14 @@
             "right-outer": "右(外)"
         },
         "add": "リソースの追加",
-        "save": "デフォルトとしてセーブ",
-        "saveConfirmation": "デフォルトのトークンリソースを保存します。",
-        "load": "デフォルト設定をロード",
-        "noDefaults": "このワールドには、デフォルトの設定は保存されていません。",
-        "resetConfirmation": "デフォルトのトークンリソースをリセットします。"
+        "defaults": {
+            "save": "デフォルトとしてセーブ",
+            "saveConfirmation": "デフォルトのトークンリソースを保存します。",
+            "load": "デフォルト設定をロード",
+            "storePerType": {
+                "name": "Defaults per type",
+                "hint": "Stores the default token resources separately for each actor type."
+            }
+        }
     }
 }

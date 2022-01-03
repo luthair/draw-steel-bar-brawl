@@ -1,5 +1,6 @@
 {
     "barbrawl": {
+        "translatedBy": "DJ Addi",
         "barStyle": {
             "name": "Bar style",
             "hint": "Changes how bars are displayed.",
@@ -78,7 +79,6 @@
                 "name": "Defaults per type",
                 "hint": "Stores the default token resources separately for each actor type."
             }
-        },
-        "localization-moved": "The japanese localization of this module requires the dedicated translation module called 日本語化（オンセ工房 Foundry VTT 本体＆Mod日本語化）, which you can find on https://github.com/BrotherSharper/foundryVTTja."
+        }
     }
 }

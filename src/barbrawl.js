@@ -112,11 +112,3 @@ Hooks.on("preCreateActor", function (doc) {
 /** Hook to update bar visibility. */
 Hooks.on("hoverToken", refreshBarVisibility);
 Hooks.on("controlToken", refreshBarVisibility);
-
-Hooks.once("ready", function () {
-    if (game.i18n.lang === "ja" && !game.modules.get("foundryVTTja")?.active) {
-        const message = "Bar Brawl | " + game.i18n.localize("barbrawl.localization-moved");
-        ui.notifications.warn(message);
-        console.warn(message);
-    }
-});
