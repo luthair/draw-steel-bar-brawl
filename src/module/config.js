@@ -13,6 +13,16 @@ import { createOverrideData } from "./synchronization.js";
 export const extendTokenConfig = async function (tokenConfig, html, data) {
     data.brawlBars = api.getBars(tokenConfig.token);
 
+    if (tokenConfig instanceof DefaultTokenConfig) {
+        // Make sure that the current value exists for selection.
+        const attrLists = Object.values(data.barAttributes);
+        for (let bar of Object.values(data.brawlBars)) {
+            if (!attrLists.some(list => list.includes(bar.attribute))) {
+                attrLists[0].push(bar.attribute);
+            }
+        }
+    }
+
     const barConfiguration = await renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
     const resourceTab = html.find("div[data-tab='resources']");
@@ -235,17 +245,32 @@ async function onSaveDefaults(tokenConfig) {
  * Handles a load button click by updating the token with the default bar
  *  configuration and re-rendering the config application.
  * @param {TokenConfig} tokenConfig The token configuration object.
+ * @param {Object} data The data of the token configuration.
  */
-async function onLoadDefaults(tokenConfig) {
+async function onLoadDefaults(tokenConfig, data) {
     const defaults = getDefaultResources(tokenConfig.token.actor?.type, false);
-    if (tokenConfig.token instanceof PrototypeTokenDocument) {
-        const actor = tokenConfig.token.actor;
-        await actor.update(createOverrideData(defaults, true), { diff: false });
-        tokenConfig.token = new PrototypeTokenDocument(actor.data.token, { actor: actor });
+    if (tokenConfig instanceof DefaultTokenConfig) {
+        const setting = game.settings.get("core", DefaultTokenConfig.SETTING);
+        for (let prop of Object.entries(createOverrideData(defaults))) {
+            foundry.utils.setProperty(setting, prop[0], prop[1]);
+        }
+        await game.settings.set("core", DefaultTokenConfig.SETTING, setting);
+    } else if (tokenConfig.token instanceof PrototypeTokenDocument) {
+        await tokenConfig.token.actor.update(createOverrideData(defaults, true), { diff: false });
     } else {
         await tokenConfig.token.update(createOverrideData(defaults), { diff: false });
     }
-    return tokenConfig.render();
+
+    // Replace rendered resource configuration.
+    const barData = Object.values(defaults);
+    const resourceTab = tokenConfig.element.find("div[data-tab='resources']");
+    resourceTab.find("details").remove();
+    resourceTab.prepend(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+        brawlBars: barData,
+        displayModes: data.displayModes,
+        barAttributes: data.barAttributes
+    }));
+    if (resourceTab.hasClass("active")) adjustConfigHeight(tokenConfig.element, barData.length);
 }
 
 /**
