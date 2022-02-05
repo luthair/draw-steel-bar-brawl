@@ -165,9 +165,12 @@ function drawResourceBar(token, bar, data, textures) {
     let labelMax = data.max;
 
     // Apply approximation.
+    let segmentize = false;
     if (data.subdivisions && (data.subdivisionsOwner || !token.isOwner)) {
-        labelValue = Math.ceil(labelValue / data.max * data.subdivisions);
+        const approxValue = labelValue / data.max * data.subdivisions;
+        labelValue = data.invert ? Math.floor(approxValue) : Math.ceil(approxValue);
         labelMax = data.subdivisions;
+        segmentize = true;
     }
 
     // Update visibility.
@@ -188,7 +191,7 @@ function drawResourceBar(token, bar, data, textures) {
     const barValue = data.invert ? labelMax - labelValue : labelValue;
     const barPercentage = Math.clamped(barValue, 0, labelMax) / labelMax;
 
-    drawBarForeground(bar, data, textures[1], barValue, barPercentage);
+    drawBarForeground(bar, data, textures[1], barPercentage, segmentize ? barValue : 1);
     drawBarLabel(bar, token, data, labelValue, labelMax);
 
     // Rotate left & right bars.
@@ -245,10 +248,10 @@ function drawBarBackground(bar, data, texture) {
  * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
  * @param {Object} data The data of the bar.
  * @param {PIXI.Texture?} texture The optional foreground texture to draw.
- * @param {number} value The displayed value of the bar.
  * @param {number} percentage The displayed percentage of the bar.
+ * @param {number} segments The amount of segments to draw.
  */
-function drawBarForeground(bar, data, texture, value, percentage) {
+function drawBarForeground(bar, data, texture, percentage, segments) {
     if (percentage <= 0.01) return;
     if (texture) {
         // Draw foreground texture.
@@ -270,7 +273,6 @@ function drawBarForeground(bar, data, texture, value, percentage) {
         const gfx = bar.getChildByName("gfx");
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
         const color = interpolateColor(data.mincolor, data.maxcolor, percentage);
-        const segments = value === data.value ? 1 : value;
 
         gfx.beginFill(color, 0.8);
         if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
