@@ -14,6 +14,9 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     data.brawlBars = api.getBars(tokenConfig.token);
 
     if (tokenConfig instanceof DefaultTokenConfig) {
+        // Enable dummy attributes.
+        data.dummyAttributes = true;
+
         // Make sure that the current value exists for selection.
         const attrLists = Object.values(data.barAttributes);
         for (let bar of Object.values(data.brawlBars)) {
