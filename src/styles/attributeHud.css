@@ -66,3 +66,7 @@ form .form-group .form-fields button.barbrawl-reset {
 #token-hud .attribute.bar1 {
     margin-top: auto;
 }
+
+.token-sheet nav.sheet-tabs {
+    flex-grow: 0;
+}
