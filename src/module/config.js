@@ -240,10 +240,10 @@ async function onLoadDefaults(tokenConfig) {
     const defaults = getDefaultResources(tokenConfig.token.actor?.type, false);
     if (tokenConfig.token instanceof PrototypeTokenDocument) {
         const actor = tokenConfig.token.actor;
-        await actor.update(createOverrideData(defaults, true), { recursive: false });
+        await actor.update(createOverrideData(defaults, true), { diff: false });
         tokenConfig.token = new PrototypeTokenDocument(actor.data.token, { actor: actor });
     } else {
-        await tokenConfig.token.update(createOverrideData(defaults), { recursive: false });
+        await tokenConfig.token.update(createOverrideData(defaults), { diff: false });
     }
     return tokenConfig.render();
 }
