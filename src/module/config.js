@@ -168,12 +168,12 @@ function swapButtonState(selector, firstElement, secondElement) {
  */
 function onOpenAdvancedConfiguration(event, tokenConfig, data) {
     const barId = event.currentTarget.parentElement.parentElement.id;
-    const barData = api.getBar(tokenConfig.token, barId) ?? {};
+    let barData = api.getBar(tokenConfig.token, barId) ?? {};
 
     // Parse form data and merge with stored data.
     let formData = tokenConfig._getSubmitData();
     formData = foundry.utils.expandObject(formData).flags.barbrawl.resourceBars[barId];
-    foundry.utils.mergeObject(barData, formData);
+    barData = foundry.utils.mergeObject(barData, formData, { inplace: false });
 
     new BarConfigExtended(barData, {
         parent: tokenConfig.token,
