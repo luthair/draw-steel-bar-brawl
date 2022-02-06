@@ -30,6 +30,8 @@
             "indentHint": "バーの側面にある余白を、トークンの幅に対する%で表したもの。",
             "indentLeft": "左側",
             "indentRight": "右側",
+            "shareHeight": "Share height",
+            "shareHeightHint": "Prevents the bar from reserving any vertical space, which moves the following bar to the same line.",
             "style": "ラベル",
             "ignoreLimits": "制限の無視",
             "ignoreLimitsHint": "0（下）から最大（上）までの入力値のクランプを無効にする。他の属性のクランピングはシステムで処理されるため、これはカスタムバーにのみ適用されます。",
@@ -47,6 +49,7 @@
             "fgImageHint": "通常のバーを、塗りつぶし率に応じてクリッピングされたイメージで置き換えます。",
             "bgImage": "背景イメージ",
             "bgImageHint": "通常のバーの背景を画像で置き換えます。両方の画像の幅は、シーンのグリッドサイズと同じにすることをお勧めします。",
+            "opacity": "Opacity",
             "save": "バーをアップデート"
         },
         "attribute": {

@@ -115,7 +115,7 @@ async function createResourceBar(token, data, reservedSpace) {
     bar.contentWidth = calculateWidth(data, token, reservedSpace);
     const renderedHeight = drawResourceBar(token, bar, data, await loadBarTextures(data));
     const position = calculatePosition(data, renderedHeight, token, reservedSpace);
-    reservedSpace[data.position] += renderedHeight;
+    if (!data.shareHeight) reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
     token.hud.bars.addChild(bar);
 }
@@ -127,18 +127,18 @@ async function createResourceBar(token, data, reservedSpace) {
  */
 export const redrawBar = async function (token, barData) {
     const bar = token.hud.bars.getChildByName(barData.id);
-    if (bar) {
-        const gfx = bar.getChildByName("gfx");
-        bar.removeChildren();
-        if (gfx) {
-            // Clear graphics object instead of removing it.
-            gfx.clear();
-            bar.addChild(gfx);
-        }
+    if (!bar) return;
 
-        const textures = await loadBarTextures(barData);
-        drawResourceBar(token, bar, barData, textures);
+    const gfx = bar.getChildByName("gfx");
+    bar.removeChildren();
+    if (gfx) {
+        // Clear graphics object instead of removing it.
+        gfx.clear();
+        bar.addChild(gfx);
     }
+
+    const textures = await loadBarTextures(barData);
+    drawResourceBar(token, bar, barData, textures);
 }
 
 /**
@@ -175,6 +175,7 @@ function drawResourceBar(token, bar, data, textures) {
 
     // Update visibility.
     bar.visible = isBarVisible(token, data);
+    bar.alpha = (data.opacity ?? 80) * 0.01;
 
     // Defer rendering to HP Bar module for compatibility.
     if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
@@ -237,8 +238,8 @@ function drawBarBackground(bar, data, texture) {
         // Draw background color.
         const gfx = bar.getChildByName("gfx");
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
-        gfx.beginFill(0x000000, 0.5);
-        if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
+        gfx.beginFill(0x000000, 0.7);
+        if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 1);
         gfx.drawRoundedRect(0, 0, bar.contentWidth, bar.contentHeight, preset.borderRadius);
     }
 }
@@ -274,8 +275,8 @@ function drawBarForeground(bar, data, texture, percentage, segments) {
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
         const color = interpolateColor(data.mincolor, data.maxcolor, percentage);
 
-        gfx.beginFill(color, 0.8);
-        if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 0.9);
+        gfx.beginFill(color, 1);
+        if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 1);
         const segmentWidth = percentage * bar.contentWidth / segments;
         const radius = Math.max(0, preset.borderRadius - 1);
 

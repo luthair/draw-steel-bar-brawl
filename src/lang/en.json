@@ -30,6 +30,8 @@
             "indentHint": "Additional space on the side of the bar in percent of the token's width.",
             "indentLeft": "Left",
             "indentRight": "Right",
+            "shareHeight": "Share height",
+            "shareHeightHint": "Prevents the bar from reserving any vertical space, which moves the following bar to the same line.",
             "style": "Label",
             "ignoreLimits": "Ignore limits",
             "ignoreLimitsHint": "Disables clamping of input values between 0 (lower) and the maximum (upper). This is only applied to custom bars as clamping for other attributes is handled by the system.",
@@ -47,6 +49,7 @@
             "fgImageHint": "Replaces the usual bar with an image that is clipped based on the fill percentage.",
             "bgImage": "Background image",
             "bgImageHint": "Replaces the usual bar background with an image. It is recommended that both images have the same width as the scene's grid size.",
+            "opacity": "Opacity",
             "save": "Update bar"
         },
         "attribute": {

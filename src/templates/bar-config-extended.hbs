@@ -22,6 +22,15 @@
     </div>
 
     <div class="form-group">
+        <label>{{localize "barbrawl.config.shareHeight"}}:</label>
+        <div class="form-fields">
+            <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.shareHeight" {{#if
+                this.shareHeight}}checked{{/if}} />
+        </div>
+        <p class="notes">{{localize "barbrawl.config.shareHeightHint"}}</p>
+    </div>
+
+    <div class="form-group">
         <label>{{localize "barbrawl.config.style"}}:</label>
         <div class="form-fields">
             <select name="flags.barbrawl.resourceBars.{{this.id}}.style">
@@ -106,6 +115,17 @@
                 value="{{this.bgImage}}" />
         </div>
         <p class="notes">{{localize "barbrawl.config.bgImageHint"}}</p>
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "barbrawl.config.opacity"}}:</label>
+        <div class="form-fields">
+            <label>
+                <input type="number" class="indent-input" name="flags.barbrawl.resourceBars.{{this.id}}.opacity"
+                    min="0" max="100" value="{{this.opacity}}" />
+                <span>%</span>
+            </label>
+        </div>
     </div>
     {{/with}}
 
