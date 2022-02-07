@@ -178,7 +178,8 @@ function onOpenAdvancedConfiguration(event, tokenConfig, data) {
     new BarConfigExtended(barData, {
         parent: tokenConfig.token,
         displayModes: data.displayModes,
-        barAttributes: data.barAttributes
+        barAttributes: data.barAttributes,
+        isDefaultToken: tokenConfig instanceof DefaultTokenConfig
     }).render(true);
     return false;
 }
