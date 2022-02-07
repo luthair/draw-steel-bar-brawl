@@ -64,7 +64,7 @@ export const onChangeBarAttribute = function (event) {
     if (event.target.value === "custom") {
         valueInput.removeAttribute("disabled");
         maxInput.removeAttribute("disabled");
-        if (maxInput.value === "") maxInput.value = valueInput.value;
+        if (event.originalEvent && maxInput.value === "") maxInput.value = valueInput.value;
         form.querySelectorAll(`input.ignore-limit`).forEach(el => {
             el.removeAttribute("disabled");
             el.checked = false;
@@ -86,7 +86,7 @@ export const onChangeBarAttribute = function (event) {
             maxInput.setAttribute("disabled", "");
         } else {
             valueInput.value = resource.value;
-            maxInput.value = "";
+            if (event.originalEvent) maxInput.value = "";
             maxInput.removeAttribute("disabled");
         }
     }
