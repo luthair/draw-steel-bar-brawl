@@ -68,6 +68,8 @@ export default class BarConfigExtended extends FormApplication {
     /** @override */
     activateListeners(html) {
         super.activateListeners(html);
-        html.find(".brawlbar-attribute").change(onChangeBarAttribute.bind(this.options.parent));
+        html.find(".brawlbar-attribute")
+            .change(onChangeBarAttribute.bind(this.options.parent))
+            .trigger("change"); // Trigger change event once to update resource values.
     }
 }

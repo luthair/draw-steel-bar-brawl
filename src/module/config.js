@@ -42,11 +42,14 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     resourceTab.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
     resourceTab.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
+
+    // Trigger change event once to update resource values.
+    resourceTab.find("select.brawlbar-attribute").trigger("change");
 }
 
 /**
  * Handles an attribute selection change event by updating the resource value.
- * @constant {TokenConfig} this The token configuration that this function is bound to.
+ * @constant {Token} this The token that this function is bound to.
  * @param {jQuery.Event} event The event of the selection change.
  */
 export const onChangeBarAttribute = function (event) {
