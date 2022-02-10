@@ -1,3 +1,12 @@
+1.5.0
+- Added opacity configuration.
+- Added option to share the same height with multiple bars.
+- Fixed several issues with the default token configuration.
+- Fixed loaded defaults not displaying correctly.
+- Fixed owner display for inverted bars with approximation.
+- Fixed non-persistent basic settings in advanced configuration.
+- Added Korean translation (thanks *flattenstream*).
+
 1.4.1
 - Fixed a compatibility issue with libWrapper.
 - Fixed resource creation when there are less than two.
@@ -24,6 +33,7 @@
 - Added bar indentation.
 - Bars can now be explicitly removed or reordered in the token configuration.
 - Added bar foreground & background images.
+- Added Japanese translation (thanks *tonishi* and *BrotherSharper*).
 
 1.2.5
 - Fixed some labels being drawn twice.
