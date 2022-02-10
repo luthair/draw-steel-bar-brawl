@@ -49,7 +49,7 @@
             "postDebugTask": "watch: disable",
             "sourceMaps": false,
             "serverReadyAction": {
-                "pattern": "listening on port ([0-9]+)",
+                "pattern": "Created client session",
                 "action": "startDebugging",
                 "name": "FoundryVTT"
             }
