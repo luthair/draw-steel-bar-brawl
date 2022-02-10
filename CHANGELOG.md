@@ -1,10 +1,12 @@
 1.5.0
 - Added opacity configuration.
 - Added option to share the same height with multiple bars.
+- Added owner visibility option for controlled *or* hovered.
 - Fixed several issues with the default token configuration.
 - Fixed loaded defaults not displaying correctly.
 - Fixed owner display for inverted bars with approximation.
 - Fixed non-persistent basic settings in advanced configuration.
+- Fixed a compatibility issue with game systems that override the token document.
 - Added Korean translation (thanks *flattenstream*).
 
 1.4.1

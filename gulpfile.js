@@ -4,8 +4,11 @@ const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
 const archiver = require('archiver');
+const stringify = require('json-stringify-pretty-compact');
+const XMLHttpRequest = require('xhr2');
 
 const less = require('gulp-less');
+const git = require('gulp-git');
 
 const argv = require('yargs').argv;
 
@@ -185,8 +188,73 @@ async function packageBuild() {
 	});
 }
 
+/**
+ * Creates a new version by incrementing the previous number, generating a new
+ *  download link and tagging the current commit using Git.
+ * Note that this requires a Git instance accessible through the command line.
+ */
+async function createVersion() {
+    // Validate data.
+    const manifest = getManifest();
+    const config = fs.readJSONSync('foundryconfig.json');
+    if (!manifest || !config) console.log(chalk.red("Manifest or configuration file not found."));
+    if (!config.rawUrl || !config.apiUrl) console.log(chalk.red("Invalid repository URLs."));
+
+    const versionTag = "v" + manifest.file.version;
+    console.log("New version will be " + versionTag);
+
+    // Generate URLs.
+    manifest.file.manifest = `${config.rawUrl}/master/${manifest.root}/${manifest.name}`;
+    const fileName = `${manifest.file.name}-v${manifest.file.version}.zip`;
+    manifest.file.download = `${config.apiUrl}/packages/generic/barbrawl/${manifest.file.version}/${fileName}`;
+
+    // Save manifest file.
+    const manifestFilePath = path.join(manifest.root, manifest.name);
+    console.log("Writing new manifest file to " + manifestFilePath);
+    fs.writeFileSync(manifestFilePath, stringify(manifest.file, { indent: 4 }), "utf8");
+
+    // Tag the repository.
+    git.tag(versionTag, "", function (e) { if (e) throw e; });
+}
+
+/**
+ * Publishes the most recently created version by uploading the package and
+ *  committing the manifest file using Git.
+ * Note that this requires a Git instance accessible through the command line.
+ */
+async function publish() {
+    // Validate data.
+    const manifest = getManifest();
+    const config = fs.readJSONSync('foundryconfig.json');
+    const token = fs.readJSONSync('deploytoken.json');
+    if (!manifest || !config || !token) console.log(chalk.red("Manifest or configuration or token file not found."));
+
+    // Upload package file.
+    const fileName = `${manifest.file.name}-v${manifest.file.version}.zip`;
+    if (!fs.existsSync("package/" + fileName)) console.log(chalk.red("Package " + fileName + " does not exist."));
+
+    console.log("Uploading file " + fileName + " via GitLab API");
+    var request = new XMLHttpRequest();
+    request.open("PUT", `${config.apiUrl}/packages/generic/barbrawl/${manifest.file.version}/${fileName}`, true);
+    request.setRequestHeader("Content-Type", "application/zip");
+    request.setRequestHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    request.setRequestHeader("Authorization", "Basic " + Buffer.from(`${token.name}:${token.password}`).toString("base64"));
+    request.addEventListener("loadend", function (ev) {
+        console.log(ev.currentTarget.response);
+    });
+    request.send(fs.readFileSync("package/" + fileName));
+
+    // Commit (only) module.json.
+    console.log("Committing module.json");
+    gulp.src("src/module.json").pipe(git.commit("Update manifest to v" + manifest.file.version, {
+        disableAppendPaths: true,
+        args: "-o ./src/module.json"
+    }));
+}
+
 exports.build = gulp.series(clean, buildLess);
 exports.buildLess = buildLess;
 exports.clean = clean;
 exports.link = linkUserData;
-exports.package = packageBuild;
+exports.package = gulp.series(exports.build, packageBuild);
+exports.release = gulp.series(createVersion, exports.package, publish);

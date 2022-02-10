@@ -46,7 +46,7 @@ In addition to the bar itself, the maximum color is also used as a border on the
 
 #### Visibility
 
-To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered or display it only when the token is selected (only available for the owner).
+To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered and/or display it only when the token is selected (only available for the owner).
 
 #### Position & Order
 
