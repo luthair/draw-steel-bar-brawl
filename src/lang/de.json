@@ -21,6 +21,7 @@
             "attribute": "Attribut",
             "ownerVisibility": "Sichtbarkeit (Besitzer)",
             "otherVisibility": "Sichtbarkeit (alle)",
+            "gmVisibility": "Sichtbarkeit (SL)",
             "value": "Wert (aktuell/max)",
             "color": "Farbe (min/max)",
             "position": "Position",
@@ -57,6 +58,8 @@
             "custom": "Benutzerdefiniert (Werte unten)"
         },
         "visibility": {
+            "inheritFromOwner": "Von Besitzer erben",
+            "inheritFromOther": "Von allen erben",
             "none": "Nie",
             "always": "Immer",
             "hover": "Wenn Mauszeiger darüber",

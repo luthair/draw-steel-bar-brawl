@@ -21,6 +21,7 @@
             "attribute": "어트리뷰트",
             "ownerVisibility": "소유자만 보임",
             "otherVisibility": "모두에게 보임",
+            "gmVisibility": "Visibility (GM)",
             "value": "수치(현재값/최대값)",
             "color": "색상(현재값/최대값)",
             "position": "위치",
@@ -57,6 +58,8 @@
             "custom": "커스텀(아래에서 설정)"
         },
         "visibility": {
+            "inheritFromOwner": "Inherit from owner",
+            "inheritFromOther": "Inherit from everyone",
             "none": "보이지 않음",
             "always": "항상 보임",
             "hover": "마우스를 올리면 보임",

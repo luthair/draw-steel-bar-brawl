@@ -2,6 +2,7 @@
  * Valid bar visibility settings. See Foundry's CONST.TOKEN_DISPLAY_MODES for details.
  */
 const BAR_VISIBILITY = {
+    INHERIT: -1,
     NONE: 0,
     ALWAYS: 50,
     HOVER_CONTROL: 35,
@@ -48,6 +49,9 @@ export const convertBarVisibility = function (bar) {
     if (!bar.hasOwnProperty("visibility")) return; // Already converted.
 
     const modes = CONST.TOKEN_DISPLAY_MODES;
+
+    if (!bar.hasOwnProperty("gmVisibility")) bar.gmVisibility = BAR_VISIBILITY.INHERIT;
+
     if (!bar.hasOwnProperty("ownerVisibility")) {
         // Determine visibility for owner.
         switch (bar.visibility) {
@@ -176,12 +180,9 @@ export const getDefaultBar = function (id, attribute) {
  * @returns {BAR_VISIBILITY} The visibility of the bar.
  */
 function getBarVisibility(token, bar) {
-    if (token.isOwner) {
-        if (!bar.hasOwnProperty("ownerVisibility")) convertBarVisibility(bar);
-        return bar.ownerVisibility;
-    }
-
     if (!bar.hasOwnProperty("otherVisibility")) convertBarVisibility(bar);
+    if (game.user.isGM && (bar.gmVisibility ?? -1) !== BAR_VISIBILITY.INHERIT) return bar.gmVisibility;
+    if (token.isOwner && (bar.ownerVisibility ?? -1) !== BAR_VISIBILITY.INHERIT) return bar.ownerVisibility;
     return bar.otherVisibility;
 }
 

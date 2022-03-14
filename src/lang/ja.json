@@ -21,6 +21,7 @@
             "attribute": "能力値",
             "ownerVisibility": "可視性（自分）",
             "otherVisibility": "可視性（他人）",
+            "gmVisibility": "Visibility (GM)",
             "value": "値 (現在/最大)",
             "color": "色 (最小/最大)",
             "position": "位置",
@@ -57,6 +58,8 @@
             "custom": "カスタム(以下の値)"
         },
         "visibility": {
+            "inheritFromOwner": "Inherit from owner",
+            "inheritFromOther": "Inherit from everyone",
             "none": "なし",
             "always": "常に",
             "hover": "ホバー時",

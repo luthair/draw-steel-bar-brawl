@@ -4,6 +4,20 @@
 
     {{#with this.object}}
     <div class="form-group">
+        <label>{{localize "barbrawl.config.gmVisibility"}}:</label>
+        <div class="form-fields">
+            <select name="flags.barbrawl.resourceBars.{{this.id}}.gmVisibility" data-dtype="Number">
+                <option value="-1" {{#if (eq this.gmVisibility -1)}}selected{{/if}}>{{localize "barbrawl.visibility.inheritFromOwner"}}</option>
+                <option value="50" {{#if (eq this.gmVisibility 50)}}selected{{/if}}>{{localize "barbrawl.visibility.always"}}</option>
+                <option value="35" {{#if (eq this.gmVisibility 35)}}selected{{/if}}>{{localize "barbrawl.visibility.hoverOrControl"}}</option>
+                <option value="30" {{#if (eq this.gmVisibility 30)}}selected{{/if}}>{{localize "barbrawl.visibility.hover"}}</option>
+                <option value="10" {{#if (eq this.gmVisibility 10)}}selected{{/if}}>{{localize "barbrawl.visibility.control"}}</option>
+                <option value="0" {{#if (eq this.gmVisibility 0)}}selected{{/if}}>{{localize "barbrawl.visibility.none"}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label>{{localize "barbrawl.config.indent"}}:</label>
         <div class="form-fields">
             <label>
