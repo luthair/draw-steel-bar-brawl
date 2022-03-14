@@ -8,13 +8,14 @@ import { extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
 import { createOverrideData, prepareUpdate } from "./module/synchronization.js";
-import { isBarVisible, refreshBarVisibility } from "./module/api.js";
+import { getActualBarValue, isBarVisible, refreshBarVisibility } from "./module/api.js";
 
 /** Hook to register settings. */
 Hooks.once('init', async function () {
     console.log('barbrawl | Initializing barbrawl');
     window.BarBrawlApi = {
-        isBarVisible: isBarVisible
+        isBarVisible: isBarVisible,
+        getActualBarValue: getActualBarValue
     }
 
     registerSettings();

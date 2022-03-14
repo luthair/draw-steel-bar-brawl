@@ -41,6 +41,42 @@ export const getBar = function (tokenDoc, barId) {
 }
 
 /**
+ * Calculates the real value of the displayed bar.
+ * @param {TokenDocument} tokenDoc The token document that the bar belongs to.
+ * @param {Object} bar The data of the bar.
+ * @param {boolean=} resolveValue Indicates whether the value of the bar should be resolved using the bar's
+ *  attribute. Defaults to true.
+ * @returns 
+ */
+export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
+    if (!bar) return { value: 0, max: 0, approximated: false };
+
+    if (resolveValue && bar.attribute !== "custom") {
+        // Resolve the attribute's value within the token's actor.
+        const resource = tokenDoc.getBarAttribute(null, { alternative: bar.attribute });
+        if (!resource) return { value: 0, max: 0, approximated: false };
+        bar.value = resource.value;
+        bar.max = resource.max ?? bar.max;
+    }
+
+    // Apply approximation.
+    if (bar.subdivisions && (bar.subdivisionsOwner || !tokenDoc.isOwner)) {
+        const approxValue = bar.value / bar.max * bar.subdivisions;
+        return {
+            value: bar.invert ? Math.floor(approxValue) : Math.ceil(approxValue),
+            max: bar.subdivisions,
+            approximated: true
+        }
+    }
+
+    return {
+        value: bar.value,
+        max: bar.max,
+        approximated: false
+    }
+}
+
+/**
  * Converts Foundry's token visibility mode to separate visibilities for the
  *  owner and everyone else. Existing values are preserved.
  * @param {Object} bar The data of the bar to convert.
@@ -190,10 +226,12 @@ function getBarVisibility(token, bar) {
  * Checks if the given bar should be visible on the given token.
  * @param {Token} token The token of the bar.
  * @param {Object} bar The data of the bar.
- * @param {boolean} ignoreTransient Treat transient states (e.g. hovered or controlled) as permanent.
+ * @param {boolean=} ignoreTransient Treat transient states (e.g. hovered or controlled) as permanent. Defaults to false.
  * @returns {boolean} True if the bar is currently visible, false otherwise.
  */
 export const isBarVisible = function (token, bar, ignoreTransient = false) {
+    if (!bar) return false;
+
     let visibility = getBarVisibility(token, bar);
     if (ignoreTransient
         && [BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility)) {

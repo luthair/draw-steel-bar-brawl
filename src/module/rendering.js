@@ -1,4 +1,4 @@
-import { getBar, getVisibleBars, isBarVisible } from "./api.js";
+import { getActualBarValue, getBar, getVisibleBars, isBarVisible } from "./api.js";
 
 /**
  * Object containing current bar rendering promises per token.
@@ -161,17 +161,8 @@ async function loadBarTextures(data) {
  * @returns {number} The final height of the bar.
  */
 function drawResourceBar(token, bar, data, textures) {
-    let labelValue = data.value;
-    let labelMax = data.max;
-
     // Apply approximation.
-    let segmentize = false;
-    if (data.subdivisions && (data.subdivisionsOwner || !token.isOwner)) {
-        const approxValue = labelValue / data.max * data.subdivisions;
-        labelValue = data.invert ? Math.floor(approxValue) : Math.ceil(approxValue);
-        labelMax = data.subdivisions;
-        segmentize = true;
-    }
+    const labelValue = getActualBarValue(token.document, data, false);
 
     // Update visibility.
     bar.visible = isBarVisible(token, data);
@@ -180,7 +171,7 @@ function drawResourceBar(token, bar, data, textures) {
     // Defer rendering to HP Bar module for compatibility.
     if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
         drawExternalBar(token, bar, data);
-        drawBarLabel(bar, token, data, labelValue, labelMax);
+        drawBarLabel(bar, token, data, labelValue.value, labelValue.max);
         return bar.contentHeight;
     }
 
@@ -189,11 +180,11 @@ function drawResourceBar(token, bar, data, textures) {
 
     drawBarBackground(bar, data, textures[0]);
 
-    const barValue = data.invert ? labelMax - labelValue : labelValue;
-    const barPercentage = Math.clamped(barValue, 0, labelMax) / labelMax;
+    const barValue = data.invert ? labelValue.max - labelValue.value : labelValue.value;
+    const barPercentage = Math.clamped(barValue, 0, labelValue.max) / labelValue.max;
 
-    drawBarForeground(bar, data, textures[1], barPercentage, segmentize ? barValue : 1);
-    drawBarLabel(bar, token, data, labelValue, labelMax);
+    drawBarForeground(bar, data, textures[1], barPercentage, labelValue.approximated ? barValue : 1);
+    drawBarLabel(bar, token, data, labelValue.value, labelValue.max);
 
     // Rotate left & right bars.
     if (data.position.startsWith("left")) bar.angle = -90;
