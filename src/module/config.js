@@ -54,6 +54,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
  */
 export const onChangeBarAttribute = function (event) {
     const barId = event.target.name.split(".")[3];
+    if (!barId) return;
     let form = event.target.form;
     if (!form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
     if (!form) return;
