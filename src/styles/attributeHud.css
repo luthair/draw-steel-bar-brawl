@@ -39,6 +39,11 @@ input.indent-input {
     pointer-events: none;
 }
 
+.bar-modifiers span.bar-id {
+    color: #666;
+    font-size: smaller;
+}
+
 .bar-controls {
     margin: 0 5%;
 }
