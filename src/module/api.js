@@ -190,10 +190,16 @@ function getBarVisibility(token, bar) {
  * Checks if the given bar should be visible on the given token.
  * @param {Token} token The token of the bar.
  * @param {Object} bar The data of the bar.
+ * @param {boolean} ignoreTransient Treat transient states (e.g. hovered or controlled) as permanent.
  * @returns {boolean} True if the bar is currently visible, false otherwise.
  */
-export const isBarVisible = function (token, bar) {
-    const visibility = getBarVisibility(token, bar);
+export const isBarVisible = function (token, bar, ignoreTransient = false) {
+    let visibility = getBarVisibility(token, bar);
+    if (ignoreTransient
+        && [BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility)) {
+        visibility = BAR_VISIBILITY.ALWAYS;
+    }
+
     if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token._controlled || token._hover;
     return token._canViewMode(visibility);
 }
