@@ -229,3 +229,19 @@ token.document.update({ [`flags.barbrawl.resourceBars.${barId}.value`]: 5 });
 ```
 
 This will not apply clamping, so whatever you set here is final.
+
+
+### API methods
+
+In order to simplify integration with other modules, Bar Brawl exposes some methods in the `window.BarBrawlApi` namespace. For example, you may wish to let Bar Brawl handle resource visibility like this:
+
+```javascript
+if (game.modules.get("barbrawl")?.active) {
+    let barData = token.document.getFlag("barbrawl", "resourceBars")?.bar1;
+    if (barData && window.BarBrawlApi?.isBarVisible) {
+        let showResource = window.BarBrawlApi.isBarVisible(token, barData, true);
+    }
+}
+```
+
+For a full list of available methods, check the [API documentation](API.md).

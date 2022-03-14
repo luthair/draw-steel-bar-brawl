@@ -14,6 +14,7 @@ const BAR_VISIBILITY = {
  * Retreives all resource bars of the given token document.
  * @param {TokenDocument} tokenDoc The token document to fetch the bars from.
  * @returns {Object[]} An array of bar data.
+ * @private
  */
 export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
@@ -32,6 +33,7 @@ export const getBars = function (tokenDoc) {
  * @param {TokenDocument} tokenDoc The token document to fetch the bar from.
  * @param {string} barId The ID of the bar to fetch.
  * @returns {Object} A bar data object.
+ * @private
  */
 export const getBar = function (tokenDoc, barId) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data._source, "flags.barbrawl.resourceBars") ?? {};
@@ -46,7 +48,7 @@ export const getBar = function (tokenDoc, barId) {
  * @param {Object} bar The data of the bar.
  * @param {boolean=} resolveValue Indicates whether the value of the bar should be resolved using the bar's
  *  attribute. Defaults to true.
- * @returns 
+ * @returns {Object} An object containing the current and maximum value of the bar.
  */
 export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
     if (!bar) return { value: 0, max: 0, approximated: false };
@@ -80,6 +82,7 @@ export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
  * Converts Foundry's token visibility mode to separate visibilities for the
  *  owner and everyone else. Existing values are preserved.
  * @param {Object} bar The data of the bar to convert.
+ * @private
  */
 export const convertBarVisibility = function (bar) {
     if (!bar.hasOwnProperty("visibility")) return; // Already converted.
@@ -131,6 +134,7 @@ export const convertBarVisibility = function (bar) {
  * @param {TokenDocument} tokenDoc The token document to fetch the bars from.
  * @param {Boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
  * @returns {Object[]} An array of visible bar data.
+ * @private
  */
 export const getVisibleBars = function (tokenDoc, barsOnly = true) {
     let visibleBars = [];
@@ -165,6 +169,7 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
  * Creates an ID for a new bar, which is either 'bar1' for the first, 'bar2'
  *  for the second or a random ID for any subsequent bar.
  * @param {Object[]} existingBars The array of existing bar data.
+ * @private
  */
 export const getNewBarId = function (existingBars) {
     const existingIds = existingBars.map((_i, el) => el.lastElementChild.id).get();
@@ -177,6 +182,7 @@ export const getNewBarId = function (existingBars) {
  * Creates a new bar data object with default settings depending on the given ID.
  * @param {String} id The ID of the bar.
  * @param {String} attribute The attribute of the bar.
+ * @private
  */
 export const getDefaultBar = function (id, attribute) {
     let defaultBar = {
@@ -214,6 +220,7 @@ export const getDefaultBar = function (id, attribute) {
  * @param {Token | TokenDocument} token The token (or its document) of the bar.
  * @param {Object} bar The data of the bar.
  * @returns {BAR_VISIBILITY} The visibility of the bar.
+ * @private
  */
 function getBarVisibility(token, bar) {
     if (!bar.hasOwnProperty("otherVisibility")) convertBarVisibility(bar);
@@ -245,6 +252,7 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
 /**
  * Updates temporary visibility states for every bar of the given token.
  * @param {Token} token The token to refresh.
+ * @private
  */
 export const refreshBarVisibility = function (token) {
     const resourceBars = token.document.getFlag("barbrawl", "resourceBars") ?? {};
