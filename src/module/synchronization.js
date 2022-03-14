@@ -96,7 +96,7 @@ function synchronizeBars(tokenData, newData) {
 function synchronizeBrawlBar(barId, newData) {
     let brawlBarData = newData.flags.barbrawl.resourceBars[barId];
     if (brawlBarData?.attribute) {
-        newData[barId] = { attribute: brawlBarData.attribute };
+        newData[barId] = { attribute: brawlBarData.attribute === "custom" ? null : brawlBarData.attribute };
     } else if (newData.flags.barbrawl.resourceBars["-=" + barId] === null) {
         newData[barId] = { attribute: null };
     }
