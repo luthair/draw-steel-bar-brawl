@@ -46,7 +46,7 @@ In addition to the bar itself, the maximum color is also used as a border on the
 
 #### Visibility
 
-To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered and/or display it only when the token is selected (only available for the owner).
+To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the game master, the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered and/or display it only when the token is selected (only available for the owner).
 
 #### Position & Order
 
@@ -130,6 +130,7 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
         attribute: "custom",
         ownerVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
         otherVisibility: CONST.TOKEN_DISPLAY_MODES.NONE,
+        gmVisibility: -1,
         value: 5,
         max: 5,
         mincolor: "#000000",
@@ -153,7 +154,7 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
 - The **attribute** is a string representing the data path of the target attribute, relative to the actor's data (for examples, open the attribute menu through the UI configuration). Unlinked bars have the attribute "custom" and additionally contain number fields for the current and maximum value.
 - Valid **position**s are combinations of top/bottom/left/right and inner/outer, e.g. "bottom-inner".
 - Valid **style**s are "user", "none", "fraction" and "percent" - this overrides the user setting, so you should generally prefer the "user" mode.
-- The **visibility** properties can be 50, 30, 10 or 0 for always, hovered, controlled or never, respectively (see `CONST.TOKEN_DISPLAY_MODES`).
+- The **visibility** properties can be 50, 30, 10 or 0 for always, hovered, controlled or never, respectively (see `CONST.TOKEN_DISPLAY_MODES`). For the owner and the GM, a value of `-1` can be used to inherit from everyone or the owner, respectively.
 - Both **color**s are HTML color strings.
 - The fields "**ignoreMin**" and "**ignoreMax**" are boolean flags that disable clamping of the bar's value.
 - The **invert** flag is a boolean indicating whether a full value should be rendered as en empty bar.
@@ -237,7 +238,7 @@ In order to simplify integration with other modules, Bar Brawl exposes some meth
 
 ```javascript
 if (game.modules.get("barbrawl")?.active) {
-    let barData = token.document.getFlag("barbrawl", "resourceBars")?.bar1;
+    let barData = window.BarBrawlApi?.getBar(token.document, "bar1");
     if (barData && window.BarBrawlApi?.isBarVisible) {
         let showResource = window.BarBrawlApi.isBarVisible(token, barData, true);
     }
