@@ -1,8 +1,12 @@
 ## Constants
 
 <dl>
-<dt><a href="#BAR_VISIBILITY">BAR_VISIBILITY</a></dt>
-<dd><p>Valid bar visibility settings. See Foundry&#39;s CONST.TOKEN_DISPLAY_MODES for details.</p>
+<dt><a href="#getBars">getBars</a> ⇒ <code>Array.&lt;Object&gt;</code></dt>
+<dd><p>Retreives all resource bars of the given token document, sorted by their
+ configured order.</p>
+</dd>
+<dt><a href="#getBar">getBar</a> ⇒ <code>Object</code></dt>
+<dd><p>Retreives the data of a single resource bar of the given token document.</p>
 </dd>
 <dt><a href="#getActualBarValue">getActualBarValue</a> ⇒ <code>Object</code></dt>
 <dd><p>Calculates the real value of the displayed bar.</p>
@@ -12,12 +16,31 @@
 </dd>
 </dl>
 
-<a name="BAR_VISIBILITY"></a>
+<a name="getBars"></a>
 
-## BAR\_VISIBILITY
-Valid bar visibility settings. See Foundry's CONST.TOKEN_DISPLAY_MODES for details.
+## getBars ⇒ <code>Array.&lt;Object&gt;</code>
+Retreives all resource bars of the given token document, sorted by their configured order.
 
 **Kind**: global constant  
+**Returns**: <code>Array.&lt;Object&gt;</code> - An array of bar data.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tokenDoc | <code>TokenDocument</code> | The token document to fetch the bars from. |
+
+<a name="getBar"></a>
+
+## getBar ⇒ <code>Object</code>
+Retreives the data of a single resource bar of the given token document.
+
+**Kind**: global constant  
+**Returns**: <code>Object</code> - A bar data object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tokenDoc | <code>TokenDocument</code> | The token document to fetch the bar from. |
+| barId | <code>string</code> | The ID of the bar to fetch. |
+
 <a name="getActualBarValue"></a>
 
 ## getActualBarValue ⇒ <code>Object</code>

@@ -1,5 +1,6 @@
 /**
  * Valid bar visibility settings. See Foundry's CONST.TOKEN_DISPLAY_MODES for details.
+ * @private
  */
 const BAR_VISIBILITY = {
     INHERIT: -1,
@@ -11,10 +12,10 @@ const BAR_VISIBILITY = {
 }
 
 /**
- * Retreives all resource bars of the given token document.
+ * Retreives all resource bars of the given token document, sorted by their
+ *  configured order.
  * @param {TokenDocument} tokenDoc The token document to fetch the bars from.
  * @returns {Object[]} An array of bar data.
- * @private
  */
 export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
@@ -33,7 +34,6 @@ export const getBars = function (tokenDoc) {
  * @param {TokenDocument} tokenDoc The token document to fetch the bar from.
  * @param {string} barId The ID of the bar to fetch.
  * @returns {Object} A bar data object.
- * @private
  */
 export const getBar = function (tokenDoc, barId) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data._source, "flags.barbrawl.resourceBars") ?? {};
@@ -237,7 +237,7 @@ function getBarVisibility(token, bar) {
  * @returns {boolean} True if the bar is currently visible, false otherwise.
  */
 export const isBarVisible = function (token, bar, ignoreTransient = false) {
-    if (!bar) return false;
+    if (!bar || !token) return false;
 
     let visibility = getBarVisibility(token, bar);
     if (ignoreTransient
