@@ -1,3 +1,8 @@
+1.6.0
+- Added separate visibility setting for game masters. This defaults to inherit from the owner visibility.
+- Implemented public API to allow internal logic access from other modules.
+- Bar IDs are now displayed in the configuration menu on hover. This is helpful for determining the primary bars (`bar1` and `bar2`) for access from other modules.
+
 1.5.0
 - Added opacity configuration.
 - Added option to share the same height with multiple bars.
