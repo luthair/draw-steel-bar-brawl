@@ -7,7 +7,7 @@
             "minimal": "最小限 (スリム, 枠線無)",
             "default": "ファウンドリのデフォルト",
             "large": "最大限(ワイド,枠線あり)",
-            "legacy": "Legacy (thick border)"
+            "legacy": "従来(太枠)"
         },
         "textStyle": {
             "name": "バーのラベル",
@@ -21,7 +21,7 @@
             "attribute": "能力値",
             "ownerVisibility": "可視性（自分）",
             "otherVisibility": "可視性（他人）",
-            "gmVisibility": "Visibility (GM)",
+            "gmVisibility": "可視性（GM）",
             "value": "値 (現在/最大)",
             "color": "色 (最小/最大)",
             "position": "位置",
@@ -31,8 +31,8 @@
             "indentHint": "バーの側面にある余白を、トークンの幅に対する%で表したもの。",
             "indentLeft": "左側",
             "indentRight": "右側",
-            "shareHeight": "Share height",
-            "shareHeightHint": "Prevents the bar from reserving any vertical space, which moves the following bar to the same line.",
+            "shareHeight": "高さ共有",
+            "shareHeightHint": "バーの高さを専用にせず、他のバーと被るようになります。",
             "style": "ラベル",
             "ignoreLimits": "制限の無視",
             "ignoreLimitsHint": "0（下）から最大（上）までの入力値のクランプを無効にする。他の属性のクランピングはシステムで処理されるため、これはカスタムバーにのみ適用されます。",
@@ -50,7 +50,7 @@
             "fgImageHint": "通常のバーを、塗りつぶし率に応じてクリッピングされたイメージで置き換えます。",
             "bgImage": "背景イメージ",
             "bgImageHint": "通常のバーの背景を画像で置き換えます。両方の画像の幅は、シーンのグリッドサイズと同じにすることをお勧めします。",
-            "opacity": "Opacity",
+            "opacity": "不透明度",
             "save": "バーをアップデート"
         },
         "attribute": {
@@ -58,13 +58,13 @@
             "custom": "カスタム(以下の値)"
         },
         "visibility": {
-            "inheritFromOwner": "Inherit from owner",
-            "inheritFromOther": "Inherit from everyone",
+            "inheritFromOwner": "所有者から引き継ぐ",
+            "inheritFromOther": "全員から引き継ぐ",
             "none": "なし",
             "always": "常に",
             "hover": "ホバー時",
             "control": "選択時",
-            "hoverOrControl": "When hovered or selected"
+            "hoverOrControl": "ホバーまたは選択時"
         },
         "position": {
             "top-inner": "上部(内)",
@@ -82,8 +82,8 @@
             "saveConfirmation": "デフォルトのトークンリソースを保存します。",
             "load": "デフォルト設定をロード",
             "storePerType": {
-                "name": "Defaults per type",
-                "hint": "Stores the default token resources separately for each actor type."
+                "name": "種別ごとのデフォルト",
+                "hint": "コマのリソースをキャラクター種別ごとに分けます。"
             }
         }
     }
