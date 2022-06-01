@@ -114,6 +114,8 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
 
     const brawlBars = foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {};
     const brawlBarChanges = newData.flags.barbrawl.resourceBars;
+    if (foundryBarData.attribute === null && brawlBarChanges[barId].attribute === "custom") return;
+
     const brawlBarData = brawlBars[barId];
     const remove = Object.keys(foundryBarData).length === 0 || foundryBarData.attribute === null;
 
@@ -121,6 +123,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
         if (remove) {
             // Remove the bar
             brawlBarChanges["-=" + barId] = null;
+            delete brawlBarChanges[barId];
         } else {
             // Change the attribute
             foundry.utils.setProperty(brawlBarChanges, barId + ".attribute", foundryBarData.attribute);
