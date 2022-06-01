@@ -246,9 +246,11 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
     let visibility = getBarVisibility(token, bar);
     if (ignoreTransient
         && [BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility)) {
-        visibility = BAR_VISIBILITY.ALWAYS;
+        return true;
     }
 
+    if (bar.hideFull && bar.value === bar.max) return false;
+    if (bar.hideEmpty && bar.value === 0) return false;
     if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token._controlled || token._hover;
     return token._canViewMode(visibility);
 }

@@ -18,6 +18,24 @@
     </div>
 
     <div class="form-group">
+        <label>{{localize "barbrawl.config.hide"}}:</label>
+        <div class="form-fields">
+            <label>
+                <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.hideFull" {{#if
+                    this.hideFull}}checked{{/if}} />
+                <span>{{localize "barbrawl.config.hideFull"}}</span>
+            </label>
+            <span class="sep" style="margin: 0;">-</span>
+            <label>
+                <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.hideEmpty" {{#if
+                    this.hideEmpty}}checked{{/if}} />
+                <span>{{localize "barbrawl.config.hideEmpty"}}</span>
+            </label>
+        </div>
+        <p class="notes">{{localize "barbrawl.config.hideHint"}}</p>
+    </div>
+
+    <div class="form-group">
         <label>{{localize "barbrawl.config.indent"}}:</label>
         <div class="form-fields">
             <label>
