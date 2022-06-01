@@ -134,7 +134,7 @@ export const convertBarVisibility = function (bar) {
 /**
  * Retreives all resource bars of the given token that are currently visible.
  * @param {TokenDocument} tokenDoc The token document to fetch the bars from.
- * @param {Boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
+ * @param {boolean} barsOnly Flag indicating whether single values should be excluded. Defaults to true.
  * @returns {Object[]} An array of visible bar data.
  * @private
  */
@@ -142,8 +142,8 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
     let visibleBars = [];
 
     for (let bar of getBars(tokenDoc)) {
-        // Skip invisible bars if we don't need all resources
-        if (barsOnly && getBarVisibility(tokenDoc, bar) === BAR_VISIBILITY.NONE) continue;
+        // Skip resources that are never visible.
+        if (getBarVisibility(tokenDoc, bar) === BAR_VISIBILITY.NONE) continue;
 
         // Add custom bars (can only be set on token)
         if (bar.attribute === "custom") {
@@ -156,11 +156,11 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
         let resource = tokenDoc.getBarAttribute(null, { alternative: bar.attribute });
         if (!resource || (barsOnly && resource.type !== "bar" && !bar.max)) continue;
 
+        // Transfer current values.
         bar.value = resource.value;
         bar.max = resource.max ?? bar.max;
         bar.editable = resource.editable;
 
-        // Check visibility
         visibleBars.push(bar);
     }
 
