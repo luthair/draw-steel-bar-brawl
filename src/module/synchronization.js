@@ -127,6 +127,6 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
         }
     } else if (!remove) {
         // Create a new bar with default values
-        brawlBarChanges[barId] = getDefaultBar(barId, foundryBarData.attribute);
+        brawlBarChanges[barId] = getDefaultBar(barId, foundryBarData.attribute, tokenData._source.displayBars);
     }
 }

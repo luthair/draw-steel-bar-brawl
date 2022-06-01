@@ -22,9 +22,9 @@ export const getBars = function (tokenDoc) {
     const barArray = Object.values(resourceBars);
 
     if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1)
-        barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute));
+        barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute, tokenDoc.data._source.displayBars));
     if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
-        barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute));
+        barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute, tokenDoc.data._source.displayBars));
 
     return barArray.sort((b1, b2) => (b1.order ?? 0) - (b2.order ?? 0));
 }
@@ -37,8 +37,10 @@ export const getBars = function (tokenDoc) {
  */
 export const getBar = function (tokenDoc, barId) {
     const resourceBars = foundry.utils.getProperty(tokenDoc.data._source, "flags.barbrawl.resourceBars") ?? {};
-    if (barId === "bar1" && !resourceBars.bar1) return getDefaultBar(barId, tokenDoc.data.bar1.attribute);
-    if (barId === "bar2" && !resourceBars.bar2) return getDefaultBar(barId, tokenDoc.data.bar2.attribute);
+    if (barId === "bar1" && !resourceBars.bar1)
+        return getDefaultBar(barId, tokenDoc.data.bar1.attribute, tokenDoc.data._source.displayBars);
+    if (barId === "bar2" && !resourceBars.bar2)
+        return getDefaultBar(barId, tokenDoc.data.bar2.attribute, tokenDoc.data._source.displayBars);
     return resourceBars[barId];
 }
 
@@ -180,21 +182,23 @@ export const getNewBarId = function (existingBars) {
 
 /**
  * Creates a new bar data object with default settings depending on the given ID.
- * @param {String} id The ID of the bar.
- * @param {String} attribute The attribute of the bar.
+ * @param {string} id The ID of the bar.
+ * @param {string} attribute The attribute of the bar.
+ * @param {number} defaultVisibility The Foundry visibility to apply to the bar. Defaults to owner only.
  * @private
  */
-export const getDefaultBar = function (id, attribute) {
+export const getDefaultBar = function (id, attribute, defaultVisibility = CONST.TOKEN_DISPLAY_MODES.OWNER) {
     let defaultBar = {
         id: id,
         order: 0,
         attribute: attribute,
-        ownerVisibility: BAR_VISIBILITY.ALWAYS,
-        otherVisibility: BAR_VISIBILITY.NONE,
+        visibility: defaultVisibility,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
         position: "bottom-inner"
     }
+
+    convertBarVisibility(defaultBar);
 
     if (attribute === "custom") {
         defaultBar.value = 10;
@@ -255,10 +259,9 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
  * @private
  */
 export const refreshBarVisibility = function (token) {
-    const resourceBars = token.document.getFlag("barbrawl", "resourceBars") ?? {};
     const barContainer = token.hud.bars.children;
     for (let pixiBar of barContainer) {
-        const bar = resourceBars[pixiBar.name];
+        const bar = getBar(token.document, pixiBar.name);
         if (bar) pixiBar.visible = isBarVisible(token, bar);
     }
 }
