@@ -118,3 +118,11 @@ Hooks.on("preCreateActor", function (doc) {
 /** Hook to update bar visibility. */
 Hooks.on("hoverToken", api.refreshBarVisibility);
 Hooks.on("controlToken", api.refreshBarVisibility);
+Hooks.on("createCombatant", function (combatant) {
+    const token = combatant.token?.object;
+    if (token) api.refreshBarVisibility(token);
+});
+Hooks.on("deleteCombatant", function (combatant) {
+    const token = combatant.token?.object;
+    if (token) api.refreshBarVisibility(token);
+})

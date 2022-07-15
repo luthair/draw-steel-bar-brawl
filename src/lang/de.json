@@ -26,6 +26,8 @@
             "hideHint": "Die Bar wird nicht angezeigt, wenn eine der ausgewählten Konditionen zutrifft.",
             "hideFull": "Voll",
             "hideEmpty": "Leer",
+            "hideCombat": "Im Kampf",
+            "hideNoCombat": "Außerhalb des Kampfes",
             "value": "Wert (aktuell/max)",
             "color": "Farbe (min/max)",
             "position": "Position",

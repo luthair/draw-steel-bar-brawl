@@ -26,6 +26,8 @@
             "hideHint": "Don't display the bar when any of the checked conditions are met.",
             "hideFull": "Full",
             "hideEmpty": "Empty",
+            "hideCombat": "In combat",
+            "hideNoCombat": "Out of combat",
             "value": "値 (現在/最大)",
             "color": "色 (最小/最大)",
             "position": "位置",

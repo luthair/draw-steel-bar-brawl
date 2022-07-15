@@ -251,6 +251,11 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
 
     if (bar.hideFull && bar.value === bar.max) return false;
     if (bar.hideEmpty && bar.value === 0) return false;
+
+    const inCombat = token.inCombat;
+    if (bar.hideCombat && inCombat) return false;
+    if (bar.hideNoCombat && !inCombat) return false;
+
     if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token._controlled || token._hover;
     return token._canViewMode(visibility);
 }

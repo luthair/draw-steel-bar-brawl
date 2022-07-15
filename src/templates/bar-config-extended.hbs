@@ -31,6 +31,18 @@
                     this.hideEmpty}}checked{{/if}} />
                 <span>{{localize "barbrawl.config.hideEmpty"}}</span>
             </label>
+            <span class="sep" style="margin: 0;">-</span>
+            <label>
+                <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.hideCombat" {{#if
+                    this.hideCombat}}checked{{/if}} />
+                <span>{{localize "barbrawl.config.hideCombat"}}</span>
+            </label>
+            <span class="sep" style="margin: 0;">-</span>
+            <label>
+                <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.hideNoCombat" {{#if
+                    this.hideNoCombat}}checked{{/if}} />
+                <span>{{localize "barbrawl.config.hideNoCombat"}}</span>
+            </label>
         </div>
         <p class="notes">{{localize "barbrawl.config.hideHint"}}</p>
     </div>
