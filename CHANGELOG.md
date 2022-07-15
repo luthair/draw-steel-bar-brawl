@@ -1,3 +1,9 @@
+1.7.0
+- Added configuration for hiding full or empty bars.
+- Added configuration for hiding bars in our out of combat.
+- Fixed FoundryVTT resource conversion for existing tokens.
+- Fixed resources sometimes being hidden from the token HUD.
+
 1.6.0
 - Added separate visibility setting for game masters. This defaults to inherit from the owner visibility.
 - Implemented public API to allow internal logic access from other modules.
