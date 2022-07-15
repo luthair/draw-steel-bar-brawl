@@ -48,6 +48,8 @@ In addition to the bar itself, the maximum color is also used as a border on the
 
 To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the game master, the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered and/or display it only when the token is selected (only available for the owner).
 
+Additionally, you can hide the bar in any of the listed circumstances. For example, enabling "Empty" will hide the bar when the resource has a value of 0.
+
 #### Position & Order
 
 The position determines the side on which side the bar is drawn and whether it is inside or outside of the token's boundaries. Bars are always rendered according to the order in the configuration (which you can change using the arrow keys next to the bar's header element) from the token's edge, meaning outside-in for inner bars and inside-out for outer bars.
