@@ -244,13 +244,13 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
     if (!bar || !token) return false;
 
     let visibility = getBarVisibility(token, bar);
-    if (ignoreTransient
-        && [BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility)) {
-        return true;
+    if (ignoreTransient) {
+        if ([BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility))
+            return true;
+    } else {
+        if (bar.hideFull && bar.value === bar.max) return false;
+        if (bar.hideEmpty && bar.value === 0) return false;
     }
-
-    if (bar.hideFull && bar.value === bar.max) return false;
-    if (bar.hideEmpty && bar.value === 0) return false;
 
     const inCombat = token.inCombat;
     if (bar.hideCombat && inCombat) return false;
