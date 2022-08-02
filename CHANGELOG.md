@@ -1,6 +1,6 @@
 1.7.0
 - Added configuration for hiding full or empty bars.
-- Added configuration for hiding bars in our out of combat.
+- Added configuration for hiding bars in or out of combat.
 - Fixed FoundryVTT resource conversion for existing tokens.
 - Fixed resources sometimes being hidden from the token HUD.
 
