@@ -1,3 +1,7 @@
+1.7.1
+- Fixed an infinite loop for derived attributes defined by the system.
+- Fixed some issues with the advanced configuration in prototype tokens.
+
 1.7.0
 - Added configuration for hiding full or empty bars.
 - Added configuration for hiding bars in or out of combat.
