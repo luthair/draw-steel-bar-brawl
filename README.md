@@ -101,14 +101,14 @@ Instead of drawing the usual styles, bars can instead have an image as foregroun
 
 ![Image bars](images/images.png "Image bars")
 
-It is recommended that your images are at most twice the size of the token grid (as defined in the scene's settings). User larger images will work, but may negatively impact performance.
+It is recommended that your images are at most twice the size of the token grid (as defined in the scene's settings). Using larger images will work, but may negatively impact performance.
 
 #### Combinations
 
 All of the options can be combined with each other to create highly customizable resource displays. For example, you could use images, indentation and approximation to create an ammunition display like this:
 
 | Setting | Value |
-| --- | --- |
+| :--- | :---: |
 | Indent right | 40% |
 | Approximation | 3 |
 | Approximation for owner | Yes |
