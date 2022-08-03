@@ -71,8 +71,12 @@ Hooks.on("updateToken", function (doc, changes) {
 
             if (barData.attribute !== "custom") {
                 const resource = doc.getBarAttribute(null, { alternative: barData.attribute });
-                if (!resource || (resource.type !== "bar" && !barData.max)) return;
-                else barData.value = resource.value;
+                if (!resource || (resource.type !== "bar" && !barData.max)) {
+                    return;
+                } else {
+                    barData.value = resource.value;
+                    barData.max = resource.max;
+                }
             } else if (!barData.max) {
                 return;
             }
