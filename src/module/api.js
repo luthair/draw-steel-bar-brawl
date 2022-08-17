@@ -36,7 +36,7 @@ export const getBars = function (tokenDoc) {
  * @returns {Object} A bar data object.
  */
 export const getBar = function (tokenDoc, barId) {
-    const resourceBars = foundry.utils.getProperty(tokenDoc.data._source, "flags.barbrawl.resourceBars") ?? {};
+    const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
     if (barId === "bar1" && !resourceBars.bar1)
         return getDefaultBar(barId, tokenDoc.data.bar1.attribute, tokenDoc.data._source.displayBars);
     if (barId === "bar2" && !resourceBars.bar2)
