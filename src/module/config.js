@@ -1,7 +1,37 @@
 import * as api from "./api.js";
 import BarConfigExtended from "./extendedConfig.js";
 import { getDefaultResources, setDefaultResources } from "./settings.js";
-import { createOverrideData } from "./synchronization.js";
+import { createOverrideData, prepareUpdate } from "./synchronization.js";
+
+/**
+ * Extends the way Foundry updates the configuration of the default token. If
+ *  available, the libWrapper module is used for better compatibility.
+ */
+export const extendDefaultTokenConfig = function () {
+    if (game.modules.get("lib-wrapper")?.active) {
+        // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
+        libWrapper.register("barbrawl", "DefaultTokenConfig.prototype._getSubmitData",
+            function (wrapped, updateData) {
+                updateData ??= {};
+                updateData.bar1 ??= { attribute: "" };
+                updateData.bar2 ??= { attribute: "" };
+                const formData = wrapped(updateData);
+                prepareUpdate(this.data, formData);
+                return formData;
+            }, "WRAPPER");
+    } else {
+        // Manual override
+        const originalGetSubmitData = DefaultTokenConfig.prototype._getSubmitData;
+        DefaultTokenConfig.prototype._getSubmitData = function (updateData) {
+            updateData ??= {};
+            updateData.bar1 ??= { attribute: "" };
+            updateData.bar2 ??= { attribute: "" };
+            const formData = originalGetSubmitData.call(this, updateData);
+            prepareUpdate(this.data, formData);
+            return formData;
+        };
+    }
+}
 
 /**
  * Modifies the given HTML to replace the resource bar configuration with our
@@ -14,9 +44,6 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     data.brawlBars = api.getBars(tokenConfig.token);
 
     if (tokenConfig instanceof DefaultTokenConfig) {
-        // Enable dummy attributes.
-        data.dummyAttributes = true;
-
         // Make sure that the current value exists for selection.
         const attrLists = Object.values(data.barAttributes);
         for (let bar of Object.values(data.brawlBars)) {

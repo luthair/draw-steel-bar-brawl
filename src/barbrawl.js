@@ -4,7 +4,7 @@
  */
 
 import { extendBarRenderer, redrawBar } from "./module/rendering.js";
-import { extendTokenConfig } from "./module/config.js";
+import { extendDefaultTokenConfig, extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
 import { createOverrideData, prepareUpdate } from "./module/synchronization.js";
@@ -30,6 +30,7 @@ Hooks.once('init', async function () {
     });
 
     loadTemplates(["modules/barbrawl/templates/bar-config-minimal.hbs", "modules/barbrawl/templates/bar-config.hbs"]);
+    extendDefaultTokenConfig();
 });
 
 /** Hooks to replace UI elements. */

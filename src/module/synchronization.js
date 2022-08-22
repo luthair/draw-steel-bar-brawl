@@ -114,6 +114,7 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
 
     const brawlBars = foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {};
     const brawlBarChanges = newData.flags.barbrawl.resourceBars;
+    if (!brawlBarChanges[barId]) return; // Already queued for removal.
     if (foundryBarData.attribute === null && brawlBarChanges[barId].attribute === "custom") return;
 
     const brawlBarData = brawlBars[barId];
