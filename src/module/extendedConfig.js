@@ -28,17 +28,9 @@ export default class BarConfigExtended extends FormApplication {
 
         // Update the data.
         if (this.options.isDefaultToken) {
-            // Fetch and merge the existing settings.
-            const setting = game.settings.get("core", DefaultTokenConfig.SETTING);
-            foundry.utils.mergeObject(setting, foundry.utils.expandObject(formData));
-
-            // Synchronize with Foundry bar attributes.
-            const resources = foundry.utils.getProperty(setting, "flags.barbrawl.resourceBars");
-            foundry.utils.setProperty(setting, "bar1.attribute", resources.bar1?.attribute ?? "");
-            foundry.utils.setProperty(setting, "bar2.attribute", resources.bar2?.attribute ?? "");
-
-            // Store the new settings.
-            await game.settings.set("core", DefaultTokenConfig.SETTING, setting);
+            // Update default token data.
+            if (tokenConfig instanceof DefaultTokenConfig) tokenConfig.data.update(formData);
+            this.options.parent.data.update(formData);
         } else if (this.options.parent instanceof PrototypeTokenDocument) {
             // Update the actor instead of the token.
             await this.options.parent.actor.update({ token: formData });
