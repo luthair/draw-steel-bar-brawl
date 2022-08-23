@@ -1,3 +1,7 @@
+1.7.2
+- Fixed hidden bars reappearing when hovering the token.
+- Fixed some issues when configuring the default token.
+
 1.7.1
 - Fixed an infinite loop for derived attributes defined by the system.
 - Fixed some issues with the advanced configuration in prototype tokens.
