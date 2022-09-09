@@ -18,13 +18,13 @@ const BAR_VISIBILITY = {
  * @returns {Object[]} An array of bar data.
  */
 export const getBars = function (tokenDoc) {
-    const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
+    const resourceBars = foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {};
     const barArray = Object.values(resourceBars);
 
-    if (tokenDoc.data.bar1?.attribute && !resourceBars.bar1)
-        barArray.push(getDefaultBar("bar1", tokenDoc.data.bar1.attribute, tokenDoc.data._source.displayBars));
-    if (tokenDoc.data.bar2?.attribute && !resourceBars.bar2)
-        barArray.push(getDefaultBar("bar2", tokenDoc.data.bar2.attribute, tokenDoc.data._source.displayBars));
+    if (tokenDoc.bar1?.attribute && !resourceBars.bar1)
+        barArray.push(getDefaultBar("bar1", tokenDoc.bar1.attribute, tokenDoc._source.displayBars));
+    if (tokenDoc.bar2?.attribute && !resourceBars.bar2)
+        barArray.push(getDefaultBar("bar2", tokenDoc.bar2.attribute, tokenDoc._source.displayBars));
 
     return barArray.sort((b1, b2) => (b1.order ?? 0) - (b2.order ?? 0));
 }
@@ -36,11 +36,11 @@ export const getBars = function (tokenDoc) {
  * @returns {Object} A bar data object.
  */
 export const getBar = function (tokenDoc, barId) {
-    const resourceBars = foundry.utils.getProperty(tokenDoc.data, "flags.barbrawl.resourceBars") ?? {};
+    const resourceBars = foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {};
     if (barId === "bar1" && !resourceBars.bar1)
-        return getDefaultBar(barId, tokenDoc.data.bar1.attribute, tokenDoc.data._source.displayBars);
+        return getDefaultBar(barId, tokenDoc.bar1.attribute, tokenDoc._source.displayBars);
     if (barId === "bar2" && !resourceBars.bar2)
-        return getDefaultBar(barId, tokenDoc.data.bar2.attribute, tokenDoc.data._source.displayBars);
+        return getDefaultBar(barId, tokenDoc.bar2.attribute, tokenDoc._source.displayBars);
     return resourceBars[barId];
 }
 
@@ -266,7 +266,7 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
  * @private
  */
 export const refreshBarVisibility = function (token) {
-    const barContainer = token.hud.bars.children;
+    const barContainer = token.bars.children;
     for (let pixiBar of barContainer) {
         const bar = getBar(token.document, pixiBar.name);
         if (bar) pixiBar.visible = isBarVisible(token, bar);

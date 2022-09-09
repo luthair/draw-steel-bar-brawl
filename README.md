@@ -123,7 +123,7 @@ All of the options can be combined with each other to create highly customizable
 
 ## Development
 
-Bar Brawl is purely data based, meaning that you can adjust everything by updating via Foundry and expect the changes to be applied automatically. The resource bar object is stored for each token in `Token.data.flags.barbrawl.resourceBars` and has the following format:
+Bar Brawl is purely data based, meaning that you can adjust everything by updating via Foundry and expect the changes to be applied automatically. The resource bar object is stored for each token in `Token.flags.barbrawl.resourceBars` and has the following format:
 
 ```javascript
 {
@@ -175,7 +175,7 @@ The most basic access is through the `barbrawl.resourceBars` flag of the token:
 
 ```javascript
 const token = new Token() // Pretend that this isn't empty
-const resourceBars = foundry.utils.getProperty(token.document.data, "flags.barbrawl.resourceBars");
+const resourceBars = foundry.utils.getProperty(token.document, "flags.barbrawl.resourceBars");
 if (!resourceBars) return [];
 return Object.values(resourceBars).map(bar => {
     if (bar.attribute === "custom") return bar.value;
@@ -191,7 +191,7 @@ To create bars on tokens by default, add them during the `preCreateToken` hook:
 
 ```javascript
 Hooks.on("preCreateToken", function (document, data) {
-    document.data.update({
+    document.updateSource({
         "flags.barbrawl.resourceBars": {
             "bar1": {
                 id: "bar1",

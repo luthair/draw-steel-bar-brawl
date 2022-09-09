@@ -76,11 +76,11 @@ function drawBrawlBars() {
         "right-outer": 0
     };
 
-    this.data.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
+    this.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
-        this.hud.bars.removeChildren();
+        this.bars.removeChildren();
         for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
-        this.hud.bars.visible = this.hud.bars.children.length > 0;
+        this.bars.visible = this.bars.children.length > 0;
     };
 
     // Make sure that we are only rendering bars for each token once.
@@ -117,7 +117,7 @@ async function createResourceBar(token, data, reservedSpace) {
     const position = calculatePosition(data, renderedHeight, token, reservedSpace);
     if (!data.shareHeight) reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
-    token.hud.bars.addChild(bar);
+    token.bars.addChild(bar);
 }
 
 /**
@@ -126,7 +126,7 @@ async function createResourceBar(token, data, reservedSpace) {
  * @param {Object} barData The data of the bar to refresh.
  */
 export const redrawBar = async function (token, barData) {
-    const bar = token.hud.bars.getChildByName(barData.id);
+    const bar = token.bars.getChildByName(barData.id);
     if (!bar) return;
 
     const gfx = bar.getChildByName("gfx");
@@ -206,7 +206,7 @@ function getBarHeight(token, width, textures = [null, null]) {
     else if (textures[1]) return textures[1].height * width / textures[1].width;
 
     let height = Math.max((canvas.dimensions.size / 12), 8);
-    if (token.data.height >= 2) height *= 1.6; // Enlarge the bar for large tokens.
+    if (token.height >= 2) height *= 1.6; // Enlarge the bar for large tokens.
     height += barPresets[game.settings.get("barbrawl", "barStyle")].heightOffset ?? 0;
     return height;
 }

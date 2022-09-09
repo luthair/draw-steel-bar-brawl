@@ -40,13 +40,13 @@ Hooks.on("renderTokenConfig", extendTokenConfig);
 
 /** Hook to remove bars and synchronize legacy bars. */
 Hooks.on("preUpdateToken", function (doc, changes) {
-    prepareUpdate(doc.data, changes);
+    prepareUpdate(doc, changes);
 });
 
 /** Hook to apply changes to the prototype token. */
 Hooks.on("preUpdateActor", function (actor, newData) {
     if (!hasProperty(newData, "token.flags.barbrawl.resourceBars")) return;
-    prepareUpdate(actor.data.token, newData.token);
+    prepareUpdate(actor.prototypeToken, newData.token);
 });
 
 /** Hook to update bars. */
@@ -68,7 +68,7 @@ Hooks.on("updateToken", function (doc, changes) {
         let changedData = changedBars[changedBarIds[0]];
         if (!(["position", "id", "max", "indentLeft", "indentRight", "bgImage", "fgImage", "shareHeight",
             "ownerVisibility", "otherVisibility"].some(prop => prop in changedData))) {
-            const barData = doc.data.flags.barbrawl.resourceBars[changedBarIds[0]];
+            const barData = doc.flags.barbrawl.resourceBars[changedBarIds[0]];
 
             if (barData.attribute !== "custom") {
                 const resource = doc.getBarAttribute(null, { alternative: barData.attribute });
@@ -102,22 +102,22 @@ Hooks.on("updateToken", function (doc, changes) {
 /** Hooks to initialize tokens and actors with default bars. */
 Hooks.on("preCreateToken", function (doc, data) {
     // Always make the bar container visible.
-    doc.data.update({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+    doc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
 
     const actor = game.actors.get(data.actorId);
-    if (!actor || hasProperty(actor.data, "token.flags.barbrawl.resourceBars")) return; // Don't override prototype.
+    if (!actor || hasProperty(actor, "token.flags.barbrawl.resourceBars")) return; // Don't override prototype.
 
     const barConfig = getDefaultResources(actor.type);
     if (!barConfig) return;
-    doc.data.update(createOverrideData(barConfig));
+    doc.updateSource(createOverrideData(barConfig));
 });
 
 Hooks.on("preCreateActor", function (doc) {
-    if (!doc.data.token || foundry.utils.hasProperty(doc.data.token, "flags.barbrawl.resourceBars")) return;
+    if (!doc.prototypeToken || foundry.utils.hasProperty(doc.prototypeToken, "flags.barbrawl.resourceBars")) return;
 
     const barConfig = getDefaultResources(doc.type);
     if (!barConfig) return;
-    doc.data.update(createOverrideData(barConfig, true));
+    doc.updateSource(createOverrideData(barConfig, true));
 });
 
 /** Hook to update bar visibility. */

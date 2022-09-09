@@ -16,7 +16,7 @@ export const extendDefaultTokenConfig = function () {
                 updateData.bar1 ??= { attribute: "" };
                 updateData.bar2 ??= { attribute: "" };
                 const formData = wrapped(updateData);
-                prepareUpdate(this.data, formData);
+                prepareUpdate(this, formData);
                 return formData;
             }, "WRAPPER");
     } else {
@@ -27,7 +27,7 @@ export const extendDefaultTokenConfig = function () {
             updateData.bar1 ??= { attribute: "" };
             updateData.bar2 ??= { attribute: "" };
             const formData = originalGetSubmitData.call(this, updateData);
-            prepareUpdate(this.data, formData);
+            prepareUpdate(this, formData);
             return formData;
         };
     }
@@ -71,7 +71,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
 
     // Trigger change event once to update resource values.
-    resourceTab.find("select.brawlbar-attribute").trigger("change");
+    //resourceTab.find("select.brawlbar-attribute").trigger("change");
 }
 
 /**
@@ -267,7 +267,7 @@ async function onSaveDefaults(tokenConfig) {
     data = foundry.utils.expandObject(data).flags.barbrawl.resourceBars;
 
     // Merge extended bar data without overriding the form.
-    const extData = foundry.utils.getProperty(tokenConfig.token.data._source, "flags.barbrawl.resourceBars");
+    const extData = foundry.utils.getProperty(tokenConfig.token._source, "flags.barbrawl.resourceBars");
     foundry.utils.mergeObject(data, extData, { insertKeys: false, overwrite: false });
 
     // Drop bars that were removed.

@@ -1,24 +1,54 @@
 {
-    "name": "barbrawl",
     "title": "Bar Brawl",
     "description": "Adds additional options for displaying multiple resource bars on a token.",
     "version": "1.7.2",
-    "author": "Adrian Haberecht",
-    "esmodules": ["barbrawl.js"],
-    "styles": ["styles/attributeHud.css"],
-    "languages": [
-        {"lang": "de", "name": "Deutsch", "path": "lang/de.json"},
-        {"lang": "en", "name": "English", "path": "lang/en.json"},
-        {"lang": "ja", "name": "日本語", "path": "lang/ja.json"},
-        {"lang": "ko", "name": "한국어", "path": "lang/ko.json"}
+    "esmodules": [
+        "barbrawl.js"
     ],
-    "minimumCoreVersion": "9.269",
-    "compatibleCoreVersion": "9.269",
+    "styles": [
+        "styles/attributeHud.css"
+    ],
+    "languages": [
+        {
+            "lang": "de",
+            "name": "Deutsch",
+            "path": "lang/de.json",
+            "flags": {}
+        },
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json",
+            "flags": {}
+        },
+        {
+            "lang": "ja",
+            "name": "日本語",
+            "path": "lang/ja.json",
+            "flags": {}
+        },
+        {
+            "lang": "ko",
+            "name": "한국어",
+            "path": "lang/ko.json",
+            "flags": {}
+        }
+    ],
     "url": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl",
     "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/master/src/module.json",
     "download": "https://gitlab.com/api/v4/projects/22486994/packages/generic/barbrawl/1.7.2/barbrawl-v1.7.2.zip",
     "license": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/LICENSE",
     "readme": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/README.md",
     "bugs": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/issues",
-    "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md"
+    "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md",
+    "id": "barbrawl",
+    "authors": [
+        {
+            "name": "Adrian Haberecht",
+            "flags": {}
+        }
+    ],
+    "compatibility": {
+        "minimum": "10.284"
+    }
 }

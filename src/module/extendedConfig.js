@@ -29,12 +29,12 @@ export default class BarConfigExtended extends FormApplication {
         // Update the data.
         if (this.options.isDefaultToken) {
             // Update default token data.
-            if (tokenConfig instanceof DefaultTokenConfig) tokenConfig.data.update(formData);
-            this.options.parent.data.update(formData);
+            if (tokenConfig instanceof DefaultTokenConfig) tokenConfig.updateSource(formData);
+            this.options.parent.updateSource(formData);
         } else if (this.options.parent instanceof PrototypeTokenDocument) {
             // Update the actor instead of the token.
             await this.options.parent.actor.update({ token: formData });
-            this.options.parent.data.update(formData);
+            this.options.parent.updateSource(formData);
         } else {
             await this.options.parent.update(formData);
         }

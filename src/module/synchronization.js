@@ -9,9 +9,9 @@ import { convertBarVisibility, getDefaultBar } from "./api.js";
  */
 export const createOverrideData = function (resources, prototype = false) {
     return prototype ? {
-        "token.flags.barbrawl.resourceBars": resources,
-        "token.bar1.attribute": resources.bar1?.attribute ?? null,
-        "token.bar2.attribute": resources.bar2?.attribute ?? null
+        "prototypeToken.flags.barbrawl.resourceBars": resources,
+        "prototypeToken.bar1.attribute": resources.bar1?.attribute ?? null,
+        "prototypeToken.bar2.attribute": resources.bar2?.attribute ?? null
     } : {
         "flags.barbrawl.resourceBars": resources,
         "bar1.attribute": resources.bar1?.attribute ?? null,
