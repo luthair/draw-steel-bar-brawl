@@ -206,7 +206,7 @@ function getBarHeight(token, width, textures = [null, null]) {
     else if (textures[1]) return textures[1].height * width / textures[1].width;
 
     let height = Math.max((canvas.dimensions.size / 12), 8);
-    if (token.height >= 2) height *= 1.6; // Enlarge the bar for large tokens.
+    if (token.document.height >= 2) height *= 1.6; // Enlarge the bar for large tokens.
     height += barPresets[game.settings.get("barbrawl", "barStyle")].heightOffset ?? 0;
     return height;
 }
