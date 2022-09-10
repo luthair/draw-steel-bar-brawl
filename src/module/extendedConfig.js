@@ -31,7 +31,7 @@ export default class BarConfigExtended extends FormApplication {
             // Update default token data.
             if (tokenConfig instanceof DefaultTokenConfig) tokenConfig.updateSource(formData);
             this.options.parent.updateSource(formData);
-        } else if (this.options.parent instanceof PrototypeTokenDocument) {
+        } else if (this.options.parent instanceof foundry.data.PrototypeToken) {
             // Update the actor instead of the token.
             await this.options.parent.actor.update({ token: formData });
             this.options.parent.updateSource(formData);

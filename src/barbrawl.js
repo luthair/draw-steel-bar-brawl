@@ -45,8 +45,8 @@ Hooks.on("preUpdateToken", function (doc, changes) {
 
 /** Hook to apply changes to the prototype token. */
 Hooks.on("preUpdateActor", function (actor, newData) {
-    if (!hasProperty(newData, "token.flags.barbrawl.resourceBars")) return;
-    prepareUpdate(actor.prototypeToken, newData.token);
+    if (!hasProperty(newData, "prototypeToken.flags.barbrawl.resourceBars")) return;
+    prepareUpdate(actor.prototypeToken, newData.prototypeToken);
 });
 
 /** Hook to update bars. */
