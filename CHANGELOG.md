@@ -1,3 +1,6 @@
+1.7.3
+- Updated for FoundryVTT 10.284 and above.
+
 1.7.2
 - Fixed hidden bars reappearing when hovering the token.
 - Fixed some issues when configuring the default token.
