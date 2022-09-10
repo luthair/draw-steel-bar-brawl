@@ -91,7 +91,7 @@ async function linkUserData() {
 		sourceModulePath = path.resolve('.', 'src', 'module.json');
 		if (fs.existsSync(sourceModulePath)) {
 			destDir = 'modules';
-			name = fs.readJSONSync(sourceModulePath).name;
+            name = fs.readJSONSync(sourceModulePath).id;
 		} else {
 			throw Error(
 				`Could not find ${chalk.blueBright(
@@ -160,7 +160,7 @@ async function packageBuild() {
 			fs.ensureDirSync('package');
 
 			// Initialize the zip file
-			const zipName = `${manifest.file.name}-v${manifest.file.version}.zip`;
+            const zipName = `${manifest.file.id}-v${manifest.file.version}.zip`;
 			const zipFile = fs.createWriteStream(path.join('package', zipName));
 			const zip = archiver('zip', { zlib: { level: 9 } });
 
@@ -179,7 +179,7 @@ async function packageBuild() {
 			zip.pipe(zipFile);
 
 			// Add the directory with the final code
-			zip.directory('src/', manifest.file.name);
+            zip.directory('src/', manifest.file.id);
 
 			zip.finalize();
 		} catch (err) {
@@ -205,7 +205,7 @@ async function createVersion() {
 
     // Generate URLs.
     manifest.file.manifest = `${config.rawUrl}/master/${manifest.root}/${manifest.name}`;
-    const fileName = `${manifest.file.name}-v${manifest.file.version}.zip`;
+    const fileName = `${manifest.file.id}-v${manifest.file.version}.zip`;
     manifest.file.download = `${config.apiUrl}/packages/generic/barbrawl/${manifest.file.version}/${fileName}`;
 
     // Save manifest file.
@@ -230,7 +230,7 @@ async function publish() {
     if (!manifest || !config || !token) console.log(chalk.red("Manifest or configuration or token file not found."));
 
     // Upload package file.
-    const fileName = `${manifest.file.name}-v${manifest.file.version}.zip`;
+    const fileName = `${manifest.file.id}-v${manifest.file.version}.zip`;
     if (!fs.existsSync("package/" + fileName)) console.log(chalk.red("Package " + fileName + " does not exist."));
 
     console.log("Uploading file " + fileName + " via GitLab API");
