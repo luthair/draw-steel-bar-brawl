@@ -16,7 +16,7 @@ export const extendDefaultTokenConfig = function () {
                 updateData.bar1 ??= { attribute: "" };
                 updateData.bar2 ??= { attribute: "" };
                 const formData = wrapped(updateData);
-                prepareUpdate(this, formData);
+                prepareDefaultTokenUpdate(this.token, formData);
                 return formData;
             }, "WRAPPER");
     } else {
@@ -27,10 +27,27 @@ export const extendDefaultTokenConfig = function () {
             updateData.bar1 ??= { attribute: "" };
             updateData.bar2 ??= { attribute: "" };
             const formData = originalGetSubmitData.call(this, updateData);
-            prepareUpdate(this, formData);
+            prepareDefaultTokenUpdate(this.token, formData);
             return formData;
         };
     }
+}
+
+/**
+ * Prepares the given token data to make sure that any local bar changes are
+ *  included in the configuration.
+ * @param {TokenDocument} token The token data to prepare the update for.
+ * @param {Object} formData The data of the update.
+ */
+function prepareDefaultTokenUpdate(token, formData) {
+    // Merge changes made by the extended configuration.
+    const barChanges = formData.flags?.barbrawl?.resourceBars;
+    const sourceBarChanges = token.getFlag("barbrawl", "resourceBars");
+    if (barChanges && sourceBarChanges) {
+        foundry.utils.mergeObject(barChanges, sourceBarChanges, { overwrite: false });
+    }
+
+    prepareUpdate(token, formData);
 }
 
 /**

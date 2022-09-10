@@ -27,13 +27,13 @@ export default class BarConfigExtended extends FormApplication {
             .find(conf => conf instanceof TokenConfig && conf.token === this.options.parent);
 
         // Update the data.
-        if (this.options.isDefaultToken) {
+        if (tokenConfig instanceof DefaultTokenConfig) {
             // Update default token data.
-            if (tokenConfig instanceof DefaultTokenConfig) tokenConfig.updateSource(formData);
+            tokenConfig.token.updateSource(formData);
             this.options.parent.updateSource(formData);
         } else if (this.options.parent instanceof foundry.data.PrototypeToken) {
             // Update the actor instead of the token.
-            await this.options.parent.actor.update({ token: formData });
+            await this.options.parent.actor.update({ prototypeToken: formData });
             this.options.parent.updateSource(formData);
         } else {
             await this.options.parent.update(formData);

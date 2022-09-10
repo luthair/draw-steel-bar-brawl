@@ -22,12 +22,12 @@ export const createOverrideData = function (resources, prototype = false) {
 /**
  * Prepares the update of a token (or a prototype token) by removing invalid
  *  resources and synchronizing with FoundryVTT's resource format.
- * @param {Object} tokenData The data to merge the new data into.
+ * @param {TokenDocument} tokenDoc The data to merge the new data into.
  * @param {Object} newData The data to be merged into the token data.
  */
-export const prepareUpdate = function (tokenData, newData) {
+export const prepareUpdate = function (tokenDoc, newData) {
     // Always make the bar container visible.
-    if (tokenData._source.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+    if (tokenDoc._source.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
         newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     }
 
@@ -47,7 +47,7 @@ export const prepareUpdate = function (tokenData, newData) {
             // Convert legacy visibility.
             if (bar.hasOwnProperty("visibility")) convertBarVisibility(bar);
 
-            const barData = (foundry.utils.getProperty(tokenData, "flags.barbrawl.resourceBars") ?? {})[barId];
+            const barData = (foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {})[barId];
 
             // Validate update.
             if (!bar.id && !barData?.id) {
@@ -63,7 +63,7 @@ export const prepareUpdate = function (tokenData, newData) {
             }
         }
     }
-    synchronizeBars(tokenData, newData);
+    synchronizeBars(tokenDoc, newData);
 }
 
 /**
