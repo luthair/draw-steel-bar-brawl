@@ -1,7 +1,17 @@
 {
+    "id": "barbrawl",
     "title": "Bar Brawl",
     "description": "Adds additional options for displaying multiple resource bars on a token.",
     "version": "1.7.2",
+    "compatibility": {
+        "minimum": "10.284",
+        "verified": "10.285"
+    },
+    "authors": [
+        {
+            "name": "Adrian Haberecht"
+        }
+    ],
     "esmodules": [
         "barbrawl.js"
     ],
@@ -40,15 +50,5 @@
     "license": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/LICENSE",
     "readme": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/README.md",
     "bugs": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/issues",
-    "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md",
-    "id": "barbrawl",
-    "authors": [
-        {
-            "name": "Adrian Haberecht",
-            "flags": {}
-        }
-    ],
-    "compatibility": {
-        "minimum": "10.284"
-    }
+    "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md"
 }
