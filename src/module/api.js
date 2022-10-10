@@ -19,7 +19,10 @@ const BAR_VISIBILITY = {
  */
 export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {};
-    const barArray = Object.values(resourceBars);
+    const barArray = Object.entries(resourceBars).map(entry => {
+        entry[1].id ??= entry[0];
+        return entry[1];
+    });
 
     if (tokenDoc.bar1?.attribute && !resourceBars.bar1)
         barArray.push(getDefaultBar("bar1", tokenDoc.bar1.attribute, tokenDoc._source.displayBars));
@@ -41,7 +44,10 @@ export const getBar = function (tokenDoc, barId) {
         return getDefaultBar(barId, tokenDoc.bar1.attribute, tokenDoc._source.displayBars);
     if (barId === "bar2" && !resourceBars.bar2)
         return getDefaultBar(barId, tokenDoc.bar2.attribute, tokenDoc._source.displayBars);
-    return resourceBars[barId];
+
+    const bar = resourceBars[barId];
+    if (bar) bar.id ??= barId;
+    return bar;
 }
 
 /**
