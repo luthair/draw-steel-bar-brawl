@@ -36,7 +36,7 @@ export default class BarConfigExtended extends FormApplication {
             await this.options.parent.actor.update({ prototypeToken: formData });
             this.options.parent.updateSource(formData);
         } else {
-            await this.options.parent.update(formData);
+            await this.options.parent.update(formData, { render: false });
         }
 
         // Check if the token configuration is still open.
