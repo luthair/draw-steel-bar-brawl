@@ -1,3 +1,7 @@
+1.7.4
+- Partially fixed broken bars when using the advanced configuration.
+- Fixed undeletable bars.
+
 1.7.3
 - Updated for FoundryVTT 10.284 and above.
 
