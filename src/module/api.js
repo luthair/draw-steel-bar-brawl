@@ -180,9 +180,15 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
  * @private
  */
 export const getNewBarId = function (existingBars) {
-    const existingIds = existingBars.map((_i, el) => el.lastElementChild.id).get();
-    if (!existingIds.includes("bar1")) return "bar1";
-    if (!existingIds.includes("bar2")) return "bar2";
+    const existingIds = new Set(existingBars.map((_i, el) => el.lastElementChild.id).get());
+
+    // Try to find an easily readable, sortable and unused number.
+    for (let i = 1; i < 10; i++) {
+        const id = "bar" + i;
+        if (!existingIds.has(id)) return id;
+    }
+
+    // Generate a random ID as fallback.
     return "bar" + randomID();
 }
 
