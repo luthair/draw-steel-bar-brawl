@@ -32,7 +32,6 @@
             "color": "Farbe (min/max)",
             "position": "Position",
             "advanced": "Erweiterte Einstellungen",
-            "advancedButton": "Mehr Optionen anzeigen",
             "indent": "Einzug",
             "indentHint": "Zusätzlicher Abstand an der Seite der Bar in Prozent der Breite des Tokens.",
             "indentLeft": "Links",

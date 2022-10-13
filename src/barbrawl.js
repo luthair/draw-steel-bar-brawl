@@ -29,7 +29,7 @@ Hooks.once('init', async function () {
         return output;
     });
 
-    loadTemplates(["modules/barbrawl/templates/bar-config-minimal.hbs", "modules/barbrawl/templates/bar-config.hbs"]);
+    loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
     extendDefaultTokenConfig();
 });
 

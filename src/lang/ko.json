@@ -32,7 +32,6 @@
             "color": "색상(현재값/최대값)",
             "position": "위치",
             "advanced": "고급 설정",
-            "advancedButton": "추가 설정 열기",
             "indent": "넓이",
             "indentHint": "토큰 너비 안쪽의 바 넓이 퍼센트를 설정합니다.",
             "indentLeft": "왼쪽",

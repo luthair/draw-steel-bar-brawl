@@ -1,5 +1,4 @@
 import * as api from "./api.js";
-import BarConfigExtended from "./extendedConfig.js";
 import { getDefaultResources, setDefaultResources } from "./settings.js";
 import { createOverrideData, prepareUpdate } from "./synchronization.js";
 
@@ -16,7 +15,7 @@ export const extendDefaultTokenConfig = function () {
                 updateData.bar1 ??= { attribute: "" };
                 updateData.bar2 ??= { attribute: "" };
                 const formData = wrapped(updateData);
-                prepareDefaultTokenUpdate(this.token, formData);
+                prepareUpdate(this.token, formData);
                 return formData;
             }, "WRAPPER");
     } else {
@@ -27,27 +26,10 @@ export const extendDefaultTokenConfig = function () {
             updateData.bar1 ??= { attribute: "" };
             updateData.bar2 ??= { attribute: "" };
             const formData = originalGetSubmitData.call(this, updateData);
-            prepareDefaultTokenUpdate(this.token, formData);
+            prepareUpdate(this.token, formData);
             return formData;
         };
     }
-}
-
-/**
- * Prepares the given token data to make sure that any local bar changes are
- *  included in the configuration.
- * @param {TokenDocument} token The token data to prepare the update for.
- * @param {Object} formData The data of the update.
- */
-function prepareDefaultTokenUpdate(token, formData) {
-    // Merge changes made by the extended configuration.
-    const barChanges = formData.flags?.barbrawl?.resourceBars;
-    const sourceBarChanges = token.getFlag("barbrawl", "resourceBars");
-    if (barChanges && sourceBarChanges) {
-        foundry.utils.mergeObject(barChanges, sourceBarChanges, { overwrite: false });
-    }
-
-    prepareUpdate(token, formData);
 }
 
 /**
@@ -81,7 +63,6 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.on("click", ".bar-modifiers .fa-trash", onDeleteBar);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
-    resourceTab.on("click", ".brawlbar-extend", event => onOpenAdvancedConfiguration(event, tokenConfig, data));
 
     resourceTab.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     resourceTab.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
@@ -209,30 +190,6 @@ function swapButtonState(selector, firstElement, secondElement) {
 }
 
 /**
- * Opens an application with additional configuration options.
- * @param {jQuery.Event} event The event of the button click.
- * @param {TokenConfig} tokenConfig The token configuration object.
- * @param {Object} data The data of the request.
- */
-function onOpenAdvancedConfiguration(event, tokenConfig, data) {
-    const barId = event.currentTarget.parentElement.parentElement.id;
-    let barData = api.getBar(tokenConfig.token, barId) ?? {};
-
-    // Parse form data and merge with stored data.
-    let formData = tokenConfig._getSubmitData();
-    formData = foundry.utils.expandObject(formData).flags.barbrawl.resourceBars[barId];
-    barData = foundry.utils.mergeObject(barData, formData, { inplace: false });
-
-    new BarConfigExtended(barData, {
-        parent: tokenConfig.token,
-        displayModes: data.displayModes,
-        barAttributes: data.barAttributes,
-        isDefaultToken: tokenConfig instanceof DefaultTokenConfig
-    }).render(true);
-    return false;
-}
-
-/**
  * Handles an add button click event by adding another resource.
  * @param {jQuery.Event} event The event of the button click.
  * @param {TokenConfig} tokenConfig The token configuration object.
@@ -252,7 +209,6 @@ async function onAddResource(event, tokenConfig, data) {
 
     const barConfiguration = $(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: [newBar],
-        displayModes: data.displayModes,
         barAttributes: data.barAttributes
     }));
 
@@ -283,10 +239,6 @@ async function onSaveDefaults(tokenConfig) {
     let data = tokenConfig._getSubmitData();
     data = foundry.utils.expandObject(data).flags.barbrawl.resourceBars;
 
-    // Merge extended bar data without overriding the form.
-    const extData = foundry.utils.getProperty(tokenConfig.token._source, "flags.barbrawl.resourceBars");
-    foundry.utils.mergeObject(data, extData, { insertKeys: false, overwrite: false });
-
     // Drop bars that were removed.
     for (let id of Object.keys(data)) if (!data[id].attribute) delete data[id];
 
@@ -307,7 +259,7 @@ async function onLoadDefaults(tokenConfig, data) {
             foundry.utils.setProperty(setting, prop[0], prop[1]);
         }
         await game.settings.set("core", DefaultTokenConfig.SETTING, setting);
-    } else if (tokenConfig.token instanceof PrototypeTokenDocument) {
+    } else if (tokenConfig.token instanceof foundry.data.PrototypeToken) {
         await tokenConfig.token.actor.update(createOverrideData(defaults, true), { diff: false });
     } else {
         await tokenConfig.token.update(createOverrideData(defaults), { diff: false });
@@ -319,7 +271,6 @@ async function onLoadDefaults(tokenConfig, data) {
     resourceTab.find("details").remove();
     resourceTab.prepend(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: barData,
-        displayModes: data.displayModes,
         barAttributes: data.barAttributes
     }));
     if (resourceTab.hasClass("active")) adjustConfigHeight(tokenConfig.element, barData.length);

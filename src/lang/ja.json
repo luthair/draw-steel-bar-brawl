@@ -32,7 +32,6 @@
             "color": "色 (最小/最大)",
             "position": "位置",
             "advanced": "高度な設定",
-            "advancedButton": "他の設定を表示する",
             "indent": "インデント",
             "indentHint": "バーの側面にある余白を、トークンの幅に対する%で表したもの。",
             "indentLeft": "左側",

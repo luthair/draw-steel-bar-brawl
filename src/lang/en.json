@@ -32,7 +32,6 @@
             "color": "Color (min/max)",
             "position": "Position",
             "advanced": "Advanced configuration",
-            "advancedButton": "Show more settings",
             "indent": "Indentation",
             "indentHint": "Additional space on the side of the bar in percent of the token's width.",
             "indentLeft": "Left",

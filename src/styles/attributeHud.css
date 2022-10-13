@@ -26,6 +26,10 @@ input.indent-input {
     margin-right: 1px;
 }
 
+div.indent-details {
+    margin-left: 15px;
+}
+
 .bar-modifiers {
     visibility: hidden;
 }
