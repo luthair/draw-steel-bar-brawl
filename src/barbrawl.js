@@ -105,7 +105,7 @@ Hooks.on("preCreateToken", function (doc, data) {
     doc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
 
     const actor = game.actors.get(data.actorId);
-    if (!actor || hasProperty(actor, "token.flags.barbrawl.resourceBars")) return; // Don't override prototype.
+    if (!actor || hasProperty(actor, "prototypeToken.flags.barbrawl.resourceBars")) return; // Don't override prototype.
 
     const barConfig = getDefaultResources(actor.type);
     if (!barConfig) return;
