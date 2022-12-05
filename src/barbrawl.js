@@ -3,7 +3,7 @@
  * @author Adrian Haberecht
  */
 
-import { extendBarRenderer, redrawBar } from "./module/rendering.js";
+import { extendBarRenderer } from "./module/rendering.js";
 import { extendDefaultTokenConfig, extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
@@ -47,56 +47,6 @@ Hooks.on("preUpdateToken", function (doc, changes) {
 Hooks.on("preUpdateActor", function (actor, newData) {
     if (!hasProperty(newData, "prototypeToken.flags.barbrawl.resourceBars")) return;
     prepareUpdate(actor.prototypeToken, newData.prototypeToken);
-});
-
-/** Hook to update bars. */
-Hooks.on("updateToken", function (doc, changes) {
-    const token = doc.object;
-    if (!token) return;
-
-    if ("bar1" in changes || "bar2" in changes) {
-        if (token.hasActiveHUD) canvas.tokens.hud.render();
-        return;
-    }
-
-    if (!hasProperty(changes, "flags.barbrawl.resourceBars")) return;
-
-    // Check if only one bar value was changed (not added or removed)
-    let changedBars = changes.flags.barbrawl.resourceBars;
-    let changedBarIds = Object.keys(changedBars);
-    if (changedBarIds.length === 1 && !changedBarIds.some(id => id.startsWith("-="))) {
-        let changedData = changedBars[changedBarIds[0]];
-        if (!(["position", "id", "max", "indentLeft", "indentRight", "bgImage", "fgImage", "shareHeight",
-            "ownerVisibility", "otherVisibility"].some(prop => prop in changedData))) {
-            const barData = doc.flags.barbrawl.resourceBars[changedBarIds[0]];
-
-            if (barData.attribute !== "custom") {
-                const resource = doc.getBarAttribute(null, { alternative: barData.attribute });
-                if (!resource || (resource.type !== "bar" && !barData.max)) {
-                    return;
-                } else {
-                    barData.value = resource.value;
-                    barData.max = resource.max;
-                }
-            } else if (!barData.max) {
-                return;
-            }
-
-            redrawBar(token, barData);
-
-            // Update HUD
-            if (token.hasActiveHUD && changedData.value) {
-                let valueInput = canvas.tokens.hud._element
-                    .find(`input[name='flags.barbrawl.resourceBars.${changedBarIds[0]}.value']`);
-                if (valueInput) valueInput.val(changedData.value);
-            }
-            return;
-        }
-    }
-
-    // Otherwise, completely redraw all bars
-    token.drawBars();
-    if (token.hasActiveHUD) canvas.tokens.hud.render();
 });
 
 /** Hooks to initialize tokens and actors with default bars. */

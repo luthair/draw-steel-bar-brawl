@@ -124,27 +124,6 @@ async function createResourceBar(token, data, reservedSpace) {
 }
 
 /**
- * Redraws a single resource bar without changing its position.
- * @param {Token} token The token to redraw the bar on.
- * @param {Object} barData The data of the bar to refresh.
- */
-export const redrawBar = async function (token, barData) {
-    const bar = token.bars.getChildByName(barData.id);
-    if (!bar) return;
-
-    const gfx = bar.getChildByName("gfx");
-    bar.removeChildren();
-    if (gfx) {
-        // Clear graphics object instead of removing it.
-        gfx.clear();
-        bar.addChild(gfx);
-    }
-
-    const textures = await loadBarTextures(barData);
-    drawResourceBar(token, bar, barData, textures);
-}
-
-/**
  * Loads textures required for rendering the bar.
  * @param {Object} data The data of the bar.
  * @returns {Promise.<PIXI.Texture[]>} An array containing the background and foreground texture.
