@@ -63,7 +63,10 @@ export const extendBarRenderer = function () {
  */
 function drawBrawlBars() {
     let visibleBars = getVisibleBars(this.document);
-    if (visibleBars.length === 0) return;
+    if (visibleBars.length === 0) {
+        this.bars.removeChildren();
+        return;
+    }
 
     const reservedSpace = {
         "top-inner": 0,
