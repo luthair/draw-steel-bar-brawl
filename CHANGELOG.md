@@ -1,3 +1,8 @@
+1.7.5
+- Moved advanced configuration into expandable section to improve v10 compatibility.
+- Fixed rendering issue when all bars were removed.
+- Fixed default settings overriding the prototype token.
+
 1.7.4
 - Partially fixed broken bars when using the advanced configuration.
 - Fixed undeletable bars.
