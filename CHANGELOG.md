@@ -1,3 +1,7 @@
+1.7.6
+- Fixed bars disappearing when changing other token settings.
+- Fixed bars reverting to default settings after creation.
+
 1.7.5
 - Moved advanced configuration into expandable section to improve v10 compatibility.
 - Fixed rendering issue when all bars were removed.
