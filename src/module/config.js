@@ -69,7 +69,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
 
     // Trigger change event once to update resource values.
-    //resourceTab.find("select.brawlbar-attribute").trigger("change");
+    resourceTab.find("select.brawlbar-attribute").trigger("change");
 }
 
 /**
