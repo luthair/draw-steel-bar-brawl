@@ -84,6 +84,9 @@ export const onChangeBarAttribute = function (event) {
     if (!form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
     if (!form) return;
 
+    // Set a hidden attribute input to make sure FoundryVTT doesn't override it with null.
+    event.target.nextElementSibling.value = event.target.value;
+
     const valueInput = form.querySelector(`input.${barId}-value`);
     const maxInput = form.querySelector(`input.${barId}-max`);
 
