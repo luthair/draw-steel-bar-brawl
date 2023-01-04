@@ -172,6 +172,9 @@ function drawResourceBar(token, bar, data, textures) {
     if (data.position.startsWith("left")) bar.angle = -90;
     else if (data.position.startsWith("right")) bar.angle = 90;
 
+    // Flip bar if inverted.
+    if (data.invertDirection) bar.scale.x *= -1;
+
     return bar.contentHeight;
 }
 
@@ -407,15 +410,31 @@ function calculateWidth(barData, token, reservedSpace) {
  */
 function calculatePosition(barData, barHeight, token, reservedSpace) {
     const leftIndent = (barData.indentLeft ?? 0) / 100;
-    switch (barData.position) {
-        case "top-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, reservedSpace["top-inner"]];
-        case "top-outer": return [leftIndent * token.w, (reservedSpace["top-outer"] + barHeight) * -1];
-        case "bottom-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, token.h - reservedSpace["bottom-inner"] - barHeight];
-        case "bottom-outer": return [leftIndent * token.w, token.h + reservedSpace["bottom-outer"]];
-        case "left-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"] - leftIndent * token.h];
-        case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, token.h - leftIndent * token.h];
-        case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"] + leftIndent * token.h];
-        case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, leftIndent * token.h];
+    const rightIndent = (barData.indentRight ?? 0) / 100;
+
+    if (barData.invertDirection) {
+        switch (barData.position) {
+            case "top-inner": return [reservedSpace["left-inner"] - rightIndent * token.w + token.w, reservedSpace["top-inner"]];
+            case "top-outer": return [token.w - rightIndent * token.w, (reservedSpace["top-outer"] + barHeight) * -1];
+            case "bottom-inner": return [reservedSpace["left-inner"] - rightIndent * token.w + token.w, token.h - reservedSpace["bottom-inner"] - barHeight];
+            case "bottom-outer": return [token.w - rightIndent * token.w, token.h + reservedSpace["bottom-outer"]];
+            case "left-inner": return [reservedSpace["left-inner"], 0 - reservedSpace["bottom-inner"] + rightIndent * token.h];
+            case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, 0 + rightIndent * token.h];
+            case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"] - rightIndent * token.h + token.h];
+            case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, token.h - rightIndent * token.h];
+        }
+    }
+    else {
+        switch (barData.position) {
+            case "top-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, reservedSpace["top-inner"]];
+            case "top-outer": return [leftIndent * token.w, (reservedSpace["top-outer"] + barHeight) * -1];
+            case "bottom-inner": return [reservedSpace["left-inner"] + leftIndent * token.w, token.h - reservedSpace["bottom-inner"] - barHeight];
+            case "bottom-outer": return [leftIndent * token.w, token.h + reservedSpace["bottom-outer"]];
+            case "left-inner": return [reservedSpace["left-inner"], token.h - reservedSpace["bottom-inner"] - leftIndent * token.h];
+            case "left-outer": return [(reservedSpace["left-outer"] + barHeight) * -1, token.h - leftIndent * token.h];
+            case "right-inner": return [token.w - reservedSpace["right-inner"], reservedSpace["top-inner"] + leftIndent * token.h];
+            case "right-outer": return [reservedSpace["right-outer"] + barHeight + token.w, leftIndent * token.h];
+        }
     }
 }
 
