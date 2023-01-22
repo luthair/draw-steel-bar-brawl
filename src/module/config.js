@@ -69,7 +69,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
 
     // Trigger change event once to update resource values.
-    //resourceTab.find("select.brawlbar-attribute").trigger("change");
+    resourceTab.find("select.brawlbar-attribute").each((_, el) => refreshValueInput(tokenConfig.token, el));
 }
 
 /**
@@ -78,22 +78,32 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
  * @param {jQuery.Event} event The event of the selection change.
  */
 export const onChangeBarAttribute = function (event) {
-    const barId = event.target.name.split(".")[3];
+    refreshValueInput(this, event.target, event.originalEvent);
+}
+
+/**
+ * Updates the states and values for the current and maximum value inputs.
+ * @param {Token} token The token that the bar belongs to.
+ * @param {HTMLElement} target The select element that contains the bar's attribute.
+ * @param {Event?} event An optional event triggered by changing the target's value.
+ */
+function refreshValueInput(token, target, event) {
+    const barId = target.name.split(".")[3];
     if (!barId) return;
-    let form = event.target.form;
+    let form = target.form;
     if (!form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
     if (!form) return;
 
     // Set a hidden attribute input to make sure FoundryVTT doesn't override it with null.
-    event.target.nextElementSibling.value = event.target.value;
+    target.nextElementSibling.value = target.value;
 
     const valueInput = form.querySelector(`input.${barId}-value`);
     const maxInput = form.querySelector(`input.${barId}-max`);
 
-    if (event.target.value === "custom") {
+    if (target.value === "custom") {
         valueInput.removeAttribute("disabled");
         maxInput.removeAttribute("disabled");
-        if (event.originalEvent && maxInput.value === "") maxInput.value = valueInput.value;
+        if (event && maxInput.value === "") maxInput.value = valueInput.value;
         form.querySelectorAll(`input.ignore-limit`).forEach(el => {
             el.removeAttribute("disabled");
             el.checked = false;
@@ -105,7 +115,7 @@ export const onChangeBarAttribute = function (event) {
             el.checked = true;
         });
 
-        const resource = this.getBarAttribute(null, { alternative: event.target.value });
+        const resource = token.getBarAttribute(null, { alternative: target.value });
         if (resource === null) {
             valueInput.value = maxInput.value = "";
             maxInput.setAttribute("disabled", "");
@@ -115,7 +125,7 @@ export const onChangeBarAttribute = function (event) {
             maxInput.setAttribute("disabled", "");
         } else {
             valueInput.value = resource.value;
-            if (event.originalEvent) maxInput.value = "";
+            if (event) maxInput.value = "";
             maxInput.removeAttribute("disabled");
         }
     }
