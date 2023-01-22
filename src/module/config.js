@@ -63,6 +63,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.on("click", ".bar-modifiers .fa-trash", onDeleteBar);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
+    resourceTab.on("click", "button.file-picker", tokenConfig._activateFilePicker.bind(tokenConfig));
 
     resourceTab.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     resourceTab.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
