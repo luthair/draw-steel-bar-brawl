@@ -1,3 +1,7 @@
+1.7.7
+- Fixed file picker buttons not working.
+- Fixed duplicate effects while configuring the token.
+
 1.7.6
 - Fixed bars disappearing when changing other token settings.
 - Fixed bars reverting to default settings after creation.
