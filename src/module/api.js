@@ -256,9 +256,9 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
     if (!bar || !token) return false;
 
     let visibility = getBarVisibility(token, bar);
-    if (ignoreTransient) {
-        if ([BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility))
-            return true;
+    if (ignoreTransient
+        && [BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility)) {
+        return true;
     } else {
         if (bar.hideFull && bar.value === bar.max) return false;
         if (bar.hideEmpty && bar.value === 0) return false;
@@ -268,7 +268,7 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
     if (bar.hideCombat && inCombat) return false;
     if (bar.hideNoCombat && !inCombat) return false;
 
-    if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token._controlled || token._hover;
+    if (visibility === BAR_VISIBILITY.HOVER_CONTROL) return token.controlled || token.hover;
     return token._canViewMode(visibility);
 }
 
