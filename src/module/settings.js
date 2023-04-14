@@ -33,6 +33,18 @@ export const registerSettings = function () {
         onChange: refreshBars
     });
 
+    game.settings.register("barbrawl", "compactHud", {
+        name: game.i18n.localize("barbrawl.compactHud.name"),
+        hint: game.i18n.localize("barbrawl.compactHud.hint"),
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: true,
+        onChange: () => {
+            if (canvas.hud.token.rendered) canvas.hud.token.render();
+        }
+    });
+
     game.settings.register("barbrawl", "hideHostile", {
         name: game.i18n.localize("barbrawl.hideHostile.name"),
         hint: game.i18n.localize("barbrawl.hideHostile.hint"),
