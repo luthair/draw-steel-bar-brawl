@@ -107,13 +107,13 @@ function refreshValueInput(token, target, event) {
         if (event && maxInput.value === "") maxInput.value = valueInput.value;
         form.querySelectorAll(`input.ignore-limit`).forEach(el => {
             el.removeAttribute("disabled");
-            el.checked = false;
+            if (event) el.checked = false;
         });
     } else {
         valueInput.setAttribute("disabled", "");
         form.querySelectorAll(`input.ignore-limit`).forEach(el => {
             el.setAttribute("disabled", "");
-            el.checked = true;
+            if (event) el.checked = true;
         });
 
         const resource = token.getBarAttribute(null, { alternative: target.value });
