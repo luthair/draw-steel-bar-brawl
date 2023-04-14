@@ -30,7 +30,7 @@
             ],
             "cwd": "${env:ProgramFiles}/Foundry Virtual Tabletop/resources/app",
             "preLaunchTask": "${defaultBuildTask}",
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
             "windows": {
@@ -40,10 +40,6 @@
                 ".",
                 "--remote-debugging-port=9223",
                 "--preserve-symlinks"
-            ],
-            "skipFiles": [
-                "<node_internals>/**/*.js",
-                "node_modules/**/*.js"
             ],
             "outputCapture": "std",
             "postDebugTask": "watch: disable",
@@ -59,7 +55,7 @@
             "presentation": {
                 "hidden": true,
             },
-            "type": "pwa-chrome",
+            "type": "chrome",
             "request": "attach",
             "port": 9223,
             "webRoot": "${env:ProgramFiles}/Foundry Virtual Tabletop/resources/app/public",
@@ -68,9 +64,14 @@
                 "/modules/barbrawl": "${workspaceRoot}/src",
                 "/modules/*": "${env:AppData}/../Local/Foundry Virtual Tabletop/Data/modules"
             },
+            "sourceMaps": false,
             "skipFiles": [
-                "<node_internals>/**/*.js",
-                "node_modules/**/*.js"
+                "<node_internals>/**",
+                "node_modules/**",
+                "**/packages/**"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/"
             ],
             "timeout": 5000,
             "preLaunchTask": "watch: enable",
