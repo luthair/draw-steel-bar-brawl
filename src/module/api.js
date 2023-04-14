@@ -231,8 +231,7 @@ export const getDefaultBar = function (id, attribute, defaultVisibility = CONST.
 }
 
 /**
- * Resolves the actual visibility of the given bar, depending on whether the
- *  current player owns the given token.
+ * Resolves the actual visibility of the given bar, depending on whether the current player owns the given token.
  * @param {Token | TokenDocument} token The token (or its document) of the bar.
  * @param {Object} bar The data of the bar.
  * @returns {BAR_VISIBILITY} The visibility of the bar.
@@ -240,8 +239,14 @@ export const getDefaultBar = function (id, attribute, defaultVisibility = CONST.
  */
 function getBarVisibility(token, bar) {
     if (!bar.hasOwnProperty("otherVisibility")) convertBarVisibility(bar);
+    if (token instanceof Token) token = token.document;
+
     if (game.user.isGM && (bar.gmVisibility ?? -1) !== BAR_VISIBILITY.INHERIT) return bar.gmVisibility;
-    if (token.isOwner && (bar.ownerVisibility ?? -1) !== BAR_VISIBILITY.INHERIT) return bar.ownerVisibility;
+    if (token.isOwner) {
+        if ((bar.ownerVisibility ?? -1) !== BAR_VISIBILITY.INHERIT) return bar.ownerVisibility;
+    } else if (token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE && game.settings.get("barbrawl", "hideHostile")) {
+        return BAR_VISIBILITY.NONE;
+    }
     return bar.otherVisibility;
 }
 

@@ -17,6 +17,10 @@
             "fraction": "分数(値/最大)",
             "percent": "パーセンテージ(%)"
         },
+        "hideHostile": {
+            "name": "Hide all hostile bars",
+            "hint": "Prevents the display of bars for hostile tokens that players don't own. Be aware that this may override resource specific visibility settings."
+        },
         "config": {
             "attribute": "能力値",
             "ownerVisibility": "可視性（自分）",

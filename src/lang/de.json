@@ -17,6 +17,10 @@
             "fraction": "Bruch (Wert / Max.)",
             "percent": "Prozent (%)"
         },
+        "hideHostile": {
+            "name": "Alle feindlichen Bars verstecken",
+            "hint": "Verhindert das Anzeigen von Bars für feindliche Tokens, welche der Spieler nicht besitzt. Dies kann ressourcenspezifische Einstellungen überschreiben."
+        },
         "config": {
             "attribute": "Attribut",
             "ownerVisibility": "Sichtbarkeit (Besitzer)",
