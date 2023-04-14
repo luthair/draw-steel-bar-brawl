@@ -51,7 +51,7 @@ export const prepareUpdate = function (tokenDoc, newData) {
 
             // Validate update.
             if (!bar.id && !barData?.id) {
-                console.warn("barbrawl | Skipping invalid bar update. This may indicate a compatibility issue.");
+                console.warn("Bar Brawl | Skipping invalid bar update. This may indicate a compatibility issue.");
                 delete changedBars[barId];
                 continue;
             }

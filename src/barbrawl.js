@@ -12,7 +12,7 @@ import * as api from "./module/api.js";
 
 /** Hook to register settings. */
 Hooks.once('init', async function () {
-    console.log('barbrawl | Initializing barbrawl');
+    console.log('Bar Brawl | Initializing barbrawl');
     window.BarBrawlApi = {
         getBars: api.getBars,
         getBar: api.getBar,

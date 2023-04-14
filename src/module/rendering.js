@@ -81,19 +81,35 @@ function drawBrawlBars() {
 
     this.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
-        this.bars.removeChildren();
-        for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
-        this.bars.visible = this.bars.children.length > 0;
+        try {
+            this.bars.removeChildren();
+            for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
+            this.bars.visible = this.bars.children.length > 0;
+        } finally {
+            if (renderingTokens[this.id].data === visibleBars) delete renderingTokens[this.id];
+        }
     };
 
     // Make sure that we are only rendering bars for each token once.
     if (renderingTokens[this.id]) {
-        console.log("barbrawl | Bars are already rendering, deferring second call.");
-        renderingTokens[this.id] = renderingTokens[this.id]
-            .then(asyncRender).finally(() => delete renderingTokens[this.id]);
+        const renderingData = renderingTokens[this.id].data;
+        if (renderingData.length === visibleBars.length
+            && renderingData.every((bar, index) => foundry.utils.isEmpty(foundry.utils.diffObject(bar, visibleBars[index])))) {
+            console.log("Bar Brawl | Bars are already rendering, prevented duplicate render.");
+            return;
+        }
+
+        console.log("Bar Brawl | Bars are already rendering, deferring second call.");
+        renderingTokens[this.id] = {
+            data: visibleBars,
+            promise: renderingTokens[this.id].promise.then(asyncRender)
+        };
     }
     else {
-        renderingTokens[this.id] = asyncRender().finally(() => delete renderingTokens[this.id]);
+        renderingTokens[this.id] = {
+            data: visibleBars,
+            promise: asyncRender()
+        };
     }
 }
 
@@ -295,7 +311,7 @@ function drawBarLabel(bar, token, data, value, max) {
             createBarLabel(bar, token, data, `${data.label ? data.label + "  " : ""}${percentage}%`);
             break;
         default:
-            console.error(`barbrawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
+            console.error(`Bar Brawl | Unknown label style ${game.settings.get("barbrawl", "textStyle")}.`);
     }
 }
 
