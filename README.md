@@ -69,6 +69,12 @@ With the identation values, you can add empty space to the left or right of the 
 
 ![Indentation](images/indent.png "Indentation")
 
+#### Share height
+
+This option allows having multiple bars on the same line. This is particularly useful in combination with indents, but may also be used to create overlays with images and/or opacity. It is possible to enable this on several consecutive resources to combine several resources into one line.
+
+![Share height](images/shareHeight.png "Share height")
+
 #### Label & Prefix
 
 The label option sets the displayed numbers per bar. By default, this is determined by the global user settings. For a list of options and what they do, see the [global configuration](#global-settings) section.
@@ -84,6 +90,8 @@ For other attributes, the system should handle the boundary values and the optio
 #### Invert values
 
 In order to represent "negative" resources such as wounds, you can invert the bar's values. This will display 0 as a full bar and the maximum value as an empty bar (and proportionally inbetween).
+
+It is also possible to flip the bar without inverting it's values by enabling the *Invert direction* setting.
 
 ![Inverted values](images/invert.png "Inverted values")
 
@@ -102,6 +110,12 @@ Instead of drawing the usual styles, bars can instead have an image as foregroun
 ![Image bars](images/images.png "Image bars")
 
 It is recommended that your images are at most twice the size of the token grid (as defined in the scene's settings). Using larger images will work, but may negatively impact performance.
+
+#### Opacity
+
+To make bars translucent, you can set the opacity to a value between 100% (opaque) and 0% (transparent). By default, bars are rendered at 80% opacity.
+
+![Opacity](images/opacity.png "Opacity")
 
 #### Combinations
 
@@ -133,15 +147,24 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
         ownerVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
         otherVisibility: CONST.TOKEN_DISPLAY_MODES.NONE,
         gmVisibility: -1,
+        hideCombat: false,
+        hideNoCombat: false,
+        hideEmpty: false,
+        hideFull: false,
         value: 5,
         max: 5,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
         position: "bottom-inner",
+        indentLeft: 0,
+        indentRight: 0,
+        shareHeight: false,
         style: "user",
+        opacity: 80,
         ignoreMin: false,
         ignoreMax: false,
         invert: false,
+        invertDirection: false,
         label: "",
         subdivisions: 0,
         subdivisionsOwner: false,
@@ -155,11 +178,16 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
 
 - The **attribute** is a string representing the data path of the target attribute, relative to the actor's data (for examples, open the attribute menu through the UI configuration). Unlinked bars have the attribute "custom" and additionally contain number fields for the current and maximum value.
 - Valid **position**s are combinations of top/bottom/left/right and inner/outer, e.g. "bottom-inner".
+- The **indent** properties are percentages (e.g. 50, *not* 0.5) that the bar is inverted from the left or right side of the token.
+- The **shareHeight** boolean indicates that the bar will not reserve any vertical space (which can then be shared with the following bar).
 - Valid **style**s are "user", "none", "fraction" and "percent" - this overrides the user setting, so you should generally prefer the "user" mode.
+- The **opacity** is a percentage (e.g. 50, *not* 0.5) that determines the transparency of the bar. Note that unlike other numbers, a missing opacity indicates 80%, not 0.
 - The **visibility** properties can be 50, 30, 10 or 0 for always, hovered, controlled or never, respectively (see `CONST.TOKEN_DISPLAY_MODES`). For the owner and the GM, a value of `-1` can be used to inherit from everyone or the owner, respectively.
+- The **hide** flags control whether the bar is displayed when the token is in or out of combat or when the resource is full or empty.
 - Both **color**s are HTML color strings.
 - The fields "**ignoreMin**" and "**ignoreMax**" are boolean flags that disable clamping of the bar's value.
 - The **invert** flag is a boolean indicating whether a full value should be rendered as en empty bar.
+- The **invertDirection** flag is a boolean that flips the bar along its primary axis (horizontally for top and bottom bars, vertically for left and right bars).
 - The **label** is prepended to the value label (determined by the style property).
 - The **subdivisions** field is an integer that applies approximation to the bar's label. By default, it is not applied for the owner of the token, which can be changed using **subdivisionsOwner**.
 - The **indent**s determine extra space before or after the bar and can be integers between -100 and 100 (although using a 100% indent will render nothing).
