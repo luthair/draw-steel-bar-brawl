@@ -394,6 +394,7 @@ function createBarLabel(bar, token, data, text) {
     barText.y = bar.contentHeight / 2;
     barText.anchor.set(0.5);
     barText.resolution = 1.5;
+    if (data.invertDirection) barText.scale.x *= -1;
     bar.addChild(barText);
 }
 
