@@ -26,6 +26,20 @@ The label style can be set to display numbers or percentages on the bars by defa
 
 ![Label styles](images/labels.png "Label styles")
 
+#### Compact HUD
+
+This toggle can be used to disable Bar Brawl's more compact default style for the input fields on the token HUD.
+
+![Compact HUD](images/compactHud.png "Compact HUD")
+
+#### Hide all hostile bars
+
+When this option is enabled, users can never see bars of hostile tokens that they do not own. This is a world based option to avoid having to restrict the visibility of each individual bar. Note that the setting overrides the visibility set by token resources.
+
+#### Defaults per type
+
+Bar Brawl can store a default configuration that is independent of the global token settings or the actor's prototype token. This can be used to make the token creation a bit easier without using additional modules (e.g. Token Mold). By default, only one preset is stored when you hit the *Save defaults* button of the token configuration. This setting can be used to store the preset per actor type instead.
+
 ### Basic configuration
 
 Each bar has some classic options that determine its behavior:
