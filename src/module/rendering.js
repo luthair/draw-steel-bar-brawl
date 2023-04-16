@@ -1,6 +1,11 @@
 import { getActualBarValue, getBar, getVisibleBars, isBarVisible } from "./api.js";
 
 /**
+ * Optional object containing THREE.js classes when Levels3D is active.
+ */
+var THREE;
+
+/**
  * Object containing current bar rendering promises per token.
  */
 var renderingTokens = {};
@@ -55,6 +60,22 @@ export const extendBarRenderer = function () {
             return originalGetBarAttribute.call(this, null, { alternative: attribute });
         };
     }
+
+    if (game.modules.get("levels-3d-preview")?.active) {
+        // Import required THREE.js classes.
+        import("../../levels-3d-preview/scripts/lib/three.module.js").then(three => {
+            THREE = {
+                SpriteMaterial: three.SpriteMaterial,
+                TextureLoader: three.TextureLoader,
+                Sprite: three.Sprite
+            }
+        });
+
+        // Disable Levels3D's internal bar rendering.
+        Hooks.once("3DCanvasInit", levels3d => levels3d.CONFIG.entityClass.Token3D.prototype.drawBars = async function () {
+            await draw3dBars(this.token);
+        });
+    }
 }
 
 /**
@@ -68,19 +89,19 @@ function drawBrawlBars() {
         return;
     }
 
-    const reservedSpace = {
-        "top-inner": 0,
-        "top-outer": 0,
-        "bottom-inner": 0,
-        "bottom-outer": 0,
-        "left-inner": 0,
-        "left-outer": 0,
-        "right-inner": 0,
-        "right-outer": 0
-    };
-
-    this.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     const asyncRender = async () => {
+        this.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
+        const reservedSpace = {
+            "top-inner": 0,
+            "top-outer": 0,
+            "bottom-inner": 0,
+            "bottom-outer": 0,
+            "left-inner": 0,
+            "left-outer": 0,
+            "right-inner": 0,
+            "right-outer": 0
+        };
+
         try {
             this.bars.removeChildren();
             for (let barData of visibleBars) await createResourceBar(this, barData, reservedSpace);
@@ -148,6 +169,47 @@ async function loadBarTextures(data) {
     const bgTexture = data.bgImage ? await loadTexture(data.bgImage) : null;
     const fgTexture = data.fgImage ? await loadTexture(data.fgImage) : null;
     return [bgTexture, fgTexture];
+}
+
+/**
+ * Draws bars for 3D tokens by converting the current bars to a texture that is rendered as a THREE.js sprite.
+ * @param {Token} token The token to draw the bars for.
+ * @returns {Promise} A promise representing the texture conversion.
+ */
+async function draw3dBars(token) {
+    const token3d = game.Levels3DPreview?.tokens[token.id];
+    if (!token3d || !THREE) return;
+
+    // Prepare sprite with existing container as texture.
+    const renderedBars = canvas.app.renderer.extract.base64(token.bars);
+    const texture = new THREE.SpriteMaterial({
+        map: await new THREE.TextureLoader().loadAsync(renderedBars),
+        transparent: true
+    });
+    const sprite = new THREE.Sprite(texture);
+    sprite.userData.ignoreIntersect = true;
+    sprite.userData.ignoreHover = true;
+
+    // Always render on top of the token.
+    sprite.renderOrder = token3d.mesh.renderOrder + 1;
+    sprite.material.depthTest = false;
+
+    // Calculate 3D position.
+    const originalBounds = token.bars.getLocalBounds();
+    const width = originalBounds.width / token3d.factor;
+    const height = originalBounds.height / token3d.factor;
+    sprite.scale.set(width, height, 1);
+    sprite.position.set(0, token3d.d / 2 + 0.008, 0);
+
+    // Calculate relative center from the sprite's bottom left corner to the middle of the token.
+    const bottomCenter = (token.h / 2 - originalBounds.bottom) / originalBounds.height * -1;
+    const leftCenter = (token.w / 2 - originalBounds.left) / originalBounds.width;
+    sprite.center.set(leftCenter, bottomCenter);
+
+    // Reassembly render tree.
+    token3d.mesh.remove(token3d.bars);
+    token3d.bars = sprite;
+    token3d.mesh.add(sprite);
 }
 
 /**
