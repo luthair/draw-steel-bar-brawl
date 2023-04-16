@@ -1,3 +1,11 @@
+1.8.0
+- Added user option to enlarge token HUD inputs (effectively reverting the size change from core).
+- Added world option to hide all bars of non-owned hostile tokens.
+- Added configuration to flip a bar (thanks @Kindled Embers).
+- Unlocked an entirely new dimension (added support for Levels3D scenes).
+- Fixed limit options always displaying as off.
+- Fixed hover or selected visibility.
+
 1.7.7
 - Fixed file picker buttons not working.
 - Fixed duplicate effects while configuring the token.
