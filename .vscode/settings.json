@@ -1,12 +1,7 @@
 {
     "triggerTaskOnSave.tasks": {
         "watch: reload": [
-            "src/**/*.js",
-            "src/**/*.hbs",
-            "src/**/*.css"
-        ],
-        "watch: less": [
-            "src/styles/*.less"
+            "src/**/*.js"
         ]
     },
     "triggerTaskOnSave.showStatusBarToggle": true,

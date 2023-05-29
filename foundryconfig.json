@@ -1,5 +1,5 @@
 {
-    "dataPath": "${env:AppData}/Foundry Virtual Tabletop/",
+    "dataPath": "${env:AppData}/FoundryVTT/",
     "repository": "",
     "rawUrl": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw",
     "apiUrl": "https://gitlab.com/api/v4/projects/22486994"

@@ -31,16 +31,7 @@
 		{
 			"label": "watch: reload",
 			"type": "shell",
-			"command": "${command:launches.fvtt-debug}"
-		},
-		{
-			"label": "watch: less",
-			"type": "shell",
-			"command": "${command:launches.fvtt-debug}",
-			"dependsOrder": "sequence",
-			"dependsOn": [
-				"gulp: buildLess"
-			]
+            "command": "${command:launches.fvtt-debug}"
 		}
 	]
 }

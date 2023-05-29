@@ -60,9 +60,9 @@
             "port": 9223,
             "webRoot": "${env:ProgramFiles}/Foundry Virtual Tabletop/resources/app/public",
             "pathMapping": {
-                "/systems": "${env:AppData}/../Local/Foundry Virtual Tabletop/Data/systems/*",
+                "/systems": "${env:AppData}/../Local/FoundryVTT/Data/systems/*",
                 "/modules/barbrawl": "${workspaceRoot}/src",
-                "/modules/*": "${env:AppData}/../Local/Foundry Virtual Tabletop/Data/modules"
+                "/modules/*": "${env:AppData}/../Local/FoundryVTT/Data/modules"
             },
             "sourceMaps": false,
             "skipFiles": [
