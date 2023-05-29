@@ -408,11 +408,11 @@ function createBarLabel(bar, token, data, text) {
  * @returns {string} The interpolated color as RBG hex string.
  */
 function interpolateColor(minColor, maxColor, percentage) {
-    let minRgb = PIXI.utils.hex2rgb(PIXI.utils.string2hex(minColor));
-    let maxRgb = PIXI.utils.hex2rgb(PIXI.utils.string2hex(maxColor));
+    minColor = new PIXI.Color(minColor);
+    maxColor = new PIXI.Color(maxColor);
 
-    let minHsv = rgb2hsv(minRgb[0], minRgb[1], minRgb[2]);
-    let maxHsv = rgb2hsv(maxRgb[0], maxRgb[1], maxRgb[2]);
+    let minHsv = rgb2hsv(minColor.red, minColor.green, minColor.blue);
+    let maxHsv = rgb2hsv(maxColor.red, maxColor.green, maxColor.blue);
 
     let deltaHue = maxHsv[0] - minHsv[0];
     let deltaAngle = deltaHue + ((Math.abs(deltaHue) > 180) ? ((deltaHue < 0) ? 360 : -360) : 0);
@@ -421,7 +421,8 @@ function interpolateColor(minColor, maxColor, percentage) {
     let targetSaturation = (1 - percentage) * minHsv[1] + percentage * maxHsv[1];
     let targetValue = (1 - percentage) * minHsv[2] + percentage * maxHsv[2];
 
-    return PIXI.utils.rgb2hex(hsv2rgb(targetHue, targetSaturation, targetValue));
+    let result = new PIXI.Color({ h: targetHue, s: targetSaturation * 100, v: targetValue * 100 });
+    return result.toHex();
 }
 
 /**
@@ -436,19 +437,6 @@ function rgb2hsv(r, g, b) {
     let v = Math.max(r, g, b), c = v - Math.min(r, g, b);
     let h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
     return [60 * (h < 0 ? h + 6 : h), v && c / v, v];
-}
-
-/**
- * Converts a color from HSV to RGB space.
- * Source: https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately/54024653#54024653
- * @param {number} h The hue of the color in degrees (0 to 360).
- * @param {number} s The saturation of the color as float (0 to 1).
- * @param {number} v The value of the color as float (0 to 1).
- * @returns {number[]} The RGB color with each component as float (0 to 1).
- */
-function hsv2rgb(h, s, v) {
-    let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
-    return [f(5), f(3), f(1)];
 }
 
 /**
