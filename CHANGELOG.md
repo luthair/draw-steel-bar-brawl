@@ -1,3 +1,6 @@
+1.8.1
+- Fixed rendering error in FoundryVTT v11.
+
 1.8.0
 - Added user option to enlarge token HUD inputs (effectively reverting the size change from core).
 - Added world option to hide all bars of non-owned hostile tokens.

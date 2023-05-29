@@ -247,6 +247,7 @@ function getBarVisibility(token, bar) {
     } else if (token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE && game.settings.get("barbrawl", "hideHostile")) {
         return BAR_VISIBILITY.NONE;
     }
+    
     return bar.otherVisibility;
 }
 

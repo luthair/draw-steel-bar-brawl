@@ -85,7 +85,7 @@ With the identation values, you can add empty space to the left or right of the 
 
 #### Share height
 
-This option allows having multiple bars on the same line. This is particularly useful in combination with indents, but may also be used to create overlays with images and/or opacity. It is possible to enable this on several consecutive resources to combine several resources into one line.
+This option allows having multiple bars on the same line. This is particularly useful in combination with indents, but may also be used to create overlays with images and/or opacity. It is possible to enable this on consecutive resources to combine several resources into one line.
 
 ![Share height](images/shareHeight.png "Share height")
 
