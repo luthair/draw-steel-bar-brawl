@@ -99,6 +99,10 @@
             "storePerType": {
                 "name": "Defaults per type",
                 "hint": "Stores the default token resources separately for each actor type."
+            },
+            "barThicknessMultiplier": {
+                "name": "Bar Thickness Multiplier",
+                "hint": "Multiplies the bar thickness by the desired amount in all scenes."
             }
         }
     }

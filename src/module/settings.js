@@ -81,6 +81,16 @@ export const registerSettings = function () {
         type: Boolean,
         default: false
     });
+
+    game.settings.register("barbrawl", "barThicknessMultiplier", {
+        name: game.i18n.localize("barbrawl.defaults.barThicknessMultiplier.name"),
+        hint: game.i18n.localize("barbrawl.defaults.barThicknessMultiplier.hint"),
+        scope: "world",
+        config: true,
+        type: Number,
+        requiresReload: true,
+        default: 1
+    });
 }
 
 /**
