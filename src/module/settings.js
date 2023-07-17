@@ -108,10 +108,10 @@ function refreshBars() {
  * @returns {Object} An object containing the default resource configuration.
  */
 export const getDefaultResources = function (type, checkEmpty = true) {
-    let config;
-    if (game.settings.get("barbrawl", "defaultsPerType"))
-        config = game.settings.get("barbrawl", "defaultTypeResources")?.[type];
-    config ??= game.settings.get("barbrawl", "defaultResources") ?? {};
+    let config = game.settings.get("barbrawl", "defaultsPerType")
+        ? game.settings.get("barbrawl", "defaultTypeResources")?.[type]
+        : game.settings.get("barbrawl", "defaultResources");
+    config ??= {};
     if (checkEmpty && Object.keys(config).length === 0) return null;
     return config;
 }
