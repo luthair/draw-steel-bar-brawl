@@ -55,7 +55,10 @@ Hooks.on("preCreateToken", function (doc, data) {
     doc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
 
     const actor = game.actors.get(data.actorId);
-    if (!actor || hasProperty(actor, "prototypeToken.flags.barbrawl.resourceBars")) return; // Don't override prototype.
+    if (!actor) return;
+
+    const prototypeData = foundry.utils.getProperty(actor, "prototypeToken.flags.barbrawl.resourceBars");
+    if (prototypeData && Object.keys(prototypeData).length) return; // Don't override prototype.
 
     const barConfig = getDefaultResources(actor.type);
     if (!barConfig) return;
@@ -63,7 +66,10 @@ Hooks.on("preCreateToken", function (doc, data) {
 });
 
 Hooks.on("preCreateActor", function (doc) {
-    if (!doc.prototypeToken || foundry.utils.hasProperty(doc.prototypeToken, "flags.barbrawl.resourceBars")) return;
+    if (!doc.prototypeToken) return;
+
+    const prototypeData = foundry.utils.getProperty(doc.prototypeToken, "flags.barbrawl.resourceBars");
+    if (prototypeData && Object.keys(prototypeData).length) return;
 
     const barConfig = getDefaultResources(doc.type);
     if (!barConfig) return;
