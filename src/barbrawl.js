@@ -13,11 +13,12 @@ import * as api from "./module/api.js";
 /** Hook to register settings. */
 Hooks.once('init', async function () {
     console.log('Bar Brawl | Initializing barbrawl');
-    window.BarBrawlApi = {
+    game.modules.get("barbrawl").api = window.BarBrawlApi = {
         getBars: api.getBars,
         getBar: api.getBar,
         isBarVisible: api.isBarVisible,
-        getActualBarValue: api.getActualBarValue
+        getActualBarValue: api.getActualBarValue,
+        getDefaultBars: getDefaultResources
     }
 
     registerSettings();
