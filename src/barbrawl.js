@@ -44,6 +44,13 @@ Hooks.on("preUpdateToken", function (doc, changes) {
     prepareUpdate(doc, changes);
 });
 
+/** Hook to make sure that bars are rendered when any changes are made. */
+Hooks.on("updateToken", function (doc, changes) {
+    if (foundry.utils.hasProperty(changes, "flags.barbrawl.resourceBars")) {
+        doc.object.renderFlags.set({ refreshBars: true });
+    }
+});
+
 /** Hook to apply changes to the prototype token. */
 Hooks.on("preUpdateActor", function (actor, newData) {
     if (!hasProperty(newData, "prototypeToken.flags.barbrawl.resourceBars")) return;
