@@ -1,3 +1,8 @@
+1.8.2
+- Added bar height multiplier to increase readability (thanks *GSBicalho*).
+- Fixed defaults not applying when the world's default token was modified.
+- Fixed bar changes not applying immediately.
+
 1.8.1
 - Fixed rendering error in FoundryVTT v11.
 
