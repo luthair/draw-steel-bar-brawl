@@ -82,14 +82,14 @@ export const registerSettings = function () {
         default: false
     });
 
-    game.settings.register("barbrawl", "barThicknessMultiplier", {
-        name: game.i18n.localize("barbrawl.defaults.barThicknessMultiplier.name"),
-        hint: game.i18n.localize("barbrawl.defaults.barThicknessMultiplier.hint"),
-        scope: "world",
+    game.settings.register("barbrawl", "heightMultiplier", {
+        name: game.i18n.localize("barbrawl.heightMultiplier.name"),
+        hint: game.i18n.localize("barbrawl.heightMultiplier.hint"),
+        scope: "client",
         config: true,
         type: Number,
-        requiresReload: true,
-        default: 1
+        default: 1,
+        onChange: refreshBars
     });
 }
 

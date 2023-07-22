@@ -25,6 +25,10 @@
             "name": "Alle feindlichen Bars verstecken",
             "hint": "Verhindert das Anzeigen von Bars für feindliche Tokens, welche der Spieler nicht besitzt. Dies kann ressourcenspezifische Einstellungen überschreiben."
         },
+        "heightMultiplier": {
+            "name": "Höhenmultiplikator",
+            "hint": "Multipliziert die Höhe der Bars mit dem eingestellten Wert, um die Lesbarkeit zu verbessern. Dies wirkt sich auch auf die Beschriftung, jedoch nicht auf Vorder- oder Hintergrundbilder aus."
+        },
         "config": {
             "attribute": "Attribut",
             "ownerVisibility": "Sichtbarkeit (Besitzer)",
