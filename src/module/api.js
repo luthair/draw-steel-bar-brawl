@@ -278,10 +278,8 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
         case CONST.TOKEN_DISPLAY_MODES.NONE: return false;
         case CONST.TOKEN_DISPLAY_MODES.ALWAYS: return true;
         case CONST.TOKEN_DISPLAY_MODES.CONTROL: return token.controlled;
-        case CONST.TOKEN_DISPLAY_MODES.HOVER: return (token.hover || canvas.tokens._highlight);
-        case BAR_VISIBILITY.HOVER_CONTROL: return token.controlled || token.hover;
-        case CONST.TOKEN_DISPLAY_MODES.OWNER: return token.isOwner;
-        case CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER: return token.isOwner && token.hover;
+        case CONST.TOKEN_DISPLAY_MODES.HOVER: return token.hover || token.layer.highlightObjects;
+        case BAR_VISIBILITY.HOVER_CONTROL: return token.controlled || token.hover || token.layer.highlightObjects;
         default:
             console.warn("Bar Brawl | Unknown visibility mode " + visibility);
             return true;
