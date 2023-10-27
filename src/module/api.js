@@ -60,14 +60,7 @@ export const getBar = function (tokenDoc, barId) {
  */
 export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
     if (!bar) return { value: 0, max: 0, approximated: false };
-
-    if (resolveValue && bar.attribute !== "custom") {
-        // Resolve the attribute's value within the token's actor.
-        const resource = tokenDoc.getBarAttribute(null, { alternative: bar.attribute });
-        if (!resource) return { value: 0, max: 0, approximated: false };
-        bar.value = resource.value;
-        bar.max = resource.max ?? bar.max;
-    }
+    if (resolveValue) refreshBarValues(tokenDoc, bar);
 
     // Apply approximation.
     if (bar.subdivisions && (bar.subdivisionsOwner || !tokenDoc.isOwner)) {
@@ -151,26 +144,40 @@ export const getVisibleBars = function (tokenDoc, barsOnly = true) {
         // Skip resources that are never visible.
         if (getBarVisibility(tokenDoc, bar) === BAR_VISIBILITY.NONE) continue;
 
-        // Add custom bars (can only be set on token)
-        if (bar.attribute === "custom") {
-            bar.editable = true;
-            visibleBars.push(bar);
-            continue;
-        }
-
-        // Update resource values
-        let resource = tokenDoc.getBarAttribute(null, { alternative: bar.attribute });
-        if (!resource || (barsOnly && resource.type !== "bar" && !bar.max)) continue;
-
-        // Transfer current values.
-        bar.value = resource.value;
-        bar.max = resource.max ?? bar.max;
-        bar.editable = resource.editable;
-
+        if (!refreshBarValues(tokenDoc, bar) && barsOnly) continue;
         visibleBars.push(bar);
     }
 
     return visibleBars;
+}
+
+/**
+ * Copies resource attribute values from the token to the given bar.
+ * @param {TokenDocument} tokenDoc The token document to read the attribute with.
+ * @param {object} bar The data of the bar.
+ * @returns {boolean} True if the resource exists and is a bar, false otherwise.
+ */
+function refreshBarValues(tokenDoc, bar) {
+    if (bar.attribute === "custom") {
+        bar.value ??= 0;
+        bar.max ??= 0;
+        bar.editable = true;
+        return true;
+    }
+
+    const resource = tokenDoc.getBarAttribute(null, { alternative: bar.attribute });
+    if (!resource) {
+        bar.value = 0;
+        bar.max = 0;
+        bar.editable = false;
+        return false;
+    }
+
+    const isBar = resource.type === "bar" || bar.max;
+    bar.value = resource.value;
+    if (isBar) bar.max = resource.max ?? bar.max;
+    bar.editable = resource.editable;
+    return isBar;
 }
 
 /**
@@ -266,6 +273,7 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
         && [BAR_VISIBILITY.CONTROL, BAR_VISIBILITY.HOVER, BAR_VISIBILITY.HOVER_CONTROL].includes(visibility)) {
         return true;
     } else {
+        if ((bar.hideFull || bar.hideEmpty) && bar.value === undefined) refreshBarValues(token.document, bar);
         if (bar.hideFull && bar.value === bar.max) return false;
         if (bar.hideEmpty && bar.value === 0) return false;
     }

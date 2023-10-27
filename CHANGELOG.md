@@ -1,3 +1,7 @@
+1.8.3
+- Fixed a deprecation warning for the hover only visibility.
+- Fixed hidden full and empty bars randomly reappearing.
+
 1.8.2
 - Added bar height multiplier to increase readability (thanks *GSBicalho*).
 - Fixed defaults not applying when the world's default token was modified.
