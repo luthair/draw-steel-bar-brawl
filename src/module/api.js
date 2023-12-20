@@ -64,7 +64,9 @@ export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
 
     // Apply approximation.
     if (bar.subdivisions && (bar.subdivisionsOwner || !tokenDoc.isOwner)) {
-        const approxValue = bar.value / (bar.max || 1) * bar.subdivisions;
+        const maxValue = bar.max || 1;
+        const clampedValue = Math.clamped(bar.value, 0, maxValue);
+        const approxValue = clampedValue / maxValue * bar.subdivisions;
         return {
             value: bar.invert ? Math.floor(approxValue) : Math.ceil(approxValue),
             max: bar.subdivisions,
