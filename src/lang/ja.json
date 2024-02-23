@@ -97,13 +97,13 @@
         },
         "add": "リソースの追加",
         "defaults": {
-            "save": "デフォルトとしてセーブ",
-            "saveConfirmation": "デフォルトのトークンリソースを保存します。",
-            "load": "デフォルト設定をロード",
-            "storePerType": {
-                "name": "種別ごとのデフォルト",
-                "hint": "コマのリソースをキャラクター種別ごとに分けます。"
-            }
+            "save": "Save to...",
+            "saveConfirmation": "Saved token resources.",
+            "load": "Load from...",
+            "defaultToken": "Default token",
+            "typeDefaults": "<strong>{type}</strong> default",
+            "prototypeToken": "<strong>{name}</strong>'s prototype token",
+            "activeTokens": "<strong>{name}</strong>'s active tokens"
         }
     }
 }

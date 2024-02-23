@@ -1,25 +1,6 @@
 import { convertBarVisibility, getDefaultBar } from "./api.js";
 
 /**
- * Generates the data for an update that overrides the current resource
- *  configuration for a token or an actor.
- * @param {Object} resources The resources to apply.
- * @param {boolean=} prototype Indicates whether the update is for an actor. Defaults to false.
- * @returns {Object} An object containing the data of the update.
- */
-export const createOverrideData = function (resources, prototype = false) {
-    return prototype ? {
-        "prototypeToken.flags.barbrawl.resourceBars": resources,
-        "prototypeToken.bar1.attribute": resources.bar1?.attribute ?? null,
-        "prototypeToken.bar2.attribute": resources.bar2?.attribute ?? null
-    } : {
-        "flags.barbrawl.resourceBars": resources,
-        "bar1.attribute": resources.bar1?.attribute ?? null,
-        "bar2.attribute": resources.bar2?.attribute ?? null
-    };
-}
-
-/**
  * Prepares the update of a token (or a prototype token) by removing invalid
  *  resources and synchronizing with FoundryVTT's resource format.
  * @param {TokenDocument} tokenDoc The data to merge the new data into.
@@ -63,6 +44,7 @@ export const prepareUpdate = function (tokenDoc, newData) {
             }
         }
     }
+
     synchronizeBars(tokenDoc, newData);
 }
 

@@ -100,8 +100,16 @@ div.indent-details {
     flex: 1 1 100%;
 }
 
-form .form-group .form-fields button.barbrawl-reset {
-    flex: 1;
+.bar-controls #context-menu {
+    text-align: left;
+    bottom: calc(100% + 2px);
+    top: unset;
+}
+
+.bar-controls #context-menu .context-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .token-sheet nav.sheet-tabs {

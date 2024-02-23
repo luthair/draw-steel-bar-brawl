@@ -97,13 +97,13 @@
         },
         "add": "Ressource hinzufügen",
         "defaults": {
-            "save": "Als Standard speichern",
-            "saveConfirmation": "Standard-Ressourcen gespeichert.",
-            "load": "Standards laden",
-            "storePerType": {
-                "name": "Standards pro Typ",
-                "hint": "Speichert die Standard-Ressourcen separat für jeden Charaktertyp."
-            }
+            "save": "Speichern in...",
+            "saveConfirmation": "Token-Ressourcen gespeichert.",
+            "load": "Laden aus...",
+            "defaultToken": "Santardtoken",
+            "typeDefaults": "<strong>{type}</strong> Standard",
+            "prototypeToken": "<strong>{name}</strong>s Prototyp-Token",
+            "activeTokens": "<strong>{name}</strong>'s aktive Tokens"
         }
     }
 }

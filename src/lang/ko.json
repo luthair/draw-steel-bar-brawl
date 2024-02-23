@@ -97,13 +97,13 @@
         },
         "add": "자원 추가",
         "defaults": {
-            "save": "기본으로 저장하기",
-            "saveConfirmation": "토큰 기본 자원이 저장되었습니다.",
-            "load": "기본 설정 불러오기",
-            "storePerType": {
-                "name": "유형별 기본 설정",
-                "hint": "각 액터 유형에 대해 별도의 기본 토큰 자원을 저장합니다."
-            }
+            "save": "Save to...",
+            "saveConfirmation": "Saved token resources.",
+            "load": "Load from...",
+            "defaultToken": "Default token",
+            "typeDefaults": "<strong>{type}</strong> default",
+            "prototypeToken": "<strong>{name}</strong>'s prototype token",
+            "activeTokens": "<strong>{name}</strong>'s active tokens"
         }
     }
 }

@@ -97,13 +97,13 @@
         },
         "add": "Add resource",
         "defaults": {
-            "save": "Save as default",
-            "saveConfirmation": "Saved default token resources.",
-            "load": "Load defaults",
-            "storePerType": {
-                "name": "Defaults per type",
-                "hint": "Stores the default token resources separately for each actor type."
-            }
+            "save": "Save to...",
+            "saveConfirmation": "Saved token resources.",
+            "load": "Load from...",
+            "defaultToken": "Default token",
+            "typeDefaults": "<strong>{type}</strong> default",
+            "prototypeToken": "<strong>{name}</strong>'s prototype token",
+            "activeTokens": "<strong>{name}</strong>'s active tokens"
         }
     }
 }

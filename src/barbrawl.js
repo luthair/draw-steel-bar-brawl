@@ -7,7 +7,7 @@ import { extendBarRenderer } from "./module/rendering.js";
 import { extendDefaultTokenConfig, extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
-import { createOverrideData, prepareUpdate } from "./module/synchronization.js";
+import { prepareUpdate } from "./module/synchronization.js";
 import * as api from "./module/api.js";
 
 /** Hook to register settings. */
@@ -53,35 +53,15 @@ Hooks.on("updateToken", function (doc, changes) {
 
 /** Hook to apply changes to the prototype token. */
 Hooks.on("preUpdateActor", function (actor, newData) {
-    if (!hasProperty(newData, "prototypeToken.flags.barbrawl.resourceBars")) return;
-    prepareUpdate(actor.prototypeToken, newData.prototypeToken);
-});
-
-/** Hooks to initialize tokens and actors with default bars. */
-Hooks.on("preCreateToken", function (doc, data) {
-    // Always make the bar container visible.
-    doc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
-
-    const actor = game.actors.get(data.actorId);
-    if (!actor) return;
-
-    const prototypeData = foundry.utils.getProperty(actor, "prototypeToken.flags.barbrawl.resourceBars");
-    if (prototypeData && Object.keys(prototypeData).length) return; // Don't override prototype.
-
-    const barConfig = getDefaultResources(actor.type);
-    if (!barConfig) return;
-    doc.updateSource(createOverrideData(barConfig));
+    if (newData.prototypeToken) prepareUpdate(actor.prototypeToken, newData.prototypeToken);
 });
 
 Hooks.on("preCreateActor", function (doc) {
+    if (doc._stats?.createdTime) return; // Actor is a copy, don't touch it.
     if (!doc.prototypeToken) return;
 
-    const prototypeData = foundry.utils.getProperty(doc.prototypeToken, "flags.barbrawl.resourceBars");
-    if (prototypeData && Object.keys(prototypeData).length) return;
-
     const barConfig = getDefaultResources(doc.type);
-    if (!barConfig) return;
-    doc.updateSource(createOverrideData(barConfig, true));
+    if (barConfig) doc.updateSource({ "prototypeToken.flags.barbrawl.resourceBars": barConfig }, { recursive: false });
 });
 
 /** Hook to update bar visibility. */
