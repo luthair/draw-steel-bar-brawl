@@ -126,7 +126,8 @@ export const getDefaultResources = function (type, checkEmpty = true) {
 export const setDefaultResources = async function (type, resources) {
     if (game.settings.get("barbrawl", "defaultsPerType")) {
         if (!type) return;
-        const barConfig = game.settings.get("barbrawl", "defaultResources") ?? {};
+        const barConfig = game.settings.get("barbrawl", "defaultTypeResources")
+            ?? game.settings.get("barbrawl", "defaultResources") ?? {};
         barConfig[type] = resources;
         await game.settings.set("barbrawl", "defaultTypeResources", barConfig);
     } else {
