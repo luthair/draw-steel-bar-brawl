@@ -16,7 +16,7 @@
         <div class="form-group">
             <label>{{localize "barbrawl.config.attribute"}}:</label>
             <div class="form-fields">
-                <select class="brawlbar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
+                <select class="brawlbar-attribute bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
                     {{#select this.attribute}}
                     <option value="">{{localize "barbrawl.attribute.none"}}</option>
                     <option value="custom">{{localize "barbrawl.attribute.custom"}}</option>
@@ -37,7 +37,7 @@
             <label>{{localize "barbrawl.config.value"}}:</label>
             <div class="form-fields">
                 <input type="number" class="{{this.id}}-value" name="flags.barbrawl.resourceBars.{{this.id}}.value"
-                    value="{{this.value}}" {{#if (ne this.attribute "custom" )}}disabled{{/if}} />
+                    value="{{this.value}}" {{#if (ne this.attribute "custom")}}disabled{{/if}} />
                 <span class="sep">/</span>
                 <input type="number" class="{{this.id}}-max" name="flags.barbrawl.resourceBars.{{this.id}}.max"
                     value="{{this.max}}" />

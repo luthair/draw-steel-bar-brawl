@@ -18,6 +18,11 @@ export const extendDefaultTokenConfig = function () {
                 prepareUpdate(this.token, formData);
                 return formData;
             }, "WRAPPER");
+
+        libWrapper.register("barbrawl", "CONFIG.Token.prototypeSheetClass.prototype._onBarChange",
+            onChangeBarAttribute, "OVERRIDE");
+        libWrapper.register("barbrawl", "DefaultTokenConfig.prototype._onBarChange",
+            onChangeBarAttribute, "OVERRIDE");
     } else {
         // Manual override
         const originalGetSubmitData = DefaultTokenConfig.prototype._getSubmitData;
@@ -29,6 +34,9 @@ export const extendDefaultTokenConfig = function () {
             prepareUpdate(this.token, formData);
             return formData;
         };
+
+        CONFIG.Token.prototypeSheetClass.prototype._onBarChange = onChangeBarAttribute;
+        DefaultTokenConfig.prototype._onBarChange = onChangeBarAttribute;
     }
 }
 
@@ -59,27 +67,28 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.append(barConfiguration);
     if (resourceTab.hasClass("active")) adjustConfigHeight(html, data.brawlBars.length);
 
-    resourceTab.on("change", ".brawlbar-attribute", onChangeBarAttribute.bind(tokenConfig.token));
     resourceTab.on("click", ".bar-modifiers .fa-trash", onDeleteBar);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
     resourceTab.on("click", "button.file-picker", tokenConfig._activateFilePicker.bind(tokenConfig));
+    resourceTab.on("change", ".bar-attribute", tokenConfig._onBarChange.bind(tokenConfig));
 
     resourceTab.find(".brawlbar-add").click(event => onAddResource(event, tokenConfig, data));
     resourceTab.find(".brawlbar-save").click(() => onSaveDefaults(tokenConfig));
     resourceTab.find(".brawlbar-load").click(() => onLoadDefaults(tokenConfig, data));
 
-    // Trigger change event once to update resource values.
+    // Refresh diplayed value for all attributes.
+    if (game.system.id === "dnde5") return;
     resourceTab.find("select.brawlbar-attribute").each((_, el) => refreshValueInput(tokenConfig.token, el));
 }
 
 /**
  * Handles an attribute selection change event by updating the resource value.
- * @constant {Token} this The token that this function is bound to.
+ * @constant {TokenConfig} this The token configuration that fired the event.
  * @param {jQuery.Event} event The event of the selection change.
  */
-export const onChangeBarAttribute = function (event) {
-    refreshValueInput(this, event.target, event.originalEvent);
+function onChangeBarAttribute(event) {
+    refreshValueInput(this.token, event.target, event.originalEvent);
 }
 
 /**
@@ -92,7 +101,7 @@ function refreshValueInput(token, target, event) {
     const barId = target.name.split(".")[3];
     if (!barId) return;
     let form = target.form;
-    if (!form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
+    if (form && !form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
     if (!form) return;
 
     // Set a hidden attribute input to make sure FoundryVTT doesn't override it with null.
@@ -225,6 +234,7 @@ async function onAddResource(event, tokenConfig, data) {
         brawlBars: [newBar],
         barAttributes: data.barAttributes
     }));
+    if (game.system.id === "dnd5e" && tokenConfig._prepareResourceLabels) tokenConfig._prepareResourceLabels(barConfiguration[0]);
 
     if (barEls.length) {
         const prevBarConf = barEls[barEls.length - 1];
