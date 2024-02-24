@@ -1,3 +1,8 @@
+1.8.4
+- Reworked resource saving and loading from the token configuration.
+- Removed resource overrides for new tokens. Default resources will now only be applied to new actors.
+- Improved compatibility for newer DnD5e versions.
+
 1.8.3
 - Fixed a deprecation warning for the hover only visibility.
 - Fixed hidden full and empty bars randomly reappearing.
