@@ -92,12 +92,21 @@ div.indent-details {
     font-size: smaller;
 }
 
+.bar-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 100%;
+    min-height: 130px;
+}
 .bar-controls {
-    margin: 0 5%;
+    margin-top: auto;
+        display: flex;
 }
 
-.bar-controls button.brawlbar-add {
-    flex: 1 1 100%;
+button.brawlbar-add {
+    width: 80%;
+    align-self: center;
 }
 
 .bar-controls #context-menu {

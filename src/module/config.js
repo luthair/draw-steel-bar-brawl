@@ -226,8 +226,7 @@ function swapButtonState(selector, firstElement, secondElement) {
  * @param {Object} data The data of the token configuration.
  */
 async function onAddResource(event, tokenConfig, data) {
-    const barControls = $(event.currentTarget.parentElement);
-    const allBarEls = barControls.siblings("details");
+    const allBarEls = $(event.currentTarget).siblings("details");
     const barEls = allBarEls.filter(":visible");
 
     // Create raw bar data.
@@ -237,23 +236,22 @@ async function onAddResource(event, tokenConfig, data) {
     // Remove insibible elements with the same ID.
     if (allBarEls.length !== barEls.length) allBarEls.find("div#" + newBar.id).parent().remove();
 
-    const barConfiguration = $(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+    event.currentTarget.insertAdjacentHTML("beforebegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: [newBar],
         barAttributes: data.barAttributes
     }));
-    if (game.system.id === "dnd5e" && tokenConfig._prepareResourceLabels) tokenConfig._prepareResourceLabels(barConfiguration[0]);
+    const barConfiguration = event.currentTarget.previousElementSibling;
 
+    if (game.system.id === "dnd5e" && tokenConfig._prepareResourceLabels) tokenConfig._prepareResourceLabels(barConfiguration);
     if (barEls.length) {
         const prevBarConf = barEls[barEls.length - 1];
         prevBarConf.removeAttribute("open");
         prevBarConf.querySelector("a.fa-chevron-down").classList.remove("disabled");
 
-        const newBarConf = barConfiguration[0];
-        newBarConf.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = barEls.length;
-        newBarConf.querySelector("a.fa-chevron-up").classList.remove("disabled");
+        barConfiguration.querySelector(`input[name="flags.barbrawl.resourceBars.${newBar.id}.order"]`).value = barEls.length;
+        barConfiguration.querySelector("a.fa-chevron-up").classList.remove("disabled");
     }
 
-    barControls.before(barConfiguration);
     tokenConfig.setPosition();
 }
 
@@ -309,9 +307,8 @@ function createSaveEntries(tokenConfig) {
         });
     }
 
-    let tokens = actor.getActiveTokens(false, true);
+    let tokens = actor.getActiveTokens(false, true).filter(t => t.isOwner && t !== tokenConfig.token);
     if (tokens.length > 1) {
-        tokens = tokens.filter(t => t !== tokenConfig.token);
         entries.push({
             name: game.i18n.format("barbrawl.defaults.activeTokens", { name: actor.name }),
             icon: '<i class="fas fa-user-circle"></i>',
@@ -366,10 +363,10 @@ function replaceTokenResources(tokens, resources) {
  */
 async function setCurrentResources(app, attributes, resources) {
     const barData = Object.values(resources);
-    const resourceTab = app.element.find("div[data-tab='resources']");
+    const container = app.element[0].querySelector("div[data-tab='resources'] .bar-container");
 
     // Remove current bars.
-    resourceTab.find(".indent-details").each((_, el) => {
+    container.querySelectorAll(".indent-details").forEach(el => {
         if (!el.id) return;
         if (!resources[el.id]) {
             // Bar no longer exists, flag it for removal in the next update.
@@ -384,13 +381,13 @@ async function setCurrentResources(app, attributes, resources) {
     if (barData.length === 0) return;
 
     // Render and insert bars.
-    resourceTab.prepend(await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+    container.insertAdjacentHTML("afterbegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         brawlBars: barData,
         barAttributes: attributes
     }));
-    if (resourceTab.hasClass("active")) app.setPosition();
-    resourceTab.find("select.brawlbar-attribute").each((_, el) => refreshValueInput(app.token, el));
-    if (game.system.id === "dnd5e") app._prepareResourceLabels(resourceTab[0]);
+    if (container.parentElement.classList.contains("active")) app.setPosition();
+    container.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(app.token, el));
+    if (game.system.id === "dnd5e") app._prepareResourceLabels(container);
 }
 
 /**
