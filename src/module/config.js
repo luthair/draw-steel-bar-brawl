@@ -292,27 +292,32 @@ function createSaveEntries(tokenConfig) {
             });
         }
 
+        const typeLabel = game.i18n.format(
+            "barbrawl.defaults.typeDefaults",
+            { type: game.i18n.localize(CONFIG.Actor.typeLabels[actor.type]) });
         entries.push({
-            name: game.i18n.format("barbrawl.defaults.typeDefaults", { type: game.i18n.localize(CONFIG.Actor.typeLabels[actor.type]) }),
+            name: typeLabel,
             icon: '<i class="fas fa-users"></i>',
-            callback: () => setDefaultResources(actor.type, getCurrentResources(tokenConfig)),
+            callback: () => setDefaultResources(actor.type, getCurrentResources(tokenConfig), typeLabel),
         });
     }
 
     if (actor.isOwner && !(tokenConfig.token instanceof foundry.data.PrototypeToken)) {
+        const actorLabel = game.i18n.format("barbrawl.defaults.prototypeToken", { name: actor.name });
         entries.push({
-            name: game.i18n.format("barbrawl.defaults.prototypeToken", { name: actor.name }),
+            name: actorLabel,
             icon: '<i class="fas fa-user"></i>',
-            callback: () => replaceActorResources(actor, getCurrentResources(tokenConfig)),
+            callback: () => replaceActorResources(actor, getCurrentResources(tokenConfig), actorLabel),
         });
     }
 
     let tokens = actor.getActiveTokens(false, true).filter(t => t.isOwner && t !== tokenConfig.token);
     if (tokens.length > 1) {
+        const tokenLabel = game.i18n.format("barbrawl.defaults.activeTokens", { name: actor.name });
         entries.push({
-            name: game.i18n.format("barbrawl.defaults.activeTokens", { name: actor.name }),
+            name: tokenLabel,
             icon: '<i class="fas fa-user-circle"></i>',
-            callback: () => replaceTokenResources(tokens, getCurrentResources(tokenConfig)),
+            callback: () => replaceTokenResources(tokens, getCurrentResources(tokenConfig), tokenLabel),
         });
     }
 
@@ -324,34 +329,43 @@ function createSaveEntries(tokenConfig) {
  * @param {object} resources The resource configuration to store.
  * @returns {Promise} A promise representing the default token update.
  */
-function replaceDefaultTokenResources(resources) {
+async function replaceDefaultTokenResources(resources) {
     const defaultTokenData = game.settings.get("core", DefaultTokenConfig.SETTING) ?? {};
     foundry.utils.setProperty(defaultTokenData, "flags.barbrawl.resourceBars", resources);
-    return game.settings.set("core", DefaultTokenConfig.SETTING, defaultTokenData);
+    await game.settings.set("core", DefaultTokenConfig.SETTING, defaultTokenData);
+
+    const target = game.i18n.localize("barbrawl.defaults.defaultToken");
+    ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target }));
 }
 
 /**
  * Replaces the given actor's prototype token resources with the given resource configuration.
  * @param {Actor} actor The actor to store the resources in.
  * @param {object} resources The resource configuration to store.
+ * @param {string} label The human readable name of the type setting.
  * @returns {Promise} A promise representing the actor update.
  */
-function replaceActorResources(actor, resources) {
-    return actor.update(
+async function replaceActorResources(actor, resources, label) {
+    await actor.update(
         { "prototypeToken.flags.barbrawl.resourceBars": resources },
         { recursive: false, diff: false }
     );
+
+    ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target: label }));
 }
 
 /**
  * Replaces the resource configuration of the given tokens within the current scene.
  * @param {TokenDocument[]} tokens The tokens to store the resources in.
  * @param {object} resources The resource configuration to store.
+ * @param {string} label The human readable name of the type setting.
  * @returns {Promise} A promise representing the scene update.
  */
-function replaceTokenResources(tokens, resources) {
+async function replaceTokenResources(tokens, resources, label) {
     const update = tokens.map(t => ({ _id: t.id, "flags.barbrawl.resourceBars": resources }));
-    return canvas.scene.updateEmbeddedDocuments("Token", update, { recursive: false, diff: false });
+    await canvas.scene.updateEmbeddedDocuments("Token", update, { recursive: false, diff: false });
+
+    ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target: label }));
 }
 
 /**

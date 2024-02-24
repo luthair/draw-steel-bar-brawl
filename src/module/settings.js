@@ -98,13 +98,14 @@ export const getDefaultResources = function (type, checkEmpty = true) {
  * Stores the given resource configuration as the default for the given type.
  * @param {string} type The actor type to set the configuration for.
  * @param {object} resources The resource configuration to store as default.
+ * @param {string} label The human readable name of the type setting.
  * @returns {Promise} A promise representing the setting update.
  */
-export const setDefaultResources = async function (type, resources) {
+export const setDefaultResources = async function (type, resources, label) {
     if (!type) return;
     const barConfig = game.settings.get("barbrawl", "defaultTypeResources") ?? {};
     barConfig[type] = resources;
     await game.settings.set("barbrawl", "defaultTypeResources", barConfig);
-    
-    ui.notifications.info("Bar Brawl | " + game.i18n.localize("barbrawl.defaults.saveConfirmation"));
+
+    ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target: label }));
 }

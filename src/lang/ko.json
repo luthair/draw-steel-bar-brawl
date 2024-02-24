@@ -98,7 +98,7 @@
         "add": "자원 추가",
         "defaults": {
             "save": "Save to...",
-            "saveConfirmation": "Saved token resources.",
+            "saveConfirmation": "Saved resources in {target}.",
             "load": "Load from...",
             "defaultToken": "Default token",
             "typeDefaults": "<strong>{type}</strong> default",

@@ -98,12 +98,12 @@
         "add": "Ressource hinzufügen",
         "defaults": {
             "save": "Speichern in...",
-            "saveConfirmation": "Token-Ressourcen gespeichert.",
+            "saveConfirmation": "Ressourcen in {target} gespeichert.",
             "load": "Laden aus...",
             "defaultToken": "Santardtoken",
             "typeDefaults": "<strong>{type}</strong> Standard",
             "prototypeToken": "<strong>{name}</strong>s Prototyp-Token",
-            "activeTokens": "<strong>{name}</strong>'s aktive Tokens"
+            "activeTokens": "<strong>{name}</strong>s aktive Tokens"
         }
     }
 }
