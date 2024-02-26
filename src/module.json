@@ -11,7 +11,8 @@
         {"lang": "de", "name": "Deutsch", "path": "lang/de.json", "flags": {}},
         {"lang": "en", "name": "English", "path": "lang/en.json", "flags": {}},
         {"lang": "ja", "name": "日本語", "path": "lang/ja.json", "flags": {}},
-        {"lang": "ko", "name": "한국어", "path": "lang/ko.json", "flags": {}}
+        {"lang": "ko", "name": "한국어", "path": "lang/ko.json", "flags": {}},
+        {"lang": "pt-BR", "name": "Português (Brasil)", "path": "lang/pt-BR.json", "flags": {}}
     ],
     "url": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl",
     "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/master/src/module.json",
