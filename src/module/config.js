@@ -279,7 +279,7 @@ function getCurrentResources(app) {
  * @returns {object[]} An array of menu entries for saving resources.
  */
 function createSaveEntries(tokenConfig) {
-    const actor = tokenConfig.token.baseActor;
+    const actor = tokenConfig.token.baseActor ?? tokenConfig.token.actor;
     if (!actor) return [];
 
     const entries = [];
