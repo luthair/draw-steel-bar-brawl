@@ -60,6 +60,10 @@ Hooks.on("preCreateActor", function (doc) {
     if (doc._stats?.createdTime) return; // Actor is a copy, don't touch it.
     if (!doc.prototypeToken) return;
 
+    if (doc.prototypeToken._source.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+        doc.updateSource({ "prototypeToken.displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+    }
+
     const barConfig = getDefaultResources(doc.type);
     if (barConfig) doc.updateSource({ "prototypeToken.flags.barbrawl.resourceBars": barConfig }, { recursive: false });
 });
