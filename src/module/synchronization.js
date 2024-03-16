@@ -7,11 +7,6 @@ import { convertBarVisibility, getDefaultBar } from "./api.js";
  * @param {Object} newData The data to be merged into the token data.
  */
 export const prepareUpdate = function (tokenDoc, newData) {
-    // Always make the bar container visible.
-    if (tokenDoc._source.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
-        newData["displayBars"] = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
-    }
-
     const changedBars = foundry.utils.getProperty(newData, "flags.barbrawl.resourceBars");
     if (changedBars) {
         for (let barId of Object.keys(changedBars)) {
@@ -45,17 +40,44 @@ export const prepareUpdate = function (tokenDoc, newData) {
         }
     }
 
-    synchronizeBars(tokenDoc, newData);
+    synchronizeUpdate(tokenDoc._source, newData);
+}
+
+/**
+ * Prepares creation data for a (prototype) token by synchronizing with FoundryVTT's resource format.
+ * @param {TokenDocument} tokenDoc The token to prepare.
+ */
+export function prepareCreation(tokenDoc) {
+    const data = tokenDoc._source;
+    const brawlBars = foundry.utils.getProperty(data, "flags.barbrawl.resourceBars");
+    if (brawlBars) {
+        ["bar1", "bar2"].forEach(barId => {
+            const attribute = brawlBars[barId]?.attribute;
+            tokenDoc.updateSource({
+                [barId + ".attribute"]: (!attribute || attribute === "custom") ? null : attribute
+            });
+        });
+    } else {
+        const brawlBars = {};
+        if (data.bar1?.attribute) brawlBars.bar1 = getDefaultBar("bar1", data.bar1.attribute, data.displayBars);
+        if (data.bar2?.attribute) brawlBars.bar2 = getDefaultBar("bar1", data.bar2.attribute, data.displayBars);
+        tokenDoc.updateSource({ "flags.barbrawl.resourceBars": brawlBars }, { recursive: false });
+    }
+
+    // Always make the bar container visible.
+    if (data.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+        tokenDoc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+    }
 }
 
 /**
  * Synchronizes resource bars to and from FoundryVTT's format with Bar Brawl.
- * @param {Object} tokenData The data to merge the new data into.
- * @param {Object} newData The data to be merged into the token data.
+ * @param {object} tokenData The data to merge the new data into.
+ * @param {object} newData The data to be merged into the token data.
  */
-function synchronizeBars(tokenData, newData) {
-    let hasLegacyBars = newData.hasOwnProperty("bar1") || newData.hasOwnProperty("bar2");
-    let hasBrawlBars = hasProperty(newData, "flags.barbrawl.resourceBars");
+function synchronizeUpdate(tokenData, newData) {
+    const hasLegacyBars = newData.hasOwnProperty("bar1") || newData.hasOwnProperty("bar2");
+    const hasBrawlBars = foundry.utils.hasProperty(newData, "flags.barbrawl.resourceBars");
 
     if (hasBrawlBars) {
         synchronizeBrawlBar("bar1", newData);
@@ -67,6 +89,11 @@ function synchronizeBars(tokenData, newData) {
 
         synchronizeLegacyBar("bar1", tokenData, newData);
         synchronizeLegacyBar("bar2", tokenData, newData);
+    }
+
+    // Ensure that the bar container stays visible.
+    if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+        newData.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     }
 }
 
@@ -113,6 +140,6 @@ function synchronizeLegacyBar(barId, tokenData, newData) {
         }
     } else if (!remove) {
         // Create a new bar with default values
-        brawlBarChanges[barId] ??= getDefaultBar(barId, foundryBarData.attribute);
+        brawlBarChanges[barId] ??= getDefaultBar(barId, foundryBarData.attribute, tokenData._source.displayBars);
     }
 }

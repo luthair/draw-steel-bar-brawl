@@ -1,6 +1,6 @@
 import * as api from "./api.js";
 import { getDefaultResources, setDefaultResources } from "./settings.js";
-import { prepareUpdate } from "./synchronization.js";
+import { prepareCreation, prepareUpdate } from "./synchronization.js";
 
 /**
  * Extends the way Foundry updates the configuration of the default token. If
@@ -447,5 +447,8 @@ function createLoadEntries(tokenConfig, attributes) {
  */
 function getDefaultTokenResources() {
     const defaultTokenData = game.settings.get("core", DefaultTokenConfig.SETTING) ?? {};
-    return defaultTokenData.flags?.barbrawl?.resourceBars ?? {};
+    const tokenClass = getDocumentClass("Token");
+    const token = new tokenClass({ name: "Default Token", ...defaultTokenData }, { actor: null, strict: false });
+    prepareCreation(token);
+    return token._source.flags?.barbrawl?.resourceBars ?? {};
 }

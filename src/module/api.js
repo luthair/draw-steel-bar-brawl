@@ -25,9 +25,9 @@ export const getBars = function (tokenDoc) {
     });
 
     if (tokenDoc.bar1?.attribute && !resourceBars.bar1)
-        barArray.push(getDefaultBar("bar1", tokenDoc.bar1.attribute));
+        barArray.push(getDefaultBar("bar1", tokenDoc.bar1.attribute, tokenDoc._source.displayBars));
     if (tokenDoc.bar2?.attribute && !resourceBars.bar2)
-        barArray.push(getDefaultBar("bar2", tokenDoc.bar2.attribute));
+        barArray.push(getDefaultBar("bar2", tokenDoc.bar2.attribute, tokenDoc._source.displayBars));
 
     return barArray.sort((b1, b2) => (b1.order ?? 0) - (b2.order ?? 0));
 }
@@ -41,9 +41,9 @@ export const getBars = function (tokenDoc) {
 export const getBar = function (tokenDoc, barId) {
     const resourceBars = foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {};
     if (barId === "bar1" && !resourceBars.bar1)
-        return getDefaultBar(barId, tokenDoc.bar1.attribute);
+        return getDefaultBar(barId, tokenDoc.bar1.attribute, tokenDoc._source.displayBars);
     if (barId === "bar2" && !resourceBars.bar2)
-        return getDefaultBar(barId, tokenDoc.bar2.attribute);
+        return getDefaultBar(barId, tokenDoc.bar2.attribute, tokenDoc._source.displayBars);
 
     const bar = resourceBars[barId];
     if (bar) bar.id ??= barId;
@@ -208,18 +208,18 @@ export const getNewBarId = function (existingBars) {
  * @param {number} defaultVisibility The Foundry visibility to apply to the bar. Defaults to owner only.
  * @private
  */
-export const getDefaultBar = function (id, attribute) {
+export const getDefaultBar = function (id, attribute, defaultVisibility = CONST.TOKEN_DISPLAY_MODES.OWNER) {
     let defaultBar = {
         id: id,
         order: 0,
         attribute: attribute,
-        otherVisibility: BAR_VISIBILITY.NONE,
-        ownerVisibility: BAR_VISIBILITY.ALWAYS,
-        gmVisibility: BAR_VISIBILITY.INHERIT,
+        visibility: defaultVisibility,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
         position: "bottom-inner"
     }
+
+    convertBarVisibility(defaultBar);
 
     if (attribute === "custom") {
         defaultBar.value = 10;
