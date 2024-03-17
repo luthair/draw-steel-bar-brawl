@@ -1,3 +1,8 @@
+1.8.5
+- Added Brazilian Portuguese translation (thanks *Kharmans*).
+- Fixed missing save button in prototype tokens.
+- Fixed inconsistent bar visibility for new actors.
+
 1.8.4
 - Reworked resource saving and loading from the token configuration.
 - Removed resource overrides for new tokens. Default resources will now only be applied to new actors.
