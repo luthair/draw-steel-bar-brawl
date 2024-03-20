@@ -54,7 +54,7 @@
             "ignoreLimits": "Ignorar Limites",
             "ignoreLimitsHint": "Desabilita a definição de valores entre 0 (inferior) e o máximo (superior). Isso só se aplica a barras personalizadas, já que a definição de outroa atributos é feita pelo sistema.",
             "ignoreMin": "Limite Inferior",
-            "ignoreMax": "Upper Superior",
+            "ignoreMax": "Limite Superior",
             "invert": "Inverter Valores",
             "invertDirection": "Inverter Direção",
             "invertHint": "Exibe 0 como cheio e o valor máximo como vazio.",
