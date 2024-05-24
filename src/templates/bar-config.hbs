@@ -17,17 +17,7 @@
             <label>{{localize "barbrawl.config.attribute"}}:</label>
             <div class="form-fields">
                 <select class="brawlbar-attribute bar-attribute" name="flags.barbrawl.resourceBars.{{this.id}}.attribute">
-                    {{#select this.attribute}}
-                    <option value="">{{localize "barbrawl.attribute.none"}}</option>
-                    <option value="custom">{{localize "barbrawl.attribute.custom"}}</option>
-                    {{#each ../barAttributes as |attrs label|}}
-                    <optgroup label="{{ label }}">
-                        {{#each attrs}}
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                    </optgroup>
-                    {{/each}}
-                    {{/select}}
+                    {{selectOptions ../barAttributes selected=this.attribute blank="barbrawl.attribute.none" localize=true}}
                 </select>
                 <input type="hidden" name="{{this.id}}.attribute" value="{{this.attribute}}" />
             </div>
@@ -61,16 +51,7 @@
             <label>{{localize "barbrawl.config.position"}}:</label>
             <div class="form-fields">
                 <select name="flags.barbrawl.resourceBars.{{this.id}}.position">
-                    {{#select this.position}}
-                    <option value="top-inner">{{localize "barbrawl.position.top-inner"}}</option>
-                    <option value="top-outer">{{localize "barbrawl.position.top-outer"}}</option>
-                    <option value="bottom-inner">{{localize "barbrawl.position.bottom-inner"}}</option>
-                    <option value="bottom-outer">{{localize "barbrawl.position.bottom-outer"}}</option>
-                    <option value="left-inner">{{localize "barbrawl.position.left-inner"}}</option>
-                    <option value="left-outer">{{localize "barbrawl.position.left-outer"}}</option>
-                    <option value="right-inner">{{localize "barbrawl.position.right-inner"}}</option>
-                    <option value="right-outer">{{localize "barbrawl.position.right-outer"}}</option>
-                    {{/select}}
+                    {{selectOptions ../constants.positions selected=this.position localize=true}}
                 </select>
             </div>
         </div>
@@ -194,12 +175,7 @@
                 <label>{{localize "barbrawl.config.style"}}:</label>
                 <div class="form-fields">
                     <select name="flags.barbrawl.resourceBars.{{this.id}}.style">
-                        {{#select this.style}}
-                        <option value="user">{{localize "barbrawl.textStyle.user"}}</option>
-                        <option value="none">{{localize "barbrawl.textStyle.none"}}</option>
-                        <option value="fraction">{{localize "barbrawl.textStyle.fraction"}}</option>
-                        <option value="percent">{{localize "barbrawl.textStyle.percent"}}</option>
-                        {{/select}}
+                        {{selectOptions ../constants.styles selected=this.style localize=true}}
                     </select>
                 </div>
             </div>

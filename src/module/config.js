@@ -3,6 +3,28 @@ import { getDefaultResources, setDefaultResources } from "./settings.js";
 import { prepareCreation, prepareUpdate } from "./synchronization.js";
 
 /**
+ * Constants to use for rendering the bar configuration from any context.
+ */
+const configConsts = {
+    positions: {
+        "top-inner": "barbrawl.position.top-inner",
+        "top-outer": "barbrawl.position.top-outer",
+        "bottom-inner": "barbrawl.position.bottom-inner",
+        "bottom-outer": "barbrawl.position.bottom-outer",
+        "left-inner": "barbrawl.position.left-inner",
+        "left-outer": "barbrawl.position.left-outer",
+        "right-inner": "barbrawl.position.right-inner",
+        "right-outer": "barbrawl.position.right-outer",
+    },
+    styles: {
+        user: "barbrawl.textStyle.user",
+        none: "barbrawl.textStyle.none",
+        fraction: "barbrawl.textStyle.fraction",
+        percent: "barbrawl.textStyle.percent"
+    }
+}
+
+/**
  * Extends the way Foundry updates the configuration of the default token. If
  *  available, the libWrapper module is used for better compatibility.
  */
@@ -48,14 +70,15 @@ export const extendDefaultTokenConfig = function () {
  * @param {Object} data The data of the token configuration.
  */
 export const extendTokenConfig = async function (tokenConfig, html, data) {
+    data.constants = configConsts;
     data.brawlBars = api.getBars(tokenConfig.token);
+    data.barAttributes.unshift({ value: "custom", label: "barbrawl.attribute.custom" });
 
     if (tokenConfig instanceof DefaultTokenConfig) {
         // Make sure that the current value exists for selection.
-        const attrLists = Object.values(data.barAttributes);
         for (let bar of Object.values(data.brawlBars)) {
-            if (!attrLists.some(list => list.includes(bar.attribute))) {
-                attrLists[0].push(bar.attribute);
+            if (!data.barAttributes.some(list => list.includes(bar.attribute))) {
+                data.barAttributes.push({ value: bar.attribute, label: bar.attribute });
             }
         }
     }
@@ -237,8 +260,9 @@ async function onAddResource(event, tokenConfig, data) {
     if (allBarEls.length !== barEls.length) allBarEls.find("div#" + newBar.id).parent().remove();
 
     event.currentTarget.insertAdjacentHTML("beforebegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+        constants: configConsts,
         brawlBars: [newBar],
-        barAttributes: data.barAttributes
+        barAttributes: data.barAttributes,
     }));
     const barConfiguration = event.currentTarget.previousElementSibling;
 
@@ -397,8 +421,9 @@ async function setCurrentResources(app, attributes, resources) {
 
     // Render and insert bars.
     container.insertAdjacentHTML("afterbegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+        constants: configConsts,
         brawlBars: barData,
-        barAttributes: attributes
+        barAttributes: attributes,
     }));
     if (container.parentElement.classList.contains("active")) app.setPosition();
     container.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(app.token, el));
