@@ -1,5 +1,7 @@
 1.8.6
 - Replace deprecated FoundryVTT APIs.
+- Fixed token configuration layout when other modules added inputs.
+- Fixed health bar layout for DnD5e party tokens.
 
 1.8.5
 - Added Brazilian Portuguese translation (thanks *Kharmans*).
