@@ -36,9 +36,9 @@ This toggle can be used to disable Bar Brawl's more compact default style for th
 
 When this option is enabled, users can never see bars of hostile tokens that they do not own. This is a world based option to avoid having to restrict the visibility of each individual bar. Note that the setting overrides the visibility set by token resources.
 
-#### Defaults per type
+#### Bar height multiplier
 
-Bar Brawl can store a default configuration that is independent of the global token settings or the actor's prototype token. This can be used to make the token creation a bit easier without using additional modules (e.g. Token Mold). By default, only one preset is stored when you hit the *Save defaults* button of the token configuration. This setting can be used to store the preset per actor type instead.
+To increase the readability of bars and their labels, you can use this number to globally adjust the height of all bars for the current user. The value is multiplied with the default bar height, so the default of 1 means no change.
 
 ### Basic configuration
 
