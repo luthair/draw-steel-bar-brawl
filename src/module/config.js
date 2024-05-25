@@ -93,6 +93,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.find("div.form-fields").parent().remove();
     resourceTab.append(barConfiguration);
 
+    resourceTab.on("click", "details > summary", () => setTimeout(() => tokenConfig.setPosition()));
     resourceTab.on("click", ".bar-modifiers .fa-trash", onDeleteBar);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
     resourceTab.on("click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
@@ -249,7 +250,8 @@ function swapButtonState(selector, firstElement, secondElement) {
  * @param {Object} data The data of the token configuration.
  */
 async function onAddResource(event, tokenConfig, data) {
-    const allBarEls = $(event.currentTarget).siblings("details");
+    const container = event.currentTarget.parentElement.querySelector(".bar-container");
+    const allBarEls = $(container).find("> details");
     const barEls = allBarEls.filter(":visible");
 
     // Create raw bar data.
@@ -259,12 +261,12 @@ async function onAddResource(event, tokenConfig, data) {
     // Remove insibible elements with the same ID.
     if (allBarEls.length !== barEls.length) allBarEls.find("div#" + newBar.id).parent().remove();
 
-    event.currentTarget.insertAdjacentHTML("beforebegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+    container.insertAdjacentHTML("beforeend", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         constants: configConsts,
         brawlBars: [newBar],
         barAttributes: data.barAttributes,
     }));
-    const barConfiguration = event.currentTarget.previousElementSibling;
+    const barConfiguration = container.lastElementChild;
 
     if (game.system.id === "dnd5e" && tokenConfig._prepareResourceLabels) tokenConfig._prepareResourceLabels(barConfiguration);
     if (barEls.length) {
@@ -417,7 +419,10 @@ async function setCurrentResources(app, attributes, resources) {
         }
     });
 
-    if (barData.length === 0) return;
+    if (barData.length === 0) {
+        app.setPosition();
+        return;
+    }
 
     // Render and insert bars.
     container.insertAdjacentHTML("afterbegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
@@ -425,7 +430,7 @@ async function setCurrentResources(app, attributes, resources) {
         brawlBars: barData,
         barAttributes: attributes,
     }));
-    if (container.parentElement.classList.contains("active")) app.setPosition();
+    if (container.parentElement.parentElement.classList.contains("active")) app.setPosition();
     container.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(app.token, el));
     if (game.system.id === "dnd5e") app._prepareResourceLabels(container);
 }

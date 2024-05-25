@@ -92,12 +92,17 @@ div.indent-details {
     font-size: smaller;
 }
 
-.token-sheet .bar-container {
+.token-resources {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    height: 100%;
+}
+
+.token-resources .bar-container {
     min-height: 130px;
+    max-height: 700px;
+    overflow-y: auto;
+    overflow-x: visible;
 }
 .bar-controls {
     margin-top: auto;
