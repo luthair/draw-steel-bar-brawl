@@ -1,3 +1,6 @@
+1.8.6
+- Replace deprecated FoundryVTT APIs.
+
 1.8.5
 - Added Brazilian Portuguese translation (thanks *Kharmans*).
 - Fixed missing save button in prototype tokens.
