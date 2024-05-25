@@ -92,7 +92,7 @@ div.indent-details {
     font-size: smaller;
 }
 
-.bar-container {
+.token-sheet .bar-container {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
