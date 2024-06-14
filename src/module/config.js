@@ -31,28 +31,29 @@ const configConsts = {
 export const extendDefaultTokenConfig = function () {
     if (game.modules.get("lib-wrapper")?.active) {
         // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
+        libWrapper.register("barbrawl", "CONFIG.Token.prototypeSheetClass.prototype._getSubmitData",
+            function (wrapped, updateData) {
+                return wrapped(ensureAttributeData(updateData));
+            }, "WRAPPER");
         libWrapper.register("barbrawl", "DefaultTokenConfig.prototype._getSubmitData",
             function (wrapped, updateData) {
-                updateData ??= {};
-                updateData.bar1 ??= { attribute: "" };
-                updateData.bar2 ??= { attribute: "" };
+                updateData = ensureAttributeData(updateData);
                 const formData = wrapped(updateData);
                 prepareUpdate(this.token, formData);
                 return formData;
             }, "WRAPPER");
-
-        libWrapper.register("barbrawl", "CONFIG.Token.prototypeSheetClass.prototype._onBarChange",
-            onChangeBarAttribute, "OVERRIDE");
-        libWrapper.register("barbrawl", "DefaultTokenConfig.prototype._onBarChange",
-            onChangeBarAttribute, "OVERRIDE");
+        libWrapper.register("barbrawl", "CONFIG.Token.prototypeSheetClass.prototype._onBarChange", onChangeBarAttribute, "OVERRIDE");
+        libWrapper.register("barbrawl", "DefaultTokenConfig.prototype._onBarChange", onChangeBarAttribute, "OVERRIDE");
     } else {
         // Manual override
-        const originalGetSubmitData = DefaultTokenConfig.prototype._getSubmitData;
+        const originalGetSubmitData = CONFIG.Token.prototypeSheetClass.prototype._getSubmitData;
+        CONFIG.Token.prototypeSheetClass.prototype._getSubmitData = function (updateData) {
+            return originalGetSubmitData.call(this, ensureAttributeData(updateData));
+        };
+        const originalDefaultGetSubmitData = DefaultTokenConfig.prototype._getSubmitData;
         DefaultTokenConfig.prototype._getSubmitData = function (updateData) {
-            updateData ??= {};
-            updateData.bar1 ??= { attribute: "" };
-            updateData.bar2 ??= { attribute: "" };
-            const formData = originalGetSubmitData.call(this, updateData);
+            updateData = ensureAttributeData(updateData);
+            const formData = originalDefaultGetSubmitData.call(this, updateData);
             prepareUpdate(this.token, formData);
             return formData;
         };
@@ -110,6 +111,18 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     // Refresh diplayed value for all attributes.
     if (game.system.id === "dnde5") return;
     resourceTab.find("select.brawlbar-attribute").each((_, el) => refreshValueInput(tokenConfig.token, el));
+}
+
+/**
+ * Prepares the given data to ensure that it contains objects for FoundryVTT bar attributes.
+ * @param {object?} data The data to prepare. Defaults to empty object.
+ * @returns {object} The prepared data.
+ */
+function ensureAttributeData(data) {
+    data ??= {};
+    data.bar1 ??= { attribute: "" };
+    data.bar2 ??= { attribute: "" };
+    return data;
 }
 
 /**
