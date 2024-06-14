@@ -166,9 +166,14 @@ async function createResourceBar(token, data, reservedSpace) {
  * @returns {Promise.<PIXI.Texture[]>} An array containing the background and foreground texture.
  */
 async function loadBarTextures(data) {
-    const bgTexture = data.bgImage ? await loadTexture(data.bgImage) : null;
-    const fgTexture = data.fgImage ? await loadTexture(data.fgImage) : null;
-    return [bgTexture, fgTexture];
+    try {
+        const bgTexture = data.bgImage ? await loadTexture(data.bgImage) : null;
+        const fgTexture = data.fgImage ? await loadTexture(data.fgImage) : null;
+        return [bgTexture, fgTexture];
+    } catch (err) {
+        console.error("Bar Brawl | Failed to load bar texture: " + err.message);
+        return [null, null];
+    }
 }
 
 /**
