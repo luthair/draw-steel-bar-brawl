@@ -82,23 +82,20 @@ function synchronizeUpdate(tokenData, newData) {
     if (hasBrawlBars) {
         synchronizeBrawlBar("bar1", newData);
         synchronizeBrawlBar("bar2", newData);
-
-        if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
-            newData.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
-        }
     }
 
     if (hasLegacyBars) {
-        if (!hasBrawlBars) {
-            foundry.utils.setProperty(newData, "flags.barbrawl.resourceBars", {});
-        }
+        if (!hasBrawlBars) foundry.utils.setProperty(newData, "flags.barbrawl.resourceBars", {});
 
         synchronizeLegacyBar("bar1", tokenData, newData);
         synchronizeLegacyBar("bar2", tokenData, newData);
+    }
 
-        if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
-            newData.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
-        }
+    // Ensure that the bar container stays visible.
+    if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS && (hasBrawlBars || hasLegacyBars)) {
+        newData.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
+    } else {
+        delete newData.displayBars;
     }
 }
 
