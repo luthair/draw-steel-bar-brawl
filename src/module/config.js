@@ -77,7 +77,7 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     if (tokenConfig instanceof DefaultTokenConfig) {
         // Make sure that the current value exists for selection.
         for (let bar of Object.values(data.brawlBars)) {
-            if (!data.barAttributes.some(list => list.includes(bar.attribute))) {
+            if (!data.barAttributes.some(attr => attr.value === bar.attribute)) {
                 data.barAttributes.push({ value: bar.attribute, label: bar.attribute });
             }
         }
