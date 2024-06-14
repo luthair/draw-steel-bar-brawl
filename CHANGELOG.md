@@ -1,3 +1,9 @@
+1.8.7
+- Fixed unchanged bars occasionally becoming visible for everyone.
+- Fixed default token configuration not rendering.
+- Fixed submitting PF2e token configuration (and probably other systems).
+- Fixed filepicker whitespace issues.
+
 1.8.6
 - Replace deprecated FoundryVTT APIs.
 - Fixed token configuration layout when other modules added inputs.
