@@ -1,3 +1,8 @@
+1.8.8
+- Added option to hide the HUD for a resource.
+- Fixed HUD inputs not working.
+- Improved display of large values when the compact HUD is enabled.
+
 1.8.7
 - Fixed unchanged bars occasionally becoming visible for everyone.
 - Fixed default token configuration not rendering.
