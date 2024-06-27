@@ -40,6 +40,7 @@
             "hideEmpty": "Leer",
             "hideCombat": "Im Kampf",
             "hideNoCombat": "Außerhalb des Kampfes",
+            "hideHud": "HUD verstecken",
             "value": "Wert (aktuell/max)",
             "color": "Farbe (min/max)",
             "position": "Position",

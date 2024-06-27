@@ -62,7 +62,9 @@ In addition to the bar itself, the maximum color is also used as a border on the
 
 To hide bars in certain circumstances, use the visibility settings. The configuration allows separate settings for the game master, the owner of the token and everyone else. It is possible to always display a bar, never display it, display it only when the token is hovered and/or display it only when the token is selected (only available for the owner).
 
-Additionally, you can hide the bar in any of the listed circumstances. For example, enabling "Empty" will hide the bar when the resource has a value of 0.
+You can also hide the bar in any of the listed circumstances. For example, enabling "Empty" will hide the bar when the resource has a value of 0.
+
+Finally, you can disable token HUD input by checking "Hide HUD".
 
 #### Position & Order
 
@@ -165,6 +167,7 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
         hideNoCombat: false,
         hideEmpty: false,
         hideFull: false,
+        hideHud: false,
         value: 5,
         max: 5,
         mincolor: "#000000",
@@ -198,6 +201,7 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
 - The **opacity** is a percentage (e.g. 50, *not* 0.5) that determines the transparency of the bar. Note that unlike other numbers, a missing opacity indicates 80%, not 0.
 - The **visibility** properties can be 50, 30, 10 or 0 for always, hovered, controlled or never, respectively (see `CONST.TOKEN_DISPLAY_MODES`). For the owner and the GM, a value of `-1` can be used to inherit from everyone or the owner, respectively.
 - The **hide** flags control whether the bar is displayed when the token is in or out of combat or when the resource is full or empty.
+- The **hideHud** flag will prevent rendering the associated input on the token HUD.
 - Both **color**s are HTML color strings.
 - The fields "**ignoreMin**" and "**ignoreMax**" are boolean flags that disable clamping of the bar's value.
 - The **invert** flag is a boolean indicating whether a full value should be rendered as en empty bar.

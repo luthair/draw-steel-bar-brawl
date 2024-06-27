@@ -143,7 +143,15 @@
                 </div>
                 <p class="notes">{{localize "barbrawl.config.hideHint"}}</p>
             </div>
-        
+
+            <div class="form-group">
+                <label>{{localize "barbrawl.config.hideHud"}}:</label>
+                <div class="form-fields">
+                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.hideHud" {{#if
+                        this.hideHud}}checked{{/if}} />
+                </div>
+            </div>
+
             <div class="form-group">
                 <label>{{localize "barbrawl.config.indent"}}:</label>
                 <div class="form-fields">

@@ -40,6 +40,7 @@
             "hideEmpty": "Empty",
             "hideCombat": "In combat",
             "hideNoCombat": "Out of combat",
+            "hideHud": "Hide HUD",
             "value": "수치(현재값/최대값)",
             "color": "색상(현재값/최대값)",
             "position": "위치",

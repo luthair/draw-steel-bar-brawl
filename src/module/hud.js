@@ -20,7 +20,9 @@ export const extendTokenHud = async function (tokenHud, html, data) {
         "right-inner": [],
         "right-outer": []
     };
-    visibleBars.forEach(bar => data.bars[bar.position].push(bar));
+    visibleBars
+        .filter(bar => !bar.hideHud)
+        .forEach(bar => data.bars[bar.position].push(bar));
 
     const middleColumn = html.find(".col.middle");
     middleColumn.find("div.attribute").remove();

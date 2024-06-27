@@ -40,6 +40,7 @@
             "hideEmpty": "Empty",
             "hideCombat": "In combat",
             "hideNoCombat": "Out of combat",
+            "hideHud": "Hide HUD",
             "value": "値 (現在/最大)",
             "color": "色 (最小/最大)",
             "position": "位置",
