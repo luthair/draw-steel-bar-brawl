@@ -17,12 +17,21 @@
     width: unset;
 }
 
-.resource-input.compact input[type="text"] {
+.resource-input.compact input {
     width: 40%;
     height: 30px;
     font-size: 20px;
     margin: 2px;
     min-width: 40px;
+    padding-inline: 1px;
+}
+
+.resource-input.compact input.fs-s {
+    font-size: 14px;
+}
+
+.resource-input.compact input.fs-xs {
+    font-size: 10px;
 }
 
 .resource-input input:disabled {
