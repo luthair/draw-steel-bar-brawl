@@ -148,7 +148,7 @@ async function createResourceBar(token, data, reservedSpace) {
     bar.name = data.id;
     if (!data.fgImage) {
         // When there is no foreground image, we'll need a drawing object.
-        const gfx = bar.addChild(new PIXI.Graphics);
+        const gfx = bar.addChild(new PIXI.Graphics());
         gfx.name = "gfx";
     }
 
@@ -157,6 +157,10 @@ async function createResourceBar(token, data, reservedSpace) {
     const position = calculatePosition(data, renderedHeight, token, reservedSpace);
     if (!data.shareHeight) reservedSpace[data.position] += renderedHeight;
     bar.position.set(position[0], position[1]);
+
+    // Improve performance by preventing unnecessary redraws.
+    bar.cacheAsBitmapResolution = getBitmapResolution();
+    bar.cacheAsBitmap = true;
     token.bars.addChild(bar);
 }
 
@@ -211,7 +215,7 @@ async function draw3dBars(token) {
     const leftCenter = (token.w / 2 - originalBounds.left) / originalBounds.width;
     sprite.center.set(leftCenter, bottomCenter);
 
-    // Reassembly render tree.
+    // Reassemble render tree.
     token3d.mesh.remove(token3d.bars);
     token3d.bars = sprite;
     token3d.mesh.add(sprite);
@@ -220,7 +224,7 @@ async function draw3dBars(token) {
 /**
  * Renders all components of the bar onto the given PIXI object.
  * @param {Token} token The token to draw the bar on.
- * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
+ * @param {PIXI.Container} bar The canvas container containing the bar's rendering objects.
  * @param {Object} data The data of the bar to draw.
  * @param {PIXI.Texture[]} textures The loaded textures of bar images.
  * @returns {number} The final height of the bar.
@@ -443,6 +447,18 @@ function rgb2hsv(r, g, b) {
     let v = Math.max(r, g, b), c = v - Math.min(r, g, b);
     let h = c && ((v == r) ? (g - b) / c : ((v == g) ? 2 + (b - r) / c : 4 + (r - g) / c));
     return [60 * (h < 0 ? h + 6 : h), v && c / v, v];
+}
+
+/**
+ * Determines the resolution for cached bitmaps.
+ * @seealso https://github.com/Codas/foundryvtt-performance-hacks/blob/main/src/utils/getBitmapCacheResolution.ts
+ * @returns {number} The resolution for bitmap caching.
+ */
+function getBitmapResolution() {
+    const baseResolution = canvas.app.renderer.resolution;
+    if (canvas.performance.mode === CONST.CANVAS_PERFORMANCE_MODES.MAX) return baseResolution * 2;
+    if (canvas.performance.mode >= CONST.CANVAS_PERFORMANCE_MODES.MED) return baseResolution * 1.5;
+    return baseResolution;
 }
 
 /**
