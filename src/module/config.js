@@ -152,6 +152,7 @@ function refreshValueInput(token, target, event) {
 
     const valueInput = form.querySelector(`input.${barId}-value`);
     const maxInput = form.querySelector(`input.${barId}-max`);
+    if (!valueInput || !maxInput) return;
 
     if (target.value === "custom") {
         valueInput.removeAttribute("disabled");

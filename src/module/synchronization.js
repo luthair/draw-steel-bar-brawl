@@ -17,7 +17,9 @@ export const prepareUpdate = function (tokenDoc, newData) {
             const bar = changedBars[barId];
             if (bar.attribute === "") {
                 delete changedBars[barId];
+                delete newData[barId];
                 changedBars["-=" + barId] = null;
+                continue;
             }
 
             // Convert legacy visibility.

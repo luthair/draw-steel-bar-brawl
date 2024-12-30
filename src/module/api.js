@@ -20,7 +20,7 @@ const BAR_VISIBILITY = {
 export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {};
     const barArray = Object.entries(resourceBars).map(entry => {
-        entry[1].id ??= entry[0];
+        entry[1].id = entry[0];
         return entry[1];
     });
 
