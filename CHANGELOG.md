@@ -1,3 +1,8 @@
+1.8.9
+- Added Polish translation (thanks *Lioheart*).
+- Added built-in support for caching bars (thanks *Codas*).
+- Fixed an issue that prevented broken bars from being removed.
+
 1.8.8
 - Added option to hide the HUD for a resource.
 - Fixed HUD inputs not working.
