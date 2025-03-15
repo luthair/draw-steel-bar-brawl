@@ -30,8 +30,8 @@
             "hint": "Mnoży wysokość paska przez skonfigurowaną wartość w celu zwiększenia czytelności. Wpłynie to na etykietę, ale nie na tło lub obraz pierwszego planu paska."
         },
         "cacheBitmaps": {
-            "name": "Cache rendered bars",
-            "hint": "Enables bitmap caching for bars on the canvas, which may improve performance at the cost of readability (especially for labels)."
+            "name": "Pamięć podręczna renderowanych słupków",
+            "hint": "Włącza buforowanie bitmap dla pasków na płótnie, co może poprawić wydajność kosztem czytelności (szczególnie w przypadku etykiet)."
         },
         "config": {
             "attribute": "Atrybut",
