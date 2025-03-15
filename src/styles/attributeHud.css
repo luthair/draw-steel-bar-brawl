@@ -107,7 +107,7 @@ div.indent-details {
     flex-wrap: nowrap;
 }
 
-.token-resources .bar-container {
+.token-resources .bb-bar-container {
     min-height: 130px;
     max-height: 700px;
     overflow-y: auto;

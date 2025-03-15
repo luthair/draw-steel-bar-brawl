@@ -263,7 +263,7 @@ function swapButtonState(selector, firstElement, secondElement) {
  * @param {Object} data The data of the token configuration.
  */
 async function onAddResource(event, tokenConfig, data) {
-    const container = event.currentTarget.parentElement.querySelector(".bar-container");
+    const container = event.currentTarget.parentElement.querySelector(".bb-bar-container");
     const allBarEls = $(container).find("> details");
     const barEls = allBarEls.filter(":visible");
 
@@ -417,7 +417,7 @@ async function replaceTokenResources(tokens, resources, label) {
  */
 async function setCurrentResources(app, attributes, resources) {
     const barData = Object.values(resources);
-    const container = app.element[0].querySelector("div[data-tab='resources'] .bar-container");
+    const container = app.element[0].querySelector("div[data-tab='resources'] .bb-bar-container");
 
     // Remove current bars.
     container.querySelectorAll(".indent-details").forEach(el => {
