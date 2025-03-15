@@ -403,7 +403,7 @@ function createBarLabel(bar, token, data, text) {
     barText.x = bar.contentWidth / 2;
     barText.y = bar.contentHeight / 2;
     barText.anchor.set(0.5);
-    barText.resolution = 1.5;
+    barText.resolution = 2; // Supersample text to ensure readability.
     if (data.invertDirection) barText.scale.x *= -1;
     bar.addChild(barText);
 }
@@ -456,7 +456,7 @@ function rgb2hsv(r, g, b) {
  */
 function getBitmapResolution() {
     const baseResolution = canvas.app.renderer.resolution;
-    if (canvas.performance.mode === CONST.CANVAS_PERFORMANCE_MODES.MAX) return baseResolution * 2;
+    if (canvas.performance.mode >= CONST.CANVAS_PERFORMANCE_MODES.HIGH) return baseResolution * 2;
     if (canvas.performance.mode >= CONST.CANVAS_PERFORMANCE_MODES.MED) return baseResolution * 1.5;
     return baseResolution;
 }
