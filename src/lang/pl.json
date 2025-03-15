@@ -29,6 +29,10 @@
             "name": "Mnożnik wysokości paska",
             "hint": "Mnoży wysokość paska przez skonfigurowaną wartość w celu zwiększenia czytelności. Wpłynie to na etykietę, ale nie na tło lub obraz pierwszego planu paska."
         },
+        "cacheBitmaps": {
+            "name": "Cache rendered bars",
+            "hint": "Enables bitmap caching for bars on the canvas, which may improve performance at the cost of readability (especially for labels)."
+        },
         "config": {
             "attribute": "Atrybut",
             "ownerVisibility": "Widoczność (właściciel)",

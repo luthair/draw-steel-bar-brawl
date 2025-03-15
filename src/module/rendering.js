@@ -159,8 +159,11 @@ async function createResourceBar(token, data, reservedSpace) {
     bar.position.set(position[0], position[1]);
 
     // Improve performance by preventing unnecessary redraws.
-    bar.cacheAsBitmapResolution = getBitmapResolution();
-    bar.cacheAsBitmap = true;
+    if (game.settings.get("barbrawl", "cacheBitmaps")) {
+        bar.cacheAsBitmapResolution = getBitmapResolution();
+        bar.cacheAsBitmap = true;
+    }
+
     token.bars.addChild(bar);
 }
 

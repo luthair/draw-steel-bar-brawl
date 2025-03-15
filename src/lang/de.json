@@ -29,6 +29,10 @@
             "name": "Höhenmultiplikator",
             "hint": "Multipliziert die Höhe der Bars mit dem eingestellten Wert, um die Lesbarkeit zu verbessern. Dies wirkt sich auch auf die Beschriftung, jedoch nicht auf Vorder- oder Hintergrundbilder aus."
         },
+        "cacheBitmaps": {
+            "name": "Bar-Grafiken speichern",
+            "hint": "Aktiviert zwischengespeicherte Grafiken für Bars. Dadurch kann sich die Leistung verbessern, aber die Lesbarkeit (v.A. von Beschriftungen) verschlechtern."
+        },
         "config": {
             "attribute": "Attribut",
             "ownerVisibility": "Sichtbarkeit (Besitzer)",

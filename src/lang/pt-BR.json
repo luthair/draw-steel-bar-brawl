@@ -29,6 +29,10 @@
             "name": "Multiplicador de Altura",
             "hint": "Multiplica a altura da barra pelo valor configurado para melhorar sua leitura. Isso afetará a etiquera, mas não o fundo ou primeiro plano da imagem da barra."
         },
+        "cacheBitmaps": {
+            "name": "Cache rendered bars",
+            "hint": "Enables bitmap caching for bars on the canvas, which may improve performance at the cost of readability (especially for labels)."
+        },
         "config": {
             "attribute": "Atributo",
             "ownerVisibility": "Visibilidade (dono)",

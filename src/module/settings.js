@@ -73,6 +73,16 @@ export const registerSettings = function () {
         default: 1,
         onChange: refreshBars
     });
+
+    game.settings.register("barbrawl", "cacheBitmaps", {
+        name: game.i18n.localize("barbrawl.cacheBitmaps.name"),
+        hint: game.i18n.localize("barbrawl.cacheBitmaps.hint"),
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: refreshBars
+    });
 }
 
 /**

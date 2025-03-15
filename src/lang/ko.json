@@ -29,6 +29,10 @@
             "name": "Bar height multiplier",
             "hint": "Multiplies the bar height by the configured value to increase readability. This will affect the label, but not the background or foreground image of a bar."
         },
+        "cacheBitmaps": {
+            "name": "Cache rendered bars",
+            "hint": "Enables bitmap caching for bars on the canvas, which may improve performance at the cost of readability (especially for labels)."
+        },
         "config": {
             "attribute": "어트리뷰트",
             "ownerVisibility": "소유자만 보임",
