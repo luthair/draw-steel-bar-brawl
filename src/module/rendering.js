@@ -295,7 +295,9 @@ function getBarHeight(token, width, textures = [null, null]) {
  * @param {PIXI.Texture?} texture The optional background texture to draw.
  */
 function drawBarBackground(bar, data, texture) {
-    if (texture) {
+    if (data.bgImage) {
+        if (!texture) return;
+
         // Draw background texture.
         const bgSprite = new PIXI.Sprite(texture);
         bgSprite.width = bar.contentWidth;
@@ -321,7 +323,9 @@ function drawBarBackground(bar, data, texture) {
  */
 function drawBarForeground(bar, data, texture, percentage, segments) {
     if (percentage <= 0.01) return;
-    if (texture) {
+    if (data.fgImage) {
+        if (!texture) return;
+
         // Draw foreground texture.
         const croppedTex = new PIXI.Texture(texture,
             new PIXI.Rectangle(0, 0, texture.width * percentage, texture.height));
@@ -562,7 +566,7 @@ function calculatePosition(barData, barHeight, token, reservedSpace) {
 }
 
 /**
- * Renders a bar using the Foundry function instead of the Bar Brawl renderer.
+ * Renders a bar using the FoundryVTT function instead of the Bar Brawl renderer.
  * After the bar is drawn, its position and angle will be overriden.
  * @param {Token} token The token to draw the bar on.
  * @param {PIXI.Graphics} bar The graphics object to draw onto.

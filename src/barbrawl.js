@@ -4,7 +4,7 @@
  */
 
 import { extendBarRenderer } from "./module/rendering.js";
-import { extendDefaultTokenConfig, extendTokenConfig } from "./module/config.js";
+import { extendPrototypeTokenConfig, extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
 import { prepareCreation, prepareUpdate } from "./module/synchronization.js";
@@ -19,7 +19,7 @@ Hooks.once('init', async function () {
         isBarVisible: api.isBarVisible,
         getActualBarValue: api.getActualBarValue,
         getDefaultBars: getDefaultResources
-    }
+    };
 
     registerSettings();
     Handlebars.registerHelper("barbrawl-concat", function () {
@@ -31,13 +31,13 @@ Hooks.once('init', async function () {
     });
 
     loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
-    extendDefaultTokenConfig();
+    extendPrototypeTokenConfig();
 });
 
 /** Hooks to replace UI elements. */
 Hooks.once("setup", extendBarRenderer);
 Hooks.on("renderTokenHUD", extendTokenHud);
-Hooks.on("renderTokenConfig", extendTokenConfig);
+Hooks.on("renderTokenApplication", extendTokenConfig);
 
 /** Hook to remove bars and synchronize legacy bars. */
 Hooks.on("preUpdateToken", function (doc, changes) {
