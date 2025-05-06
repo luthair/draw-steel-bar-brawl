@@ -55,5 +55,5 @@ export const extendTokenHud = async function (tokenHud, html, data) {
  */
 function renderBarInputs(bars, css) {
     if (game.settings.get("barbrawl", "compactHud")) css += " compact";
-    return renderTemplate("modules/barbrawl/templates/resource-hud.hbs", { bars, css });
+    return foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/resource-hud.hbs", { bars, css });
 }

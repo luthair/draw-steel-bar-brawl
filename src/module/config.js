@@ -82,10 +82,10 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
 
     resourceTab.querySelector(".brawlbar-add").addEventListener("click", event => onAddResource(event, tokenConfig, data));
     if (data.canSaveDefaults) {
-        new ContextMenu(resourceTab, ".brawlbar-save", saveEntries, { eventName: "click" });
+        new foundry.applications.ux.ContextMenu(resourceTab, ".brawlbar-save", saveEntries, { eventName: "click" });
     }
     if (data.canLoadDefaults) {
-        new ContextMenu(resourceTab, ".brawlbar-load", loadEntries, { eventName: "click" });
+        new foundry.applications.ux.ContextMenu(resourceTab, ".brawlbar-load", loadEntries, { eventName: "click" });
     }
 
     // Refresh displayed value for all attributes.
@@ -244,7 +244,7 @@ async function onAddResource(event, tokenConfig, data) {
     // Remove insibible elements with the same ID.
     if (allBarEls.length !== barEls.length) allBarEls.find("div#" + newBar.id).parent().remove();
 
-    container.insertAdjacentHTML("beforeend", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+    container.insertAdjacentHTML("beforeend", await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         constants: configConsts,
         brawlBars: [newBar],
         barAttributes: data.barAttributes,
@@ -406,7 +406,7 @@ async function setCurrentResources(app, attributes, resources) {
     }
 
     // Render and insert bars.
-    container.insertAdjacentHTML("afterbegin", await renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
+    container.insertAdjacentHTML("afterbegin", await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/bar-config.hbs", {
         constants: configConsts,
         brawlBars: barData,
         barAttributes: attributes,

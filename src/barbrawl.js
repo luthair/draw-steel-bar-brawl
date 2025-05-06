@@ -30,7 +30,7 @@ Hooks.once('init', async function () {
         return output;
     });
 
-    loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
+    foundry.applications.handlebars.loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
     extendPrototypeTokenConfig();
 });
 
