@@ -277,8 +277,8 @@ function getCurrentResources(app) {
     if (!app.element?.length) return {};
 
     // Parse form data.
-    let data = app._getSubmitData();
-    data = data.flags ?? foundry.utils.expandObject(data).flags;
+    let data = new foundry.applications.ux.FormDataExtended(app.form).object;
+    data = foundry.utils.expandObject(data).flags;
     data = data?.barbrawl?.resourceBars ?? {};
 
     // Drop bars that were removed.
@@ -301,7 +301,7 @@ function createSaveEntries(tokenConfig) {
         entries.push({
             name: "barbrawl.defaults.defaultToken",
             icon: '<i class="fas fa-cogs"></i>',
-            callback: () => replaceDefaultTokenResources(getCurrentResources(tokenConfig)),
+            callback: () => setDefaultResources(null, getCurrentResources(tokenConfig)),
         });
 
         const typeLabel = game.i18n.format(
@@ -334,20 +334,6 @@ function createSaveEntries(tokenConfig) {
     }
 
     return entries;
-}
-
-/**
- * Replaces the resource configuration of the global default token with the given resources.
- * @param {object} resources The resource configuration to store.
- * @returns {Promise} A promise representing the default token update.
- */
-async function replaceDefaultTokenResources(resources) {
-    const defaultTokenData = game.settings.get("core", DefaultTokenConfig.SETTING) ?? {};
-    foundry.utils.setProperty(defaultTokenData, "flags.barbrawl.resourceBars", resources);
-    await game.settings.set("core", DefaultTokenConfig.SETTING, defaultTokenData);
-
-    const target = game.i18n.localize("barbrawl.defaults.defaultToken");
-    ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target }));
 }
 
 /**
@@ -389,7 +375,7 @@ async function replaceTokenResources(tokens, resources, label) {
  */
 async function setCurrentResources(app, attributes, resources) {
     const barData = Object.values(resources);
-    const container = app.element[0].querySelector("div[data-tab='resources'] .bb-bar-container");
+    const container = app.element.querySelector("div[data-tab='resources'] .bb-bar-container");
 
     // Remove current bars.
     container.querySelectorAll(".indent-details").forEach(el => {
@@ -434,7 +420,7 @@ function createLoadEntries(tokenConfig, attributes) {
     entries.push({
         name: "barbrawl.defaults.defaultToken",
         icon: '<i class="fas fa-cogs"></i>',
-        callback: () => setCurrentResources(tokenConfig, attributes, getDefaultTokenResources()),
+        callback: () => setCurrentResources(tokenConfig, attributes, getDefaultResources()),
     });
 
     entries.push({
@@ -452,16 +438,4 @@ function createLoadEntries(tokenConfig, attributes) {
     }
 
     return entries;
-}
-
-/**
- * Retrieves the resource configuration of the global default token.
- * @returns {object} The default resource configuration for all new tokens.
- */
-function getDefaultTokenResources() {
-    const defaultTokenData = game.settings.get("core", DefaultTokenConfig.SETTING) ?? {};
-    const tokenClass = getDocumentClass("Token");
-    const token = new tokenClass({ name: "Default Token", ...defaultTokenData }, { actor: null, strict: false });
-    prepareCreation(token);
-    return token._source.flags?.barbrawl?.resourceBars ?? {};
 }
