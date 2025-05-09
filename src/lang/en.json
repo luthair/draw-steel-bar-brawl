@@ -74,8 +74,7 @@
             "fgImageHint": "Replaces the usual bar with an image that is clipped based on the fill percentage.",
             "bgImage": "Background image",
             "bgImageHint": "Replaces the usual bar background with an image. It is recommended that both images have the same width as the scene's grid size.",
-            "opacity": "Opacity",
-            "save": "Update bar"
+            "opacity": "Opacity"
         },
         "attribute": {
             "none": "None (remove)",
@@ -107,9 +106,9 @@
             "saveConfirmation": "Saved resources in {target}.",
             "load": "Load from...",
             "defaultToken": "Default token",
-            "typeDefaults": "<strong>{type}</strong> default",
-            "prototypeToken": "<strong>{name}</strong>'s prototype token",
-            "activeTokens": "<strong>{name}</strong>'s active tokens"
+            "typeDefaults": "{type} default",
+            "prototypeToken": "{name}'s prototype token",
+            "activeTokens": "{name}'s active tokens"
         }
     }
 }

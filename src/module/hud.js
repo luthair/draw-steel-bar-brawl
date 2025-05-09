@@ -39,12 +39,9 @@ export const extendTokenHud = async function (tokenHud, html, data) {
     const rightBars = data.bars["right-inner"].reverse().concat(data.bars["right-outer"]);
     if (rightBars.length) html.querySelector(".col.right").insertAdjacentHTML("beforeend", await renderBarInputs(rightBars, "right-bars"));
 
-    // html.querySelectorAll(".attribute input")
-    //     .forEach(el => {
-    //         el.addEventListener("click", tokenHud._onAttributeClick);
-    //         el.addEventListener("keydown", tokenHud._onAttributeKeydown.bind(tokenHud));
-    //         el.addEventListener("focusout", tokenHud._onAttributeUpdate.bind(tokenHud));
-    //     });
+    for (const input of html.querySelectorAll(".attribute > input")) {
+        input.addEventListener("focus", _ => input.select());
+    }
 }
 
 /**

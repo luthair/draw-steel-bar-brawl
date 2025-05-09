@@ -1,6 +1,5 @@
 import * as api from "./api.js";
 import { getDefaultResources, setDefaultResources } from "./settings.js";
-import { prepareCreation, prepareUpdate } from "./synchronization.js";
 
 /**
  * Constants to use for rendering the bar configuration from any context.
@@ -61,17 +60,11 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     data.canSaveDefaults = saveEntries.length > 0;
     const loadEntries = createLoadEntries(tokenConfig, data.barAttributes);
     data.canLoadDefaults = loadEntries.length > 0;
-    const barConfiguration = await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
 
     const resourceTab = html.querySelector("div[data-tab='resources']");
-    const nativeBarFields = [
-        resourceTab.querySelector("select[name='displayBars']"),
-        resourceTab.querySelector("select[name='bar1.attribute']"),
-        resourceTab.querySelector("select[name='bar2.attribute']"),
-        ...resourceTab.querySelectorAll("div.bar-data"),
-    ];
-    nativeBarFields.forEach(el => el.closest("div.form-group").remove());
+    clearNativeBarFields(resourceTab);
 
+    const barConfiguration = await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
     resourceTab.insertAdjacentHTML("beforeend", barConfiguration);
 
     resourceTab.querySelectorAll("details > summary")
@@ -79,17 +72,33 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     resourceTab.querySelectorAll(".bar-modifiers .fa-trash").forEach(el => el.addEventListener("click", onDeleteBar));
     resourceTab.querySelectorAll(".bar-modifiers .fa-chevron-up").forEach(el => el.addEventListener("click", onMoveBarUp));
     resourceTab.querySelectorAll(".bar-modifiers .fa-chevron-down").forEach(el => el.addEventListener("click", onMoveBarDown));
+    // TODO refresh value input on attribute change
 
     resourceTab.querySelector(".brawlbar-add").addEventListener("click", event => onAddResource(event, tokenConfig, data));
     if (data.canSaveDefaults) {
-        new foundry.applications.ux.ContextMenu(resourceTab, ".brawlbar-save", saveEntries, { eventName: "click" });
+        new foundry.applications.ux.ContextMenu(resourceTab, ".brawlbar-save", saveEntries, { eventName: "click", jQuery: false });
     }
     if (data.canLoadDefaults) {
-        new foundry.applications.ux.ContextMenu(resourceTab, ".brawlbar-load", loadEntries, { eventName: "click" });
+        new foundry.applications.ux.ContextMenu(resourceTab, ".brawlbar-load", loadEntries, { eventName: "click", jQuery: false });
     }
 
     // Refresh displayed value for all attributes.
     resourceTab.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(tokenConfig.token, el));
+    if (game.system.id === "dnd5e") tokenConfig._prepareResourceLabels(resourceTab);
+}
+
+/**
+ * Removes all bar related form fields from the given tab.
+ * @param {HTMLElement} tab The element for the resource tab.
+ */
+function clearNativeBarFields(tab) {
+    const nativeBarFields = [
+        tab.querySelector("select[name='displayBars']"),
+        tab.querySelector("select[name='bar1.attribute']"),
+        tab.querySelector("select[name='bar2.attribute']"),
+        ...tab.querySelectorAll("div.bar-data"),
+    ];
+    nativeBarFields.forEach(el => el.closest("div.form-group").remove());
 }
 
 /**
@@ -401,7 +410,7 @@ async function setCurrentResources(app, attributes, resources) {
         brawlBars: barData,
         barAttributes: attributes,
     }));
-    if (container.parentElement.parentElement.classList.contains("active")) app.setPosition();
+    if (container.closest(".tab")?.classList.contains("active")) app.setPosition();
     container.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(app.token, el));
     if (game.system.id === "dnd5e") app._prepareResourceLabels(container);
 }

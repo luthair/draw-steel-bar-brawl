@@ -74,8 +74,7 @@
             "fgImageHint": "Ersetzt die übliche Bar mit einem Bild, das entsprechend der Füllung abgeschnitten ist.",
             "bgImage": "Hintergrundbild",
             "bgImageHint": "Ersetzt den üblichen Hintergrund der Bar mit einem Bild. Es wird empfohlen, dass beide Bilder dieselbe Breite wie das Gitter der Szene haben.",
-            "opacity": "Deckkraft",
-            "save": "Bar aktualisieren"
+            "opacity": "Deckkraft"
         },
         "attribute": {
             "none": "Keins (entfernen)",
@@ -106,10 +105,10 @@
             "save": "Speichern in...",
             "saveConfirmation": "Ressourcen in {target} gespeichert.",
             "load": "Laden aus...",
-            "defaultToken": "Santardtoken",
-            "typeDefaults": "<strong>{type}</strong> Standard",
-            "prototypeToken": "<strong>{name}</strong>s Prototyp-Token",
-            "activeTokens": "<strong>{name}</strong>s aktive Tokens"
+            "defaultToken": "Standardtoken",
+            "typeDefaults": "{type} Standard",
+            "prototypeToken": "{name}s Prototyp-Token",
+            "activeTokens": "{name}s aktive Tokens"
         }
     }
 }

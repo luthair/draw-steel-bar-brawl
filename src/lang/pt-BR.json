@@ -74,8 +74,7 @@
             "fgImageHint": "Substitui a barra normal por uma imagem recortada, com base na porcentagem de preenchimento.",
             "bgImage": "Imagem de Fundo",
             "bgImageHint": "Substitui o fundo normal da barra por uma imagem. Recomenda-se que ambas as imagens tenham a mesma largura que o tamanho da grade da cena.",
-            "opacity": "Opacidade",
-            "save": "Atualizar Barra"
+            "opacity": "Opacidade"
         },
         "attribute": {
             "none": "Nenhum (remover)",
@@ -107,9 +106,9 @@
             "saveConfirmation": "Salvar recursos em {target}.",
             "load": "Carregar de...",
             "defaultToken": "Token Padrão",
-            "typeDefaults": "Padrão de <strong>{type}</strong>",
-            "prototypeToken": "Protótipo de token de <strong>{name}</strong>",
-            "activeTokens": "Tokens ativos de <strong>{name}</strong>"
+            "typeDefaults": "Padrão de {type}",
+            "prototypeToken": "Protótipo de token de {name}",
+            "activeTokens": "Tokens ativos de {name}"
         }
     }
 }
