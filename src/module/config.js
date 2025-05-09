@@ -165,26 +165,30 @@ function onDeleteBar() {
 }
 
 /**
- * Decreases the order of the bar associated with the event's target by 1 and
- *  moves its element accordingly.
+ * Decreases the order of the bar associated with the event's target by 1 and moves its element accordingly.
+ * @param {Event} event The event of the click.
  */
-function onMoveBarUp() {
+function onMoveBarUp(event) {
     const barEl = this.parentElement.parentElement.parentElement;
     const prevBarEl = barEl.previousElementSibling;
     if (!prevBarEl || prevBarEl.tagName !== "DETAILS") return;
+
+    event.preventDefault();
     moveBarElement(barEl, prevBarEl);
     swapButtonState("a.fa-chevron-down", this.parentElement, prevBarEl);
     swapButtonState("a.fa-chevron-up", prevBarEl, this.parentElement);
 }
 
 /**
- * Increases the order of the bar associated with the event's target by 1 and
- *  moves its element accordingly.
+ * Increases the order of the bar associated with the event's target by 1 and moves its element accordingly.
+ * @param {Event} event The event of the click.
  */
-function onMoveBarDown() {
+function onMoveBarDown(event) {
     const barEl = this.parentElement.parentElement.parentElement;
     const nextBarEl = barEl.nextElementSibling;
     if (!nextBarEl || nextBarEl.tagName !== "DETAILS") return;
+
+    event.preventDefault();
     moveBarElement(nextBarEl, barEl);
     swapButtonState("a.fa-chevron-down", nextBarEl, this.parentElement);
     swapButtonState("a.fa-chevron-up", this.parentElement, nextBarEl);
