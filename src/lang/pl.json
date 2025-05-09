@@ -100,6 +100,7 @@
             "right-inner": "Prawo (od wewnątrz)",
             "right-outer": "Prawo (na zewnątrz)"
         },
+        "section": "Resource Bars",
         "add": "Dodaj zasób",
         "defaults": {
             "save": "Zapisz jako...",

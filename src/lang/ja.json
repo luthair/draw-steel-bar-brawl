@@ -100,6 +100,7 @@
             "right-inner": "右(内)",
             "right-outer": "右(外)"
         },
+        "section": "Resource Bars",
         "add": "リソースの追加",
         "defaults": {
             "save": "Save to...",

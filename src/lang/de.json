@@ -100,6 +100,7 @@
             "right-inner": "Rechts (innen)",
             "right-outer": "Rechts (außen)"
         },
+        "section": "Ressourcen Bars",
         "add": "Ressource hinzufügen",
         "defaults": {
             "save": "Speichern in...",

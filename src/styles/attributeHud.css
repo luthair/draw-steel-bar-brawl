@@ -113,10 +113,6 @@ div.indent-details {
     overflow-y: auto;
     overflow-x: visible;
 }
-.bar-controls {
-    margin-top: auto;
-        display: flex;
-}
 
 button.brawlbar-add {
     width: 80%;
@@ -127,6 +123,7 @@ button.brawlbar-add {
     text-align: left;
     bottom: calc(100% + 2px);
     top: unset;
+    pointer-events: all;
 }
 
 .bar-controls #context-menu .context-item {

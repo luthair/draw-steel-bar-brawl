@@ -100,6 +100,7 @@
             "right-inner": "오른쪽(안쪽)",
             "right-outer": "오른쪽(바깥쪽)"
         },
+        "section": "Resource Bars",
         "add": "자원 추가",
         "defaults": {
             "save": "Save to...",
