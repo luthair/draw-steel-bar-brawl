@@ -63,16 +63,6 @@
     transform: translateY(-100%);
 }
 
-.token-sheet .tab[data-tab="resources"] label,
-.brawlbar-configuration label {
-    white-space: nowrap;
-}
-
-.token-sheet .tab[data-tab="resources"] .form-fields label,
-.brawlbar-configuration .form-fields label {
-    display: flex;
-}
-
 input.indent-input {
     text-align: right;
     width: 32px;

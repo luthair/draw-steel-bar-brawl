@@ -122,8 +122,8 @@ function ensureAttributeData(data) {
 function refreshValueInput(token, target, event) {
     const barId = target.name.split(".")[3];
     if (!barId) return;
-    let form = target.form;
-    if (form && !form.classList.contains("brawlbar-configuration")) form = form.querySelector("#" + barId);
+
+    const form = target.form;
     if (!form) return;
 
     // Set a hidden attribute input to make sure FoundryVTT doesn't override it with null.
