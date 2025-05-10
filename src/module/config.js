@@ -1,4 +1,5 @@
 import * as api from "./api.js";
+import { on, stopEvent } from "./jsUtils.js";
 import { getDefaultResources, setDefaultResources } from "./settings.js";
 
 /**
@@ -67,12 +68,11 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     const barConfiguration = await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
     resourceTab.insertAdjacentHTML("beforeend", barConfiguration);
 
-    resourceTab.querySelectorAll("details > summary")
-        .forEach(el => el.addEventListener("click", () => setTimeout(() => tokenConfig.setPosition())));
-    resourceTab.querySelectorAll(".bar-modifiers .fa-trash").forEach(el => el.addEventListener("click", onDeleteBar));
-    resourceTab.querySelectorAll(".bar-modifiers .fa-chevron-up").forEach(el => el.addEventListener("click", onMoveBarUp));
-    resourceTab.querySelectorAll(".bar-modifiers .fa-chevron-down").forEach(el => el.addEventListener("click", onMoveBarDown));
-    // TODO refresh value input on attribute change
+    on(resourceTab, "click", ".bar-summary", () => setTimeout(() => tokenConfig.setPosition()));
+    on(resourceTab, "click", ".bar-modifiers .fa-trash", onDeleteBar);
+    on(resourceTab, "click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
+    on(resourceTab, "click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
+    on(resourceTab, "change", "select.brawlbar-attribute", ev => refreshValueInput(tokenConfig.token, ev.delegateTarget, ev));
 
     resourceTab.querySelector(".brawlbar-add").addEventListener("click", event => onAddResource(event, tokenConfig, data));
     if (data.canSaveDefaults) {
@@ -166,11 +166,13 @@ function refreshValueInput(token, target, event) {
 
 /**
  * Removes the bar associated with the event's target from the resources.
+ * @param {Event} event The event of the click.
  */
-function onDeleteBar() {
-    const configEl = $(this.parentElement.parentElement.nextElementSibling);
-    configEl.parent().hide();
-    configEl.find("select.brawlbar-attribute").val("");
+function onDeleteBar(event) {
+    stopEvent(event);
+    const configEl = event.delegateTarget.closest(".bar-summary").nextElementSibling;
+    configEl.parentElement.hidden = true;
+    configEl.querySelector("select.brawlbar-attribute").value = "";
 }
 
 /**
@@ -178,14 +180,15 @@ function onDeleteBar() {
  * @param {Event} event The event of the click.
  */
 function onMoveBarUp(event) {
-    const barEl = this.parentElement.parentElement.parentElement;
+    const target = event.delegateTarget;
+    const barEl = target.closest("details");
     const prevBarEl = barEl.previousElementSibling;
     if (!prevBarEl || prevBarEl.tagName !== "DETAILS") return;
 
-    event.preventDefault();
+    stopEvent(event);
     moveBarElement(barEl, prevBarEl);
-    swapButtonState("a.fa-chevron-down", this.parentElement, prevBarEl);
-    swapButtonState("a.fa-chevron-up", prevBarEl, this.parentElement);
+    swapButtonState("a.fa-chevron-down", target.parentElement, prevBarEl);
+    swapButtonState("a.fa-chevron-up", prevBarEl, target.parentElement);
 }
 
 /**
@@ -193,14 +196,15 @@ function onMoveBarUp(event) {
  * @param {Event} event The event of the click.
  */
 function onMoveBarDown(event) {
-    const barEl = this.parentElement.parentElement.parentElement;
+    const target = event.delegateTarget;
+    const barEl = target.closest("details");
     const nextBarEl = barEl.nextElementSibling;
     if (!nextBarEl || nextBarEl.tagName !== "DETAILS") return;
 
-    event.preventDefault();
+    stopEvent(event);
     moveBarElement(nextBarEl, barEl);
-    swapButtonState("a.fa-chevron-down", nextBarEl, this.parentElement);
-    swapButtonState("a.fa-chevron-up", this.parentElement, nextBarEl);
+    swapButtonState("a.fa-chevron-down", nextBarEl, target.parentElement);
+    swapButtonState("a.fa-chevron-up", target.parentElement, nextBarEl);
 }
 
 /**

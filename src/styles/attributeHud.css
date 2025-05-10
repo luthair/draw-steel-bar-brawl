@@ -121,6 +121,7 @@ div.indent-details {
 button.brawlbar-add {
     width: 80%;
     align-self: center;
+    margin-bottom: calc(-16px + 0.5rem); /* Negative row gap + footer gap */
 }
 
 .bar-controls #context-menu {
