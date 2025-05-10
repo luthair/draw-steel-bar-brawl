@@ -104,6 +104,20 @@ div.indent-details {
     overflow-x: visible;
 }
 
+.token-resources label {
+    white-space: nowrap;
+}
+
+.token-resources .sep {
+    margin: 0;
+    flex: 0;
+}
+
+.bb-form-field-col > label {
+    display: inline-block;
+    width: 100%;
+}
+
 button.brawlbar-add {
     width: 80%;
     align-self: center;
