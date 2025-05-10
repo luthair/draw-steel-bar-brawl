@@ -1,3 +1,9 @@
+1.8.10
+- Added support for FoundryVTT v13.
+- Added option to disable bitmap caching.
+- Moved global token resource defaults to module settings. This will reset defaults that aren't actor type specific.
+- Fixed configuration display when Simple d20 stats is installed.
+
 1.8.9
 - Added Polish translation (thanks *Lioheart*).
 - Added built-in support for caching bars (thanks *Codas*).
