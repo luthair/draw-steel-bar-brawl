@@ -276,8 +276,8 @@ export const isBarVisible = function (token, bar, ignoreTransient = false) {
         return true;
     } else {
         if ((bar.hideFull || bar.hideEmpty) && bar.value === undefined) refreshBarValues(token.document, bar);
-        if (bar.hideFull && bar.value === bar.max) return false;
-        if (bar.hideEmpty && bar.value === 0) return false;
+        if (bar.hideFull && bar.value >= bar.max) return false;
+        if (bar.hideEmpty && bar.value <= 0) return false;
     }
 
     const inCombat = token.inCombat;
