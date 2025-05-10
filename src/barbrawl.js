@@ -60,7 +60,7 @@ Hooks.on("preCreateActor", function (doc) {
     if (doc._stats?.createdTime) return; // Actor is a copy, don't touch it.
     if (!doc.prototypeToken) return;
 
-    const barConfig = getDefaultResources(doc.type);
+    const barConfig = getDefaultResources(doc.type) ?? getDefaultResources();
     if (barConfig) doc.updateSource({ "prototypeToken.flags.barbrawl.resourceBars": barConfig }, { recursive: false });
 
     prepareCreation(doc.prototypeToken);
