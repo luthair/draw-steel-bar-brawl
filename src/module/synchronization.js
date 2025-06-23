@@ -63,7 +63,7 @@ export function prepareCreation(tokenDoc) {
         const brawlBars = {};
         if (data.bar1?.attribute) brawlBars.bar1 = getDefaultBar("bar1", data.bar1.attribute, data.displayBars);
         if (data.bar2?.attribute) brawlBars.bar2 = getDefaultBar("bar1", data.bar2.attribute, data.displayBars);
-        tokenDoc.updateSource({ "flags.barbrawl.resourceBars": brawlBars }, { recursive: false });
+        tokenDoc.updateSource({ "flags.barbrawl.==resourceBars": brawlBars });
     }
 
     // Always make the bar container visible.

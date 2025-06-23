@@ -61,7 +61,7 @@ Hooks.on("preCreateActor", function (doc) {
     if (!doc.prototypeToken) return;
 
     const barConfig = getDefaultResources(doc.type) ?? getDefaultResources();
-    if (barConfig) doc.updateSource({ "prototypeToken.flags.barbrawl.resourceBars": barConfig }, { recursive: false });
+    if (barConfig) doc.updateSource({ "prototypeToken.flags.barbrawl.==resourceBars": barConfig });
 
     prepareCreation(doc.prototypeToken);
 });

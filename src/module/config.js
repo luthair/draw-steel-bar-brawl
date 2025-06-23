@@ -357,11 +357,7 @@ function createSaveEntries(tokenConfig) {
  * @returns {Promise} A promise representing the actor update.
  */
 async function replaceActorResources(actor, resources, label) {
-    await actor.update(
-        { "prototypeToken.flags.barbrawl.resourceBars": resources },
-        { recursive: false, diff: false }
-    );
-
+    await actor.update({ "prototypeToken.flags.barbrawl.==resourceBars": resources }, { diff: false });
     ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target: label }));
 }
 
@@ -373,8 +369,8 @@ async function replaceActorResources(actor, resources, label) {
  * @returns {Promise} A promise representing the scene update.
  */
 async function replaceTokenResources(tokens, resources, label) {
-    const update = tokens.map(t => ({ _id: t.id, "flags.barbrawl.resourceBars": resources }));
-    await canvas.scene.updateEmbeddedDocuments("Token", update, { recursive: false, diff: false });
+    const update = tokens.map(t => ({ _id: t.id, "flags.barbrawl.==resourceBars": resources }));
+    await canvas.scene.updateEmbeddedDocuments("Token", update, { diff: false });
 
     ui.notifications.info("Bar Brawl | " + game.i18n.format("barbrawl.defaults.saveConfirmation", { target: label }));
 }
@@ -433,7 +429,7 @@ function createLoadEntries(tokenConfig, attributes) {
     entries.push({
         name: "barbrawl.defaults.defaultToken",
         icon: '<i class="fas fa-cogs"></i>',
-        callback: () => setCurrentResources(tokenConfig, attributes, getDefaultResources()),
+        callback: () => setCurrentResources(tokenConfig, attributes, getDefaultResources(null, false)),
     });
 
     entries.push({
