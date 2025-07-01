@@ -84,7 +84,19 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
 
     // Refresh displayed value for all attributes.
     resourceTab.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(tokenConfig.token, el));
-    if (game.system.id === "dnd5e") tokenConfig._prepareResourceLabels(resourceTab);
+    localizeResources(tokenConfig, resourceTab);
+}
+
+/**
+ * Performs system specific localization for the rendered resources.
+ * @param {TokenConfig} config The configuration to localize.
+ * @param {HTMLElement} html The HTML containing the resources.
+ */
+function localizeResources(config, html) {
+    if (game.system.id !== "dnd5e") return;
+
+    const sheetClass = CONFIG.Token.sheetClasses.base["dnd5e.TokenConfig5e"]?.cls;
+    sheetClass?.prototype._prepareResourceLabels?.call(config, html);
 }
 
 /**
@@ -268,7 +280,7 @@ async function onAddResource(event, tokenConfig, data) {
     }));
     const barConfiguration = container.lastElementChild;
 
-    if (game.system.id === "dnd5e" && tokenConfig._prepareResourceLabels) tokenConfig._prepareResourceLabels(barConfiguration);
+    localizeResources(tokenConfig, barConfiguration);
     if (barEls.length) {
         const prevBarConf = barEls[barEls.length - 1];
         prevBarConf.removeAttribute("open");
@@ -412,7 +424,7 @@ async function setCurrentResources(app, attributes, resources) {
     }));
     if (container.closest(".tab")?.classList.contains("active")) app.setPosition();
     container.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(app.token, el));
-    if (game.system.id === "dnd5e") app._prepareResourceLabels(container);
+    localizeResources(app, container);
 }
 
 /**
