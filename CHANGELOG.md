@@ -1,3 +1,7 @@
+1.8.11
+- Fixed flag reset for other systems and modules when Bar Brawl is enabled.
+- Fixed an issue with DnD5e resource localization.
+
 1.8.10
 - Added support for FoundryVTT v13.
 - Added option to disable bitmap caching.
