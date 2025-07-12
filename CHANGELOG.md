@@ -1,3 +1,6 @@
+1.8.12
+- Fixed token HUD inputs not working with more than two bars.
+
 1.8.11
 - Fixed flag reset for other systems and modules when Bar Brawl is enabled.
 - Fixed an issue with DnD5e resource localization.
