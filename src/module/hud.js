@@ -1,4 +1,5 @@
 import { getVisibleBars } from "./api.js";
+import { stopEvent } from "./jsUtils.js";
 
 /**
  * Modifies the given HTML to render additional resource input fields.
@@ -40,7 +41,9 @@ export const extendTokenHud = async function (tokenHud, html, data) {
     if (rightBars.length) html.querySelector(".col.right").insertAdjacentHTML("beforeend", await renderBarInputs(rightBars, "right-bars"));
 
     for (const input of html.querySelectorAll(".attribute > input")) {
-        input.addEventListener("focus", _ => input.select());
+        // Register on each element to ensure that our events run before FVTT handling.
+        input.addEventListener("focus", event => event.target.select());
+        input.addEventListener("change", changeBarInput.bind(tokenHud));
     }
 }
 
@@ -53,4 +56,18 @@ export const extendTokenHud = async function (tokenHud, html, data) {
 function renderBarInputs(bars, css) {
     if (game.settings.get("barbrawl", "compactHud")) css += " compact";
     return foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/resource-hud.hbs", { bars, css });
+}
+
+/**
+ * Processes an attribute change from the token HUD.
+ * @param {Event} event The change event of the input.
+ */
+function changeBarInput(event) {
+    const attr = this.document.getBarAttribute(event.target.name);
+    if (!attr) return;
+
+    stopEvent(event); // Prevent FVTT handling.
+    const resource = this._parseAttributeInput(attr.attribute, attr, event.target.value);
+    const value = resource.isDelta ? resource.delta : resource.value;
+    this.actor?.modifyTokenAttribute(resource.attribute, value, resource.isDelta, resource.isBar);
 }
