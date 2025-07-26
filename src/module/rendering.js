@@ -250,7 +250,7 @@ function drawResourceBar(token, bar, data, textures) {
     bar.contentHeight ||= getBarHeight(token, bar.contentWidth, textures);
     if (bar.contentWidth <= 0 || bar.contentHeight <= 0) return;
 
-    drawBarBackground(bar, data, textures[0]);
+    if (!data.hideBg) drawBarBackground(bar, data, textures[0]);
 
     const barValue = data.invert ? labelValue.max - labelValue.value : labelValue.value;
     const barPercentage = Math.clamp(barValue, 0, labelValue.max) / labelValue.max;

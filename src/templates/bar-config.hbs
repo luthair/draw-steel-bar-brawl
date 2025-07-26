@@ -270,6 +270,15 @@
             </div>
 
             <div class="form-group">
+                <label>{{localize "barbrawl.config.hideBg"}}:</label>
+                <div class="form-fields">
+                    <input type="checkbox" name="flags.barbrawl.resourceBars.{{this.id}}.hideBg" {{#if
+                        this.hideBg}}checked{{/if}} />
+                </div>
+                <p class="notes">{{localize "barbrawl.config.hideBgHint"}}</p>
+            </div>
+
+            <div class="form-group">
                 <label>{{localize "barbrawl.config.opacity"}}:</label>
                 <div class="form-fields">
                     <label>
