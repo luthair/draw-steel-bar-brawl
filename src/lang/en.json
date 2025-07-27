@@ -74,6 +74,8 @@
             "fgImageHint": "Replaces the usual bar with an image that is clipped based on the fill percentage.",
             "bgImage": "Background image",
             "bgImageHint": "Replaces the usual bar background with an image. It is recommended that both images have the same width as the scene's grid size.",
+            "hideBg": "Hide background",
+            "hideBgHint": "Hides the bar background entirely.",
             "opacity": "Opacity"
         },
         "attribute": {
