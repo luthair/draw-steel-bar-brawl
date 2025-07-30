@@ -30,8 +30,8 @@
             "hint": "Mnoży wysokość paska przez skonfigurowaną wartość w celu zwiększenia czytelności. Wpłynie to na etykietę, ale nie na tło lub obraz pierwszego planu paska."
         },
         "cacheBitmaps": {
-            "name": "Cache rendered bars",
-            "hint": "Enables bitmap caching for bars on the canvas, which may improve performance at the cost of readability (especially for labels)."
+            "name": "Pamięć podręczna renderowanych słupków",
+            "hint": "Włącza buforowanie bitmap dla pasków na płótnie, co może poprawić wydajność kosztem czytelności (szczególnie w przypadku etykiet)."
         },
         "config": {
             "attribute": "Atrybut",
@@ -74,8 +74,9 @@
             "fgImageHint": "Zastępuje zwykły pasek obrazem, który jest przycinany na podstawie procentu wypełnienia.",
             "bgImage": "Obraz tła",
             "bgImageHint": "Zastępuje zwykłe tło paska obrazem. Zaleca się, aby oba obrazy miały taką samą szerokość jak rozmiar siatki sceny.",
-            "opacity": "Krycie",
-            "save": "Zaktualizuj pasek"
+            "hideBg": "Ukryj tło",
+            "hideBgHint": "Całkowicie ukrywa tło paska.",
+            "opacity": "Krycie"
         },
         "attribute": {
             "none": "Brak (usuń)",
@@ -100,15 +101,16 @@
             "right-inner": "Prawo (od wewnątrz)",
             "right-outer": "Prawo (na zewnątrz)"
         },
+        "section": "Paski zasobów",
         "add": "Dodaj zasób",
         "defaults": {
             "save": "Zapisz jako...",
             "saveConfirmation": "Zapisane zasoby w {target}.",
             "load": "Załaduj z...",
             "defaultToken": "Domyślny token",
-            "typeDefaults": "<strong>{type}</strong> domyślny",
-            "prototypeToken": "<strong>{name}</strong> prototyp tokena",
-            "activeTokens": "<strong>{name}</strong> aktywne tokeny"
+            "typeDefaults": "{type} domyślny",
+            "prototypeToken": "Token prototypowy {name}",
+            "activeTokens": "Aktywne tokeny {name}"
         }
     }
 }
