@@ -74,6 +74,8 @@
             "fgImageHint": "Zastępuje zwykły pasek obrazem, który jest przycinany na podstawie procentu wypełnienia.",
             "bgImage": "Obraz tła",
             "bgImageHint": "Zastępuje zwykłe tło paska obrazem. Zaleca się, aby oba obrazy miały taką samą szerokość jak rozmiar siatki sceny.",
+            "hideBg": "Ukryj tło",
+            "hideBgHint": "Całkowicie ukrywa tło paska.",
             "opacity": "Krycie"
         },
         "attribute": {
@@ -99,7 +101,7 @@
             "right-inner": "Prawo (od wewnątrz)",
             "right-outer": "Prawo (na zewnątrz)"
         },
-        "section": "Resource Bars",
+        "section": "Paski zasobów",
         "add": "Dodaj zasób",
         "defaults": {
             "save": "Zapisz jako...",
@@ -107,8 +109,8 @@
             "load": "Załaduj z...",
             "defaultToken": "Domyślny token",
             "typeDefaults": "{type} domyślny",
-            "prototypeToken": "{name} prototyp tokena",
-            "activeTokens": "{name} aktywne tokeny"
+            "prototypeToken": "Token prototypowy {name}",
+            "activeTokens": "Aktywne tokeny {name}"
         }
     }
 }
