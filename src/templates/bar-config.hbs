@@ -37,13 +37,8 @@
         <div class="form-group">
             <label>{{localize "barbrawl.config.color"}}:</label>
             <div class="form-fields">
-                <input class="color" style="min-width: 64px;" type="text"
-                    name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}" />
-                <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}">
-                <span class="sep">-</span>
-                <input class="color" style="min-width: 64px;" type="text"
-                    name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}" />
-                <input type="color" data-edit="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}">
+                <color-picker name="flags.barbrawl.resourceBars.{{this.id}}.mincolor" value="{{this.mincolor}}"></color-picker>
+                <color-picker name="flags.barbrawl.resourceBars.{{this.id}}.maxcolor" value="{{this.maxcolor}}"></color-picker>
             </div>
         </div>
 
