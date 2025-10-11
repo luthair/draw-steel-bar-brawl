@@ -75,7 +75,6 @@
             "bgImage": "Obraz tła",
             "bgImageHint": "Zastępuje zwykłe tło paska obrazem. Zaleca się, aby oba obrazy miały taką samą szerokość jak rozmiar siatki sceny.",
             "hideBg": "Ukryj tło",
-            "hideBgHint": "Całkowicie ukrywa tło paska.",
             "opacity": "Krycie"
         },
         "attribute": {

@@ -74,6 +74,7 @@
             "fgImageHint": "Ersetzt die übliche Bar mit einem Bild, das entsprechend der Füllung abgeschnitten ist.",
             "bgImage": "Hintergrundbild",
             "bgImageHint": "Ersetzt den üblichen Hintergrund der Bar mit einem Bild. Es wird empfohlen, dass beide Bilder dieselbe Breite wie das Gitter der Szene haben.",
+            "hideBg": "Hintergrund verstecken",
             "opacity": "Deckkraft"
         },
         "attribute": {

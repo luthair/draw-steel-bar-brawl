@@ -74,6 +74,7 @@
             "fgImageHint": "Substitui a barra normal por uma imagem recortada, com base na porcentagem de preenchimento.",
             "bgImage": "Imagem de Fundo",
             "bgImageHint": "Substitui o fundo normal da barra por uma imagem. Recomenda-se que ambas as imagens tenham a mesma largura que o tamanho da grade da cena.",
+            "hideBg": "Hide background",
             "opacity": "Opacidade"
         },
         "attribute": {
