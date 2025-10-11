@@ -89,7 +89,7 @@ export const registerSettings = function () {
  * Refreshes the bars of all tokens to apply the new style.
  */
 function refreshBars() {
-    for (let token of canvas.tokens.placeables) token.drawBars();
+    for (let token of canvas.tokens.placeables) token.renderFlags.set({ refreshBars: true });
 }
 
 /**

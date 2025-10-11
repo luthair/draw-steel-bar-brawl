@@ -94,7 +94,7 @@ function synchronizeUpdate(tokenData, newData) {
     }
 
     // Ensure that the bar container stays visible.
-    if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS && (hasBrawlBars || hasLegacyBars)) {
+    if (tokenData.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
         newData.displayBars = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
     } else {
         delete newData.displayBars;
