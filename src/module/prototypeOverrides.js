@@ -4,12 +4,21 @@
 export function adjustPrototypeOverrides() {
     const setting = foundry.data.PrototypeTokenOverrides.SETTING
     const overrides = game.settings.get("core", setting);
+    let changed = false;
     for (const type of Actor.TYPES) {
         const typeOverrides = overrides[type];
-        if (typeOverrides) typeOverrides.displayBars = undefined;
+        if (typeOverrides && typeOverrides.displayBars !== undefined) {
+            changed = true;
+            typeOverrides.displayBars = undefined;
+            console.warn(`Bar Brawl | Resetting global bar visibility override for ${type}.`);
+        }
     }
 
-    game.settings.set("core", setting, overrides);
+    if (changed) {
+        const overrideData = foundry.data.PrototypeTokenOverrides.schema.clean(overrides);
+        foundry.data.PrototypeTokenOverrides.schema.validate(overrideData);
+        game.settings.set("core", setting, overrideData);
+    }
 
     Hooks.on("renderPrototypeOverridesConfig", hideDisplayBarsOverride);
 }

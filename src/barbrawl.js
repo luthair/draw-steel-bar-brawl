@@ -34,12 +34,10 @@ Hooks.once('init', function () {
     foundry.applications.handlebars.loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
     extendPrototypeTokenConfig();
 });
+Hooks.on("ready", adjustPrototypeOverrides);
 
 /** Hooks to change UI elements. */
-Hooks.once("setup", function () {
-    adjustPrototypeOverrides();
-    extendBarRenderer();
-});
+Hooks.once("setup", extendBarRenderer);
 Hooks.on("renderTokenHUD", extendTokenHud);
 Hooks.on("renderTokenApplication", extendTokenConfig);
 
