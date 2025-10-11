@@ -2,25 +2,18 @@
  * Resets bar display overrides in the prototype override setting and hides associated configuration elements.
  */
 export function adjustPrototypeOverrides() {
-    const setting = foundry.data.PrototypeTokenOverrides.SETTING
-    const overrides = game.settings.get("core", setting);
-    let changed = false;
-    for (const type of Actor.TYPES) {
-        const typeOverrides = overrides[type];
-        if (typeOverrides && typeOverrides.displayBars !== undefined) {
-            changed = true;
-            typeOverrides.displayBars = undefined;
-            console.warn(`Bar Brawl | Resetting global bar visibility override for ${type}.`);
-        }
-    }
-
-    if (changed) {
-        const overrideData = foundry.data.PrototypeTokenOverrides.schema.clean(overrides);
-        foundry.data.PrototypeTokenOverrides.schema.validate(overrideData);
-        game.settings.set("core", setting, overrideData);
-    }
-
     Hooks.on("renderPrototypeOverridesConfig", hideDisplayBarsOverride);
+    Hooks.on("preCreateToken", forceDisplayBars);
+}
+
+/**
+ * Ensures that bars on new tokens are always displayed.
+ * @param {TokenDocument} tokenDoc The document to create.
+ */
+function forceDisplayBars(tokenDoc) {
+    if (tokenDoc.displayBars !== CONST.TOKEN_DISPLAY_MODES.ALWAYS) {
+        tokenDoc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+    }
 }
 
 /**
