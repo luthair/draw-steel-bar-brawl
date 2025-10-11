@@ -25,27 +25,6 @@ const configConsts = {
 }
 
 /**
- * Extends the way Foundry updates the configuration of the default token. If
- *  available, the libWrapper module is used for better compatibility.
- */
-export const extendPrototypeTokenConfig = function () {
-    if (game.modules.get("lib-wrapper")?.active) {
-        // Override using libWrapper: https://github.com/ruipin/fvtt-lib-wrapper
-        libWrapper.register("barbrawl", "CONFIG.Token.prototypeSheetClass.prototype._processChanges",
-            function (wrapped, updateData) {
-                return wrapped(ensureAttributeData(updateData));
-            }, "WRAPPER");
-    } else {
-        // Manual override
-        const originalProcessChanges = CONFIG.Token.prototypeSheetClass.prototype._processChanges;
-        CONFIG.Token.prototypeSheetClass.prototype._processChanges = function (updateData) {
-            return originalProcessChanges.call(this, ensureAttributeData(updateData));
-        };
-
-    }
-}
-
-/**
  * Modifies the given HTML to replace the resource bar configuration with our
  *  own template.
  * @param {TokenConfig} tokenConfig The token configuration object.
@@ -55,6 +34,8 @@ export const extendPrototypeTokenConfig = function () {
 export const extendTokenConfig = async function (tokenConfig, html, data) {
     data.constants = configConsts;
     data.brawlBars = api.getBars(tokenConfig.token);
+    data.bar1Attribute = data.brawlBars.find(bar => bar.id === "bar1")?.attribute;
+    data.bar2Attribute = data.brawlBars.find(bar => bar.id === "bar2")?.attribute;
     data.barAttributes.unshift({ value: "custom", label: "barbrawl.attribute.custom" });
 
     const saveEntries = createSaveEntries(tokenConfig);
@@ -114,18 +95,6 @@ function clearNativeBarFields(tab) {
 }
 
 /**
- * Prepares the given data to ensure that it contains objects for FoundryVTT bar attributes.
- * @param {object?} data The data to prepare. Defaults to empty object.
- * @returns {object} The prepared data.
- */
-function ensureAttributeData(data) {
-    data ??= {};
-    data.bar1 ??= { attribute: "" };
-    data.bar2 ??= { attribute: "" };
-    return data;
-}
-
-/**
  * Updates the states and values for the current and maximum value inputs.
  * @param {Token} token The token that the bar belongs to.
  * @param {HTMLElement} target The select element that contains the bar's attribute.
@@ -139,7 +108,10 @@ function refreshValueInput(token, target, event) {
     if (!form) return;
 
     // Set a hidden attribute input to make sure FoundryVTT doesn't override it with null.
-    target.nextElementSibling.value = target.value;
+    if (barId === "bar1" || barId === "bar2") {
+        const nativeAttributeInput = form.querySelector(`input[name="${barId}.attribute"]`);
+        if (nativeAttributeInput) nativeAttributeInput.value = target.value === "custom" ? "" : target.value;
+    }
 
     const valueInput = form.querySelector(`input.${barId}-value`);
     const maxInput = form.querySelector(`input.${barId}-max`);
@@ -185,6 +157,12 @@ function onDeleteBar(event) {
     const configEl = event.delegateTarget.closest(".bar-summary").nextElementSibling;
     configEl.parentElement.hidden = true;
     configEl.querySelector("select.brawlbar-attribute").value = "";
+
+    const barId = configEl.id;
+    if (barId === "bar1" || barId === "bar2") {
+        const nativeAttributeInput = configEl.closest(".token-resources")?.querySelector(`input[name="${barId}.attribute"]`);
+        if (nativeAttributeInput) nativeAttributeInput.value = "";
+    }
 }
 
 /**

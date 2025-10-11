@@ -4,7 +4,7 @@
  */
 
 import { extendBarRenderer } from "./module/rendering.js";
-import { extendPrototypeTokenConfig, extendTokenConfig } from "./module/config.js";
+import { extendTokenConfig } from "./module/config.js";
 import { extendTokenHud } from "./module/hud.js";
 import { getDefaultResources, registerSettings } from "./module/settings.js";
 import { prepareCreation, prepareUpdate } from "./module/synchronization.js";
@@ -32,7 +32,6 @@ Hooks.once('init', function () {
     });
 
     foundry.applications.handlebars.loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
-    extendPrototypeTokenConfig();
 });
 Hooks.on("ready", adjustPrototypeOverrides);
 
