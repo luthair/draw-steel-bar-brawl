@@ -33,7 +33,7 @@ Hooks.once('init', function () {
 
     foundry.applications.handlebars.loadTemplates(["modules/barbrawl/templates/bar-config.hbs"]);
 });
-Hooks.on("ready", adjustPrototypeOverrides);
+Hooks.once("ready", adjustPrototypeOverrides);
 
 /** Hooks to change UI elements. */
 Hooks.once("setup", extendBarRenderer);
