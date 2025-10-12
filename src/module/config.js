@@ -49,10 +49,10 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
     const barConfiguration = await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/token-resources.hbs", data);
     resourceTab.insertAdjacentHTML("beforeend", barConfiguration);
 
-    on(resourceTab, "click", ".bar-summary", () => setTimeout(() => tokenConfig.setPosition()));
     on(resourceTab, "click", ".bar-modifiers .fa-trash", onDeleteBar);
     on(resourceTab, "click", ".bar-modifiers .fa-chevron-up", onMoveBarUp);
     on(resourceTab, "click", ".bar-modifiers .fa-chevron-down", onMoveBarDown);
+    on(resourceTab, "click", ".bar-summary", () => setTimeout(() => tokenConfig.setPosition()));
     on(resourceTab, "change", "select.brawlbar-attribute", ev => refreshValueInput(tokenConfig.token, ev.delegateTarget, ev));
 
     resourceTab.querySelector(".brawlbar-add").addEventListener("click", event => onAddResource(event, tokenConfig, data));
