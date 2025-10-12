@@ -1,3 +1,10 @@
+1.8.13
+- Added an option to hide a bar's background texture (thanks *SagaTympana*).
+- Improved migration of global bar visibility overrides.
+- Fixed token configuration with newer FoundryVTT versions when less than 2 bars are present.
+- Fixed color pickers.
+- Fixed move and delete buttons.
+
 1.8.12
 - Fixed token HUD inputs not working with more than two bars.
 
