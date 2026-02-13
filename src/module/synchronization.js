@@ -8,7 +8,9 @@ import { convertBarVisibility, getDefaultBar } from "./api.js";
  */
 export const prepareUpdate = function (tokenDoc, newData) {
     const changedBars = foundry.utils.getProperty(newData, "flags.barbrawl.resourceBars");
+    const replaceBars = foundry.utils.getProperty(newData, "flags.barbrawl.replaceBars");
     if (changedBars) {
+        const existingBars = foundry.utils.getProperty(tokenDoc._source, "flags.barbrawl.resourceBars") ?? {};
         for (let barId of Object.keys(changedBars)) {
             // Remove bars that were explicitly set to "None" attribute.
             if (barId.startsWith("-=")) continue; // Already queued for removal
@@ -38,8 +40,20 @@ export const prepareUpdate = function (tokenDoc, newData) {
             if (bar.hasOwnProperty("value")) {
                 if (barData && !barData.ignoreMin) bar.value = Math.max(0, bar.value);
                 if (barData && !barData.ignoreMax && barData.max) bar.value = Math.min(barData.max, bar.value);
+        }
+
+        if (replaceBars) {
+            // Remove bars that are no longer present in the configuration.
+            for (let barId of Object.keys(existingBars)) {
+                if (changedBars[barId] || newData[barId]?.attribute) continue;
+                changedBars["-=" + barId] = null;
             }
         }
+    } else if (replaceBars) {
+        // Clear all bar data.
+        foundry.utils.setProperty(newData, "flags.barbrawl.==resourceBars", {});
+        newData.bar1 = { attribute: null };
+        newData.bar2 = { attribute: null };
     }
 
     synchronizeUpdate(tokenDoc._source, newData);
