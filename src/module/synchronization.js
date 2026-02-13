@@ -1,4 +1,4 @@
-import { convertBarVisibility, getDefaultBar } from "./api.js";
+import { clampBarValue, convertBarVisibility, getDefaultBar } from "./api.js";
 
 /**
  * Prepares the update of a token (or a prototype token) by removing invalid
@@ -24,22 +24,16 @@ export const prepareUpdate = function (tokenDoc, newData) {
                 continue;
             }
 
-            // Convert legacy visibility.
-            if (bar.hasOwnProperty("visibility")) convertBarVisibility(bar);
-
-            const barData = (foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {})[barId];
-
             // Validate update.
+            const barData = existingBars[barId];
             if (!bar.id && !barData?.id) {
                 console.warn("Bar Brawl | Skipping invalid bar update. This may indicate a compatibility issue.");
                 delete changedBars[barId];
                 continue;
             }
 
-            // Clamp values.
-            if (bar.hasOwnProperty("value")) {
-                if (barData && !barData.ignoreMin) bar.value = Math.max(0, bar.value);
-                if (barData && !barData.ignoreMax && barData.max) bar.value = Math.min(barData.max, bar.value);
+            convertBarVisibility(bar);
+            clampBarValue(bar, barData);
         }
 
         if (replaceBars) {

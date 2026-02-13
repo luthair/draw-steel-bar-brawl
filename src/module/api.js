@@ -82,6 +82,25 @@ export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
 }
 
 /**
+ * Clamps the value for the update of the given bar according to its configuration.
+ * @param {object} barUpdate The updated data of the bar.
+ * @param {object} barData The data to use for unchanged fields.
+ */
+export function clampBarValue(barUpdate, barData) {
+    if (!barUpdate.hasOwnProperty("value")) return;
+
+    const attribute = barUpdate.attribute ?? barData.attribute;
+    if (attribute !== "custom") return;
+
+    const ignoreMin = barUpdate.ignoreMin ?? barData.ignoreMin;
+    if (!ignoreMin) barUpdate.value = Math.max(0, barUpdate.value);
+
+    const ignoreMax = barUpdate.ignoreMax ?? barData.ignoreMax;
+    const max = barUpdate.max ?? barData.max;
+    if (!ignoreMax && max) barUpdate.value = Math.min(max, barUpdate.value);
+}
+
+/**
  * Converts Foundry's token visibility mode to separate visibilities for the
  *  owner and everyone else. Existing values are preserved.
  * @param {Object} bar The data of the bar to convert.
