@@ -87,7 +87,21 @@ async function renderResources(config, bars, choices = null) {
     parent.innerHTML = await foundry.applications.handlebars.renderTemplate("modules/barbrawl/templates/bar-config.hbs", data);
     parent.querySelectorAll("select.brawlbar-attribute").forEach(el => refreshValueInput(config.token, el));
     localizeResources(config, parent);
-    if (!choices) config.setPosition();
+    if (!choices) {
+        // Choices aren't set when an inline operation triggers the render.
+        config.setPosition();
+        const barObj = bars.reduce((obj, bar, index) => {
+            bar.order = index;
+            obj[bar.id] = bar;
+            return obj;
+        }, {});
+        const previewData = {
+            "flags.barbrawl.==resourceBars": barObj,
+            bar1: { attribute: null },
+            bar2: { attribute: null },
+        };
+        config._previewChanges(previewData);
+    }
 }
 
 /**
@@ -205,7 +219,7 @@ function onDeleteBar(event) {
     stopEvent(event);
     const { barId } = event.target.dataset;
     const bars = Object.values(getCurrentResources(this)).filter(bar => bar.id !== barId);
-    this.tabGroups.bars = bars[0]?.id;
+    if (this.tabGroups.bars === barId) this.tabGroups.bars = bars[0]?.id;
     return renderResources(this, bars);
 }
 
@@ -277,10 +291,9 @@ function getCurrentResources(app) {
     if (!app.element?.length) return {};
 
     // Parse form data.
-    let data = new foundry.applications.ux.FormDataExtended(app.form).object;
-    data = foundry.utils.expandObject(data).flags;
-    data = data?.barbrawl?.resourceBars ?? {};
-    return data;
+    const formData = new foundry.applications.ux.FormDataExtended(app.form);
+    const data = app._processFormData(new Event("submit"), app.form, formData);
+    return data.flags?.barbrawl?.resourceBars ?? {};
 }
 
 /**
