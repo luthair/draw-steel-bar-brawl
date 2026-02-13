@@ -60,14 +60,24 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
         tokenConfig._createContextMenu(
             () => saveEntries,
             ".brawlbar-save",
-            { eventName: "click", hookName: "getBarBrawlSaveMenuEntries", jQuery: false },
+            {
+                eventName: "click",
+                hookName: "getBarBrawlSaveMenuEntries",
+                parentClassHooks: false,
+                jQuery: false,
+            },
         );
     }
     if (canLoadDefaults) {
         tokenConfig._createContextMenu(
             () => loadEntries,
             ".brawlbar-load",
-            { eventName: "click", hookName: "getBarBrawlLoadMenuEntries", jQuery: false },
+            {
+                eventName: "click",
+                hookName: "getBarBrawlLoadMenuEntries",
+                parentClassHooks: false,
+                jQuery: false,
+            },
         );
     }
 }
