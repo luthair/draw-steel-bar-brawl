@@ -47,10 +47,18 @@
     </div>
 
     <nav class="sheet-tabs tabs" aria-roledescription="{{localize "SHEETS.FormNavLabel"}}">
-        <a data-action="tab" data-group="bar" data-tab="visibility" {{#if (eq ../activeTab "visibility")}}class="active"{{/if}}><span>Visibility</span></a>
-        <a data-action="tab" data-group="bar" data-tab="position" {{#if (eq ../activeTab "position")}}class="active"{{/if}}><span>Position</span></a>
-        <a data-action="tab" data-group="bar" data-tab="value" {{#if (eq ../activeTab "value")}}class="active"{{/if}}><span>Value</span></a>
-        <a data-action="tab" data-group="bar" data-tab="display" {{#if (eq ../activeTab "display")}}class="active"{{/if}}><span>Display</span></a>
+        <a data-action="tab" data-group="bar" data-tab="visibility" {{#if (eq ../activeTab "visibility")}}class="active"{{/if}}>
+            <span>{{localize "barbrawl.config.tabs.visibility"}}</span>
+        </a>
+        <a data-action="tab" data-group="bar" data-tab="position" {{#if (eq ../activeTab "position")}}class="active"{{/if}}>
+            <span>{{localize "barbrawl.config.tabs.position"}}</span>
+        </a>
+        <a data-action="tab" data-group="bar" data-tab="value" {{#if (eq ../activeTab "value")}}class="active"{{/if}}>
+            <span>{{localize "barbrawl.config.tabs.value"}}</span>
+        </a>
+        <a data-action="tab" data-group="bar" data-tab="display" {{#if (eq ../activeTab "display")}}class="active"{{/if}}>
+            <span>{{localize "barbrawl.config.tabs.display"}}</span>
+        </a>
     </nav>
     
     <section class="tab {{#if (eq ../activeTab "visibility")}}active{{/if}}" data-group="bar" data-tab="visibility">
