@@ -51,8 +51,8 @@ export const extendTokenConfig = async function (tokenConfig, html, data) {
 
     tokenConfig.options.actions.addBar = onAddResource;
     tokenConfig.options.actions.deleteBar = onDeleteBar;
-    tokenConfig.options.actions.moveBarUp = onMoveBarUp;
-    tokenConfig.options.actions.moveBarDown = onMoveBarDown;
+    tokenConfig.options.actions.moveBarOut = onMoveBarOut;
+    tokenConfig.options.actions.moveBarIn = onMoveBarIn;
 
     on(resourceTab, "change", "select.brawlbar-attribute", ev => refreshValueInput(tokenConfig.token, ev.delegateTarget, ev));
 
@@ -229,7 +229,7 @@ function onDeleteBar(event) {
  * @param {Event} event The event of the click.
  * @returns {Promise} A promise representing the rendering process.
  */
-function onMoveBarUp(event) {
+function onMoveBarOut(event) {
     stopEvent(event);
 
     const barId = event.target.closest(".tab[data-group='bars']")?.dataset.tab;
@@ -250,7 +250,7 @@ function onMoveBarUp(event) {
  * @param {Event} event The event of the click.
  * @returns {Promise} A promise representing the rendering process.
  */
-function onMoveBarDown(event) {
+function onMoveBarIn(event) {
     stopEvent(event);
 
     const barId = event.target.closest(".tab[data-group='bars']")?.dataset.tab;

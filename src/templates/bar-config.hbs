@@ -151,8 +151,12 @@
                 <select name="flags.barbrawl.resourceBars.{{this.id}}.position">
                     {{selectOptions ../constants.positions selected=this.position localize=true}}
                 </select>
-                <button type="button" data-action="moveBarUp" {{#if @first}}disabled{{/if}}><i class="fas fa-chevron-left"></i></button>
-                <button type="button" data-action="moveBarDown" {{#if @last}}disabled{{/if}}><i class="fas fa-chevron-right"></i></button>
+                <button type="button" data-action="moveBarOut" title="{{localize "barbrawl.config.moveOutHint"}}" {{#if @first}}disabled{{/if}}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button type="button" data-action="moveBarIn" title="{{localize "barbrawl.config.moveInHint"}}" {{#if @last}}disabled{{/if}}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
 

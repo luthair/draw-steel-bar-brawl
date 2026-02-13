@@ -48,6 +48,8 @@
             "value": "値 (現在/最大)",
             "color": "色 (最小/最大)",
             "position": "位置",
+            "moveInHint": "Move away from token edge",
+            "moveOutHint": "Move towards token edge",
             "advanced": "高度な設定",
             "indent": "インデント",
             "indentHint": "バーの側面にある余白を、トークンの幅に対する%で表したもの。",

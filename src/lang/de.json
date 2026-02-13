@@ -48,6 +48,8 @@
             "value": "Wert (aktuell/max)",
             "color": "Farbe (min/max)",
             "position": "Position",
+            "moveInHint": "Vom Tokenrand wegbewegen",
+            "moveOutHint": "Zum Tokenrand bewegen",
             "advanced": "Erweiterte Einstellungen",
             "indent": "Einzug",
             "indentHint": "Zusätzlicher Abstand an der Seite der Bar in Prozent der Breite des Tokens.",

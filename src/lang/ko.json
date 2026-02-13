@@ -48,6 +48,8 @@
             "value": "수치(현재값/최대값)",
             "color": "색상(현재값/최대값)",
             "position": "위치",
+            "moveInHint": "Move away from token edge",
+            "moveOutHint": "Move towards token edge",
             "advanced": "고급 설정",
             "indent": "넓이",
             "indentHint": "토큰 너비 안쪽의 바 넓이 퍼센트를 설정합니다.",

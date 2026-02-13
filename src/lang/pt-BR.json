@@ -48,6 +48,8 @@
             "value": "Valor (atual/máx)",
             "color": "Cor (min/máx)",
             "position": "Posição",
+            "moveInHint": "Move away from token edge",
+            "moveOutHint": "Move towards token edge",
             "advanced": "Configurações Avançadas",
             "indent": "Recuo",
             "indentHint": "Espaço adicional na lateral da barra em porcentagem da largura do token.",
