@@ -57,7 +57,7 @@
             "shareHeightHint": "Impede que a barra reserve qualquer espaço vertical, o que move a barra para a mesma linha.",
             "style": "Etiqueta",
             "ignoreLimits": "Ignorar Limites",
-            "ignoreLimitsHint": "Desabilita a definição de valores entre 0 (inferior) e o máximo (superior). Isso só se aplica a barras personalizadas, já que a definição de outroa atributos é feita pelo sistema.",
+            "ignoreLimitsHint": "Desabilita a definição de valores entre 0 (inferior) e o máximo (superior).",
             "ignoreMin": "Limite Inferior",
             "ignoreMax": "Limite Superior",
             "invert": "Inverter Valores",

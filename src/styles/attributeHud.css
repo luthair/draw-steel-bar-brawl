@@ -69,28 +69,6 @@ input.indent-input {
     margin-right: 1px;
 }
 
-div.indent-details {
-    margin-left: 15px;
-}
-
-.bar-modifiers {
-    visibility: hidden;
-}
-
-.bar-summary:hover .bar-modifiers {
-    visibility: visible;
-}
-
-.bar-modifiers a.disabled {
-    color: #999;
-    pointer-events: none;
-}
-
-.bar-modifiers span.bar-id {
-    color: #666;
-    font-size: smaller;
-}
-
 .token-resources {
     display: flex;
     flex-direction: column;
@@ -98,8 +76,6 @@ div.indent-details {
 }
 
 .token-resources .bb-bar-container {
-    min-height: 130px;
-    max-height: 700px;
     overflow-y: auto;
     overflow-x: visible;
 }
@@ -108,20 +84,36 @@ div.indent-details {
     white-space: nowrap;
 }
 
+.token-resources nav {
+    row-gap: 0.25rem;
+}
+
+.token-resources nav > span {
+    white-space: nowrap;
+}
+
 .token-resources .sep {
     margin: 0;
     flex: 0;
 }
 
+.token-resources nav.sheet-tabs {
+    flex-wrap: wrap;
+}
+
+a[data-group="bars"] {
+    border-image: linear-gradient(to right, var(--bar-min-color) 0%, var(--bar-max-color) 100%) 1;
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+}
+
+a[data-action="addBar"] {
+    white-space: nowrap;
+}
+
 .bb-form-field-col > label {
     display: inline-block;
     width: 100%;
-}
-
-button.brawlbar-add {
-    width: 80%;
-    align-self: center;
-    margin-bottom: calc(-16px + 0.5rem); /* Negative row gap + footer gap */
 }
 
 .bar-controls #context-menu {
@@ -135,8 +127,4 @@ button.brawlbar-add {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.token-sheet nav.sheet-tabs {
-    flex-grow: 0;
 }

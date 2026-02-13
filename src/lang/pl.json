@@ -57,7 +57,7 @@
             "shareHeightHint": "Zapobiega zarezerwowaniu przez pasek miejsca w pionie, co powoduje przesunięcie następnego paska do tej samej linii.",
             "style": "Etykieta",
             "ignoreLimits": "Ignoruj ograniczenia",
-            "ignoreLimitsHint": "Wyłącza zaciskanie wartości wejściowych pomiędzy 0 (dolna) i maksymalną (górna). Jest to stosowane tylko do niestandardowych pasków, ponieważ zaciskanie dla innych atrybutów jest obsługiwane przez system.",
+            "ignoreLimitsHint": "Wyłącza zaciskanie wartości wejściowych pomiędzy 0 (dolna) i maksymalną (górna).",
             "ignoreMin": "Dolna granica",
             "ignoreMax": "Górna granica",
             "invert": "Odwrócenie wartości",

@@ -57,7 +57,7 @@
             "shareHeightHint": "Prevents the bar from reserving any vertical space, which moves the following bar to the same line.",
             "style": "Label",
             "ignoreLimits": "Ignore limits",
-            "ignoreLimitsHint": "Disables clamping of input values between 0 (lower) and the maximum (upper). This is only applied to custom bars as clamping for other attributes is handled by the system.",
+            "ignoreLimitsHint": "Disables clamping of input values between 0 (lower) and the maximum (upper).",
             "ignoreMin": "Lower limit",
             "ignoreMax": "Upper limit",
             "invert": "Invert values",

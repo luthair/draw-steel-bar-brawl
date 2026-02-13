@@ -185,11 +185,11 @@ function refreshBarValues(tokenDoc, bar) {
 /**
  * Creates an ID for a new bar, which is either 'bar1' for the first, 'bar2'
  *  for the second or a random ID for any subsequent bar.
- * @param {Object[]} existingBars The array of existing bar data.
+ * @param {object[]} existingBars The array of existing bar data.
  * @private
  */
 export const getNewBarId = function (existingBars) {
-    const existingIds = new Set(existingBars.map((_i, el) => el.lastElementChild.id).get());
+    const existingIds = new Set(existingBars.map(bar => bar.id));
 
     // Try to find an easily readable, sortable and unused number.
     for (let i = 1; i < 10; i++) {
@@ -198,7 +198,7 @@ export const getNewBarId = function (existingBars) {
     }
 
     // Generate a random ID as fallback.
-    return "bar" + randomID();
+    return "bar" + foundry.utils.randomID();
 }
 
 /**

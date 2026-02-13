@@ -57,7 +57,7 @@
             "shareHeightHint": "Verhindert, dass die Bar vertikalen Platz reserviert, so dass die nächste Bar dieselbe Zeile verwendet.",
             "style": "Beschriftung",
             "ignoreLimits": "Limits ignorieren",
-            "ignoreLimitsHint": "Deaktiviert die Begrenzung von Werten zwischen 0 (Untergrenze) und dem Maximalwert (Obergrenze). Dies gilt nur für benutzerdefinierte Bars - andere Attribute werden vom System begrenzt.",
+            "ignoreLimitsHint": "Deaktiviert die Begrenzung von Werten zwischen 0 (Untergrenze) und dem Maximalwert (Obergrenze).",
             "ignoreMin": "Untergrenze",
             "ignoreMax": "Obergrenze",
             "invert": "Werte umkehren",

@@ -57,7 +57,7 @@
             "shareHeightHint": "Prevents the bar from reserving any vertical space, which moves the following bar to the same line.",
             "style": "라벨",
             "ignoreLimits": "제한 무시",
-            "ignoreLimitsHint": "0(하한)과 최대(상한) 사이의 고정 값을 초과/미만으로 입력할 수 있도록 합니다. 다른 바 속성값은 시스템에 의해 제어되므로 커스텀한 바에만 적용됩니다.",
+            "ignoreLimitsHint": "0(하한)과 최대(상한) 사이의 고정 값을 초과/미만으로 입력할 수 있도록 합니다.",
             "ignoreMin": "최소값",
             "ignoreMax": "최대값",
             "invert": "수치 반전",
