@@ -1,3 +1,7 @@
+1.9.0
+- Modernized resource configuration UI.
+- Improved token preview of bar changes.
+
 1.8.13
 - Added an option to hide a bar's background texture (thanks *SagaTympana*).
 - Improved migration of global bar visibility overrides.
