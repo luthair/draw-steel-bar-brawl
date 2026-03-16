@@ -72,6 +72,18 @@
             "approximateHint": "バーとそのラベルに概算値を表示します。表示するセグメントの数を設定します。",
             "approximateOwner": "所持者に近似値を表示する",
             "approximateOwnerHint": "トークンの所有者に対しても近似値を表示するかどうかを示します。",
+            "segmentationMode": "Segmentation mode",
+            "segmentationModeHint": "Choose whether this bar uses the classic approximation behavior or Draw Steel recovery segments.",
+            "segmentationModes": {
+                "approximation": "Classic approximation",
+                "drawSteel": "Draw Steel stamina"
+            },
+            "drawSteelSegments": "Draw Steel segments",
+            "drawSteelSegmentsHint": "Controls how many recovery segments the Draw Steel mode uses. This setting only applies when Draw Steel segmentation is selected.",
+            "drawSteelSegmentsChoices": {
+                "three": "3 segments",
+                "six": "6 segments"
+            },
             "fgImage": "前景イメージ",
             "fgImageHint": "通常のバーを、塗りつぶし率に応じてクリッピングされたイメージで置き換えます。",
             "bgImage": "背景イメージ",

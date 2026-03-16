@@ -72,6 +72,18 @@
             "approximateHint": "Wyświetla przybliżoną wartość na pasku i jego etykiecie. Konfiguruje liczbę wyświetlanych segmentów.",
             "approximateOwner": "Przybliżenie dla właściciela",
             "approximateOwnerHint": "Wskazuje, czy przybliżona wartość jest wyświetlana również dla właściciela tokena.",
+            "segmentationMode": "Segmentation mode",
+            "segmentationModeHint": "Choose whether this bar uses the classic approximation behavior or Draw Steel recovery segments.",
+            "segmentationModes": {
+                "approximation": "Classic approximation",
+                "drawSteel": "Draw Steel stamina"
+            },
+            "drawSteelSegments": "Draw Steel segments",
+            "drawSteelSegmentsHint": "Controls how many recovery segments the Draw Steel mode uses. This setting only applies when Draw Steel segmentation is selected.",
+            "drawSteelSegmentsChoices": {
+                "three": "3 segments",
+                "six": "6 segments"
+            },
             "fgImage": "Obraz pierwszoplanowy",
             "fgImageHint": "Zastępuje zwykły pasek obrazem, który jest przycinany na podstawie procentu wypełnienia.",
             "bgImage": "Obraz tła",

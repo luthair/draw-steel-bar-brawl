@@ -11,6 +11,13 @@ const BAR_VISIBILITY = {
     CONTROL: 10
 }
 
+const SEGMENTATION_MODES = {
+    APPROXIMATION: "approximation",
+    DRAW_STEEL: "draw-steel"
+};
+
+const DRAW_STEEL_DEFAULT_SEGMENTS = 3;
+
 /**
  * Retreives all resource bars of the given token document, sorted by their
  *  configured order.
@@ -21,7 +28,7 @@ export const getBars = function (tokenDoc) {
     const resourceBars = foundry.utils.getProperty(tokenDoc, "flags.barbrawl.resourceBars") ?? {};
     const barArray = Object.entries(resourceBars).map(entry => {
         entry[1].id = entry[0];
-        return entry[1];
+        return withBarDefaults(entry[1]);
     });
 
     if (tokenDoc.bar1?.attribute && !resourceBars.bar1)
@@ -47,7 +54,7 @@ export const getBar = function (tokenDoc, barId) {
 
     const bar = resourceBars[barId];
     if (bar) bar.id ??= barId;
-    return bar;
+    return withBarDefaults(bar);
 }
 
 /**
@@ -59,25 +66,57 @@ export const getBar = function (tokenDoc, barId) {
  * @returns {Object} An object containing the current and maximum value of the bar.
  */
 export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
-    if (!bar) return { value: 0, max: 0, approximated: false };
+    if (!bar) return { value: 0, max: 0, approximated: false, renderValue: 0, renderMax: 0, renderPercentage: 0, renderSegments: 1 };
     if (resolveValue) refreshBarValues(tokenDoc, bar);
 
-    // Apply approximation.
-    if (bar.subdivisions && (bar.subdivisionsOwner || !tokenDoc.isOwner)) {
-        const maxValue = bar.max || 1;
-        const clampedValue = Math.clamp(bar.value, 0, maxValue);
-        const approxValue = clampedValue / maxValue * bar.subdivisions;
+    const maxValue = bar.max || 1;
+    const clampedValue = Math.clamp(bar.value ?? 0, 0, maxValue);
+
+    if (usesDrawSteelSegmentation(tokenDoc, bar)) {
+        const segmentCount = getDrawSteelSegmentCount(bar);
+        const displayValue = bar.invert ? maxValue - clampedValue : clampedValue;
+        const renderValue = Math.clamp(Math.floor(displayValue / maxValue * segmentCount), 0, segmentCount);
         return {
-            value: bar.invert ? Math.floor(approxValue) : Math.ceil(approxValue),
-            max: bar.subdivisions,
-            approximated: true
+            value: renderValue,
+            max: segmentCount,
+            approximated: true,
+            segmentationMode: SEGMENTATION_MODES.DRAW_STEEL,
+            renderValue,
+            renderMax: segmentCount,
+            renderPercentage: renderValue / segmentCount,
+            renderSegments: renderValue,
+            fixedColor: "#80FF00"
         }
     }
+
+    // Apply approximation.
+    if (bar.subdivisions && shouldApproximateForUser(tokenDoc, bar)) {
+        const approxValue = clampedValue / maxValue * bar.subdivisions;
+        const value = bar.invert ? Math.floor(approxValue) : Math.ceil(approxValue);
+        const renderValue = bar.invert ? bar.subdivisions - value : value;
+        return {
+            value,
+            max: bar.subdivisions,
+            approximated: true,
+            segmentationMode: SEGMENTATION_MODES.APPROXIMATION,
+            renderValue,
+            renderMax: bar.subdivisions,
+            renderPercentage: Math.clamp(renderValue, 0, bar.subdivisions) / bar.subdivisions,
+            renderSegments: Math.clamp(renderValue, 0, bar.subdivisions)
+        }
+    }
+
+    const renderValue = bar.invert ? (bar.max ?? 0) - (bar.value ?? 0) : (bar.value ?? 0);
 
     return {
         value: bar.value,
         max: bar.max,
-        approximated: false
+        approximated: false,
+        segmentationMode: SEGMENTATION_MODES.APPROXIMATION,
+        renderValue,
+        renderMax: bar.max ?? 0,
+        renderPercentage: bar.max ? Math.clamp(renderValue, 0, bar.max) / bar.max : 0,
+        renderSegments: 1
     }
 }
 
@@ -235,7 +274,9 @@ export const getDefaultBar = function (id, attribute, defaultVisibility = CONST.
         visibility: defaultVisibility,
         mincolor: "#000000",
         maxcolor: "#FFFFFF",
-        position: "bottom-inner"
+        position: "bottom-inner",
+        segmentationMode: SEGMENTATION_MODES.APPROXIMATION,
+        drawSteelSegments: DRAW_STEEL_DEFAULT_SEGMENTS
     }
 
     convertBarVisibility(defaultBar);
@@ -326,4 +367,23 @@ export const refreshBarVisibility = function (token) {
         const bar = getBar(token.document, pixiBar.name);
         if (bar) pixiBar.visible = isBarVisible(token, bar);
     }
+}
+
+function withBarDefaults(bar) {
+    if (!bar) return bar;
+    bar.segmentationMode ??= SEGMENTATION_MODES.APPROXIMATION;
+    bar.drawSteelSegments = getDrawSteelSegmentCount(bar);
+    return bar;
+}
+
+function shouldApproximateForUser(tokenDoc, bar) {
+    return bar.subdivisionsOwner || !tokenDoc.isOwner;
+}
+
+function usesDrawSteelSegmentation(tokenDoc, bar) {
+    return bar.segmentationMode === SEGMENTATION_MODES.DRAW_STEEL && shouldApproximateForUser(tokenDoc, bar);
+}
+
+function getDrawSteelSegmentCount(bar) {
+    return [3, 6].includes(Number(bar?.drawSteelSegments)) ? Number(bar.drawSteelSegments) : DRAW_STEEL_DEFAULT_SEGMENTS;
 }

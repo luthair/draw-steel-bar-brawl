@@ -72,6 +72,18 @@
             "approximateHint": "바와 해당 표기 텍스트에 대략적인 값을 표시합니다. 표시되는 분할 수를 설정합니다.",
             "approximateOwner": "소유자도 근사치로 보기",
             "approximateOwnerHint": "토큰 소유자에게도 근사치로 보이게 할지 설정합니다.",
+            "segmentationMode": "Segmentation mode",
+            "segmentationModeHint": "Choose whether this bar uses the classic approximation behavior or Draw Steel recovery segments.",
+            "segmentationModes": {
+                "approximation": "Classic approximation",
+                "drawSteel": "Draw Steel stamina"
+            },
+            "drawSteelSegments": "Draw Steel segments",
+            "drawSteelSegmentsHint": "Controls how many recovery segments the Draw Steel mode uses. This setting only applies when Draw Steel segmentation is selected.",
+            "drawSteelSegmentsChoices": {
+                "three": "3 segments",
+                "six": "6 segments"
+            },
             "fgImage": "전경 이미지",
             "fgImageHint": "바를 퍼센티지를 따라서 잘리는 이미지로 설정합니다.",
             "bgImage": "배경 이미지",

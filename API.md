@@ -19,7 +19,8 @@
 <a name="getBars"></a>
 
 ## getBars ⇒ <code>Array.&lt;Object&gt;</code>
-Retreives all resource bars of the given token document, sorted by their configured order.
+Retreives all resource bars of the given token document, sorted by their
+ configured order.
 
 **Kind**: global constant  
 **Returns**: <code>Array.&lt;Object&gt;</code> - An array of bar data.  
@@ -45,6 +46,8 @@ Retreives the data of a single resource bar of the given token document.
 
 ## getActualBarValue ⇒ <code>Object</code>
 Calculates the real value of the displayed bar.
+
+The returned object always contains `value`, `max` and `approximated`. When segmented display modes are active, it may also include renderer-oriented fields such as `renderValue`, `renderMax`, `renderPercentage`, `renderSegments`, `segmentationMode` and `fixedColor`.
 
 **Kind**: global constant  
 **Returns**: <code>Object</code> - An object containing the current and maximum value of the bar.  

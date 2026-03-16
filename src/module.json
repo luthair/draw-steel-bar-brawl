@@ -1,12 +1,15 @@
 {
     "id": "barbrawl",
     "title": "Bar Brawl",
-    "description": "Adds additional options for displaying multiple resource bars on a token.",
+    "description": "Fork of Bar Brawl that preserves Adrian Haberecht's original work while adapting resource bar segmentation toward Draw Steel stamina and recovery.",
     "authors": [
         {
             "name": "Adrian Haberecht",
             "url": "https://gitlab.com/woodentavern",
             "discord": "dj_addi"
+        },
+        {
+            "name": "Luthair"
         }
     ],
     "version": "1.9.0",

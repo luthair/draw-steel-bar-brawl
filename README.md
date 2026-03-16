@@ -2,6 +2,16 @@
 
 This is the repository of the resource bar addon for FoundryVTT.
 
+## Fork Notice
+
+This repository is a fork maintained by **Luthair**.
+
+The original module, **Bar Brawl**, was created by **Adrian Haberecht**, and the original authorship and prior contributions remain credited in this fork.
+
+The intended direction of this fork is to adjust segmentation and approximation behavior so it aligns more closely with **Draw Steel**'s stamina and recovery model.
+
+This fork continues to use the original project's **GNU Lesser General Public License v3.0** license terms. See the [LICENSE](LICENSE) file for the full text.
+
 ## Usage
 
 **Bar Brawl** allows an arbitrary amount of customizable resource bars for tokens.
@@ -113,11 +123,15 @@ It is also possible to flip the bar without inverting it's values by enabling th
 
 #### Approximation & Owner
 
-Sometimes you may not want to share the exact value of the bar with all players. For this purpose, you can set the approximation to a number of segments, which will also be applied to the label (e.g. a 9/10 value with 3 segments displays 3/3). The value is rounded up, so the bar is only empty when it reaches 0 (or below).
+Sometimes you may not want to share the exact value of the bar with all players. For this purpose, you can set the approximation to a number of segments, which will also be applied to the label (e.g. a 9/10 value with 3 segments displays 3/3). In the classic approximation mode, non-inverted values are rounded up, so the bar is only empty when it reaches 0 (or below).
 
 ![Approximated values](images/approximation.png "Approximated values")
 
 By default, the owner of the token can still see the actual value of the resource. To change this, check the *Approximation for owner* box.
+
+To support stamina-style tracking, each bar can also switch its *Segmentation mode* to **Draw Steel stamina** and choose either **3** or **6** recovery segments. In this mode, standard Bar Brawl bars always render with a fixed green fill and only mark a segment as filled once that segment's full threshold is met. For example, a 30 stamina bar with 3 Draw Steel segments displays 3/3 at 30, 2/3 at 26 or 20, 1/3 at 10 and 0/3 at 9.
+
+The *Approximation for owner* option also controls whether the owner sees the segmented display for Draw Steel bars. Foreground images keep their own artwork colors, but their fill still snaps to completed Draw Steel thresholds.
 
 #### Images
 
@@ -185,6 +199,8 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
         label: "",
         subdivisions: 0,
         subdivisionsOwner: false,
+        segmentationMode: "approximation",
+        drawSteelSegments: 3,
         intentLeft: 0,
         indentRight: 0,
         fgImage: "",
@@ -207,7 +223,9 @@ Bar Brawl is purely data based, meaning that you can adjust everything by updati
 - The **invert** flag is a boolean indicating whether a full value should be rendered as en empty bar.
 - The **invertDirection** flag is a boolean that flips the bar along its primary axis (horizontally for top and bottom bars, vertically for left and right bars).
 - The **label** is prepended to the value label (determined by the style property).
-- The **subdivisions** field is an integer that applies approximation to the bar's label. By default, it is not applied for the owner of the token, which can be changed using **subdivisionsOwner**.
+- The **subdivisions** field is an integer that applies classic approximation to the bar's label and fill. By default, it is not applied for the owner of the token, which can be changed using **subdivisionsOwner**.
+- The **segmentationMode** field selects how segmented bars are displayed. Use `"approximation"` for the classic rounded-up behavior or `"draw-steel"` for Draw Steel stamina thresholds.
+- The **drawSteelSegments** field controls how many recovery thresholds a Draw Steel bar uses and currently supports `3` or `6`.
 - The **indent**s determine extra space before or after the bar and can be integers between -100 and 100 (although using a 100% indent will render nothing).
 - Images for the foreground and background can be set to a relative file path (as emitted by FoundryVTT's file picker).
 
@@ -294,3 +312,9 @@ if (game.modules.get("barbrawl")?.active) {
 ```
 
 For a full list of available methods, check the [API documentation](API.md).
+
+## License
+
+This fork keeps the original `LICENSE` file unchanged and preserves attribution to Adrian Haberecht for the original Bar Brawl project.
+
+Fork-specific changes are distributed under the same LGPL terms as the upstream project.

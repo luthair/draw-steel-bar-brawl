@@ -257,6 +257,29 @@
             </div>
             <p class="hint">{{localize "barbrawl.config.approximateOwnerHint"}}</p>
         </div>
+
+        <div class="form-group">
+            <label>{{localize "barbrawl.config.segmentationMode"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.segmentationMode">
+                    {{selectOptions ../constants.segmentationModes selected=this.segmentationMode localize=true}}
+                </select>
+            </div>
+            <p class="hint">{{localize "barbrawl.config.segmentationModeHint"}}</p>
+        </div>
+
+        <div class="form-group slim">
+            <label>{{localize "barbrawl.config.drawSteelSegments"}}:</label>
+            <div class="form-fields">
+                <select name="flags.barbrawl.resourceBars.{{this.id}}.drawSteelSegments" data-dtype="Number">
+                    <option value="3" {{#if (eq this.drawSteelSegments 3)}}selected{{/if}}>{{localize
+                        "barbrawl.config.drawSteelSegmentsChoices.three"}}</option>
+                    <option value="6" {{#if (eq this.drawSteelSegments 6)}}selected{{/if}}>{{localize
+                        "barbrawl.config.drawSteelSegmentsChoices.six"}}</option>
+                </select>
+            </div>
+            <p class="hint">{{localize "barbrawl.config.drawSteelSegmentsHint"}}</p>
+        </div>
     </section>
 
     <section class="tab {{#if (eq ../activeTab "display")}}active{{/if}}" data-group="bar" data-tab="display">

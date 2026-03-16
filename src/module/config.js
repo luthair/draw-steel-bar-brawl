@@ -21,6 +21,10 @@ const configConsts = {
         none: "barbrawl.textStyle.none",
         fraction: "barbrawl.textStyle.fraction",
         percent: "barbrawl.textStyle.percent"
+    },
+    segmentationModes: {
+        approximation: "barbrawl.config.segmentationModes.approximation",
+        "draw-steel": "barbrawl.config.segmentationModes.drawSteel"
     }
 }
 
@@ -133,6 +137,11 @@ function prepareContext(config, bars, choices = null) {
     }
 
     choices.unshift({ value: "custom", label: "barbrawl.attribute.custom" });
+    bars = bars.map(bar => ({
+        ...bar,
+        segmentationMode: bar.segmentationMode ?? "approximation",
+        drawSteelSegments: [3, 6].includes(Number(bar.drawSteelSegments)) ? Number(bar.drawSteelSegments) : 3
+    }));
     return {
         constants: configConsts,
         brawlBars: bars,

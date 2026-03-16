@@ -72,6 +72,18 @@
             "approximateHint": "Mostra um valor aproximado na barra e em sua etiqueta. Isso configura a quantidade de seguimentos exibidos.",
             "approximateOwner": "Aproximação para Dono",
             "approximateOwnerHint": "Indica se o valor aproximado também é exibido para o dono do token.",
+            "segmentationMode": "Segmentation mode",
+            "segmentationModeHint": "Choose whether this bar uses the classic approximation behavior or Draw Steel recovery segments.",
+            "segmentationModes": {
+                "approximation": "Classic approximation",
+                "drawSteel": "Draw Steel stamina"
+            },
+            "drawSteelSegments": "Draw Steel segments",
+            "drawSteelSegmentsHint": "Controls how many recovery segments the Draw Steel mode uses. This setting only applies when Draw Steel segmentation is selected.",
+            "drawSteelSegmentsChoices": {
+                "three": "3 segments",
+                "six": "6 segments"
+            },
             "fgImage": "Primeiro Plano",
             "fgImageHint": "Substitui a barra normal por uma imagem recortada, com base na porcentagem de preenchimento.",
             "bgImage": "Imagem de Fundo",

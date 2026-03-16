@@ -72,6 +72,18 @@
             "approximateHint": "Zeigt einen angenäherten Wert auf der Bar und deren Beschriftung an. Die Einstellung bestimmt, wie viele Segmente angezeigt werden.",
             "approximateOwner": "Näherung für Besitzer",
             "approximateOwnerHint": "Gibt an, ob der angenäherte Wert auch für den Besitzer des Tokens angezeigt wird.",
+            "segmentationMode": "Segmentation mode",
+            "segmentationModeHint": "Choose whether this bar uses the classic approximation behavior or Draw Steel recovery segments.",
+            "segmentationModes": {
+                "approximation": "Classic approximation",
+                "drawSteel": "Draw Steel stamina"
+            },
+            "drawSteelSegments": "Draw Steel segments",
+            "drawSteelSegmentsHint": "Controls how many recovery segments the Draw Steel mode uses. This setting only applies when Draw Steel segmentation is selected.",
+            "drawSteelSegmentsChoices": {
+                "three": "3 segments",
+                "six": "6 segments"
+            },
             "fgImage": "Vordergrundbild",
             "fgImageHint": "Ersetzt die übliche Bar mit einem Bild, das entsprechend der Füllung abgeschnitten ist.",
             "bgImage": "Hintergrundbild",

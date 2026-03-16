@@ -2,15 +2,18 @@
   "private": true,
   "name": "barbrawl",
   "version": "0.1.0",
-  "description": "",
+  "description": "Fork of FoundryVTT Bar Brawl that preserves the original work and targets Draw Steel-style stamina and recovery segmentation.",
   "scripts": {
     "package": "gulp package",
     "build": "gulp build && gulp link",
     "clean": "gulp clean && gulp link --clean",
     "release": "gulp release"
   },
-  "author": "Adrian Haberecht",
-  "license": "",
+  "author": "Luthair",
+  "contributors": [
+    "Adrian Haberecht (original author)"
+  ],
+  "license": "LGPL-3.0-or-later",
   "devDependencies": {
     "archiver": "^5.3.0",
     "chalk": "^4.1.1",

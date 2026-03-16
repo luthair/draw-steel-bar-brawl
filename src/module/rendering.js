@@ -233,7 +233,7 @@ async function draw3dBars(token) {
  * @returns {number} The final height of the bar.
  */
 function drawResourceBar(token, bar, data, textures) {
-    // Apply approximation.
+    // Apply approximation and display-specific segment math.
     const labelValue = getActualBarValue(token.document, data, false);
 
     // Update visibility.
@@ -241,7 +241,9 @@ function drawResourceBar(token, bar, data, textures) {
     bar.alpha = (data.opacity ?? 80) * 0.01;
 
     // Defer rendering to HP Bar module for compatibility.
-    if (data.attribute === "attributes.hp" && game.modules.get("arbron-hp-bar")?.active) {
+    if (data.attribute === "attributes.hp"
+        && game.modules.get("arbron-hp-bar")?.active
+        && labelValue.segmentationMode !== "draw-steel") {
         drawExternalBar(token, bar, data);
         drawBarLabel(bar, token, data, labelValue.value, labelValue.max);
         return bar.contentHeight;
@@ -252,10 +254,14 @@ function drawResourceBar(token, bar, data, textures) {
 
     if (!data.hideBg) drawBarBackground(bar, data, textures[0]);
 
-    const barValue = data.invert ? labelValue.max - labelValue.value : labelValue.value;
-    const barPercentage = Math.clamp(barValue, 0, labelValue.max) / labelValue.max;
-
-    drawBarForeground(bar, data, textures[1], barPercentage, labelValue.approximated ? barValue : 1);
+    drawBarForeground(
+        bar,
+        data,
+        textures[1],
+        labelValue.renderPercentage ?? 0,
+        labelValue.renderSegments ?? 1,
+        labelValue.fixedColor
+    );
     drawBarLabel(bar, token, data, labelValue.value, labelValue.max);
 
     // Rotate left & right bars.
@@ -320,8 +326,9 @@ function drawBarBackground(bar, data, texture) {
  * @param {PIXI.Texture?} texture The optional foreground texture to draw.
  * @param {number} percentage The displayed percentage of the bar.
  * @param {number} segments The amount of segments to draw.
+ * @param {string?} fillColor The optional foreground fill color override.
  */
-function drawBarForeground(bar, data, texture, percentage, segments) {
+function drawBarForeground(bar, data, texture, percentage, segments, fillColor = null) {
     if (percentage <= 0.01) return;
     if (data.fgImage) {
         if (!texture) return;
@@ -344,7 +351,7 @@ function drawBarForeground(bar, data, texture, percentage, segments) {
         // Draw foreground color.
         const gfx = bar.getChildByName("gfx");
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
-        const color = interpolateColor(data.mincolor, data.maxcolor, percentage);
+        const color = fillColor ?? interpolateColor(data.mincolor, data.maxcolor, percentage);
 
         gfx.beginFill(color, 1);
         if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 1);

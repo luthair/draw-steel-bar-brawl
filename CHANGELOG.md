@@ -1,3 +1,8 @@
+Fork notes
+- Fork maintained by Luthair.
+- Original Bar Brawl authorship and prior contributions by Adrian Haberecht remain credited.
+- Intended fork direction: revise segmentation calculations to better match Draw Steel stamina and recovery behavior.
+
 1.9.0
 - Modernized resource configuration UI.
 - Improved token preview of bar changes.
