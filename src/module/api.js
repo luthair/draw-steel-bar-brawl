@@ -66,7 +66,16 @@ export const getBar = function (tokenDoc, barId) {
  * @returns {Object} An object containing the current and maximum value of the bar.
  */
 export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
-    if (!bar) return { value: 0, max: 0, approximated: false, renderValue: 0, renderMax: 0, renderPercentage: 0, renderSegments: 1 };
+    if (!bar) return {
+        value: 0,
+        max: 0,
+        approximated: false,
+        renderValue: 0,
+        renderMax: 0,
+        renderPercentage: 0,
+        renderSegments: 1,
+        renderSegmentSlots: 1
+    };
     if (resolveValue) refreshBarValues(tokenDoc, bar);
 
     const maxValue = bar.max || 1;
@@ -85,6 +94,7 @@ export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
             renderMax: segmentCount,
             renderPercentage: renderValue / segmentCount,
             renderSegments: renderValue,
+            renderSegmentSlots: segmentCount,
             fixedColor: "#80FF00"
         }
     }
@@ -102,7 +112,8 @@ export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
             renderValue,
             renderMax: bar.subdivisions,
             renderPercentage: Math.clamp(renderValue, 0, bar.subdivisions) / bar.subdivisions,
-            renderSegments: Math.clamp(renderValue, 0, bar.subdivisions)
+            renderSegments: Math.clamp(renderValue, 0, bar.subdivisions),
+            renderSegmentSlots: bar.subdivisions
         }
     }
 
@@ -116,7 +127,8 @@ export const getActualBarValue = function (tokenDoc, bar, resolveValue = true) {
         renderValue,
         renderMax: bar.max ?? 0,
         renderPercentage: bar.max ? Math.clamp(renderValue, 0, bar.max) / bar.max : 0,
-        renderSegments: 1
+        renderSegments: 1,
+        renderSegmentSlots: 1
     }
 }
 

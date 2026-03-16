@@ -252,7 +252,7 @@ function drawResourceBar(token, bar, data, textures) {
     bar.contentHeight ||= getBarHeight(token, bar.contentWidth, textures);
     if (bar.contentWidth <= 0 || bar.contentHeight <= 0) return;
 
-    if (!data.hideBg) drawBarBackground(bar, data, textures[0]);
+    if (!data.hideBg) drawBarBackground(bar, data, textures[0], labelValue.renderSegmentSlots ?? 1);
 
     drawBarForeground(
         bar,
@@ -299,8 +299,9 @@ function getBarHeight(token, width, textures = [null, null]) {
  * @param {PIXI.Graphics | PIXI.Sprite} bar The graphics object to draw onto.
  * @param {Object} data The data of the bar.
  * @param {PIXI.Texture?} texture The optional background texture to draw.
+ * @param {number} segmentSlots The total amount of segment slots to preserve.
  */
-function drawBarBackground(bar, data, texture) {
+function drawBarBackground(bar, data, texture, segmentSlots = 1) {
     if (data.bgImage) {
         if (!texture) return;
 
@@ -315,7 +316,22 @@ function drawBarBackground(bar, data, texture) {
         const preset = barPresets[game.settings.get("barbrawl", "barStyle")];
         gfx.beginFill(0x000000, 0.7);
         if (preset.borderWidth) gfx.lineStyle(preset.borderWidth, 0x000000, 1);
-        gfx.drawRoundedRect(0, 0, bar.contentWidth, bar.contentHeight, preset.borderRadius);
+        if (segmentSlots > 1) {
+            const segmentWidth = bar.contentWidth / segmentSlots;
+            const radius = Math.max(0, preset.borderRadius - 1);
+            if (preset.borderWidth > 0) {
+                for (let i = 0; i < segmentSlots; i++) {
+                    gfx.drawRoundedRect(segmentWidth * i, 0, segmentWidth, bar.contentHeight, radius);
+                }
+            } else {
+                gfx.drawRoundedRect(0, 0, segmentWidth, bar.contentHeight, radius);
+                for (let i = 1; i < segmentSlots; i++) {
+                    gfx.drawRoundedRect(segmentWidth * i + 1, 0, segmentWidth - 1, bar.contentHeight, radius);
+                }
+            }
+        } else {
+            gfx.drawRoundedRect(0, 0, bar.contentWidth, bar.contentHeight, preset.borderRadius);
+        }
     }
 }
 
