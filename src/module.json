@@ -29,13 +29,13 @@
         },
         {"lang": "pl", "name": "Polski", "path": "lang/pl.json", "flags": {}}
     ],
-    "url": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl",
-    "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/master/src/module.json",
-    "download": "https://gitlab.com/api/v4/projects/22486994/packages/generic/barbrawl/1.9.0/barbrawl-v1.9.0.zip",
-    "license": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/LICENSE",
-    "readme": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/README.md",
-    "bugs": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/issues",
-    "changelog": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/blob/master/CHANGELOG.md",
+    "url": "https://github.com/luthair/draw-steel-bar-brawl",
+    "manifest": "https://raw.githubusercontent.com/luthair/draw-steel-bar-brawl/master/src/module.json",
+    "download": "https://github.com/luthair/draw-steel-bar-brawl/archive/refs/heads/master.zip",
+    "license": "https://github.com/luthair/draw-steel-bar-brawl/blob/master/LICENSE",
+    "readme": "https://github.com/luthair/draw-steel-bar-brawl/blob/master/README.md",
+    "bugs": "https://github.com/luthair/draw-steel-bar-brawl/issues",
+    "changelog": "https://github.com/luthair/draw-steel-bar-brawl/blob/master/CHANGELOG.md",
     "flags": {
         "hotReload": {
             "extensions": ["css", "hbs", "json"],
